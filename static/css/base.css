@@ -80,7 +80,7 @@ body {
    4. 全站通用頁尾 (Footer)
    ========================================== */
 footer {
-    background-color: #1a1515; /* 採用與頂部導覽列相同的黑色系，達成上下呼應 */
+    background-color: #4e4a42; /* 採用與頂部導覽列相同的黑色系，達成上下呼應 */
     color: #bfaea0;            /* 柔和的淺褐灰色，避免純白文字在黑底上太刺眼 */
     border-top: 5px solid var(--chinese-gold); /* 上方加上金邊，與主導覽列的下金邊形成視覺包圍 */
 }

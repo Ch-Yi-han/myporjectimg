@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %} {% block title %}美味餐點{% endblock %}
+
+{% block ext_css %}
+<link rel="stylesheet" href="{% static 'menu/style.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="category-tabs">
+    <button class="tab-btn active" data-filter="all">全品項</button>
+    <button class="tab-btn" data-filter="appetizer">開場</button>
+    <button class="tab-btn" data-filter="beef">路上跑的牛</button>
+    <button class="tab-btn" data-filter="pork">或豬</button>
+</div>
+
+<div class="menu-grid">
+    {% for dish in dishes %}
+    <div class="menu-card {{ dish.category }}">
+        
+        <div class="menu-img-wrapper">
+            <img src="{{ dish.image.url }}" alt="{{ dish.name }}" loading="lazy">
+            {% if dish.is_recommended %}
+            <span class="badge">主廚推薦</span>
+            {% endif %}
+        </div>
+
+        <div class="menu-info">
+            <div class="menu-header">
+                <h3 class="menu-title">{{ dish.name }}</h3>
+                <span class="menu-price">${{ dish.price }}</span>
+            </div>
+            <p class="menu-desc">{{ dish.description }}</p>
+        </div>
+
+    </div>
+    {% empty %}
+    <p>目前還沒有任何美味餐點上架喔！</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

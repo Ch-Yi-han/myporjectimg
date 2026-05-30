@@ -1,0 +1,111 @@
+.category-tabs {
+    display: flex;
+    justify-content: center; /* 居中對齊 */
+    gap: 15px;               /* 按鈕之間的間距 */
+    margin: 30px 0;
+    flex-wrap: wrap;         /* 手機版寬度不夠時自動折行 */
+}
+
+.tab-btn {
+    background-color: #fff;
+    border: 1px solid #b32017;
+    color: #b32017;
+    padding: 8px 24px;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease; /* 讓顏色切換變溫和 */
+}
+
+/* 點選中、或是滑鼠移過去的樣式 */
+.tab-btn.active, .tab-btn:hover {
+    background-color: #b32017;
+    color: #fff;
+}
+
+/* --- 2. 下方菜單網格 (使用 CSS Grid 自動分配) --- */
+.menu-grid {
+    display: grid;
+    /* 核心：格子寬度最少 280px，不夠就自動往下塞，天生 RWD */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+    padding: 20px;
+}
+
+/* --- 3. 菜色卡片細節設計 --- */
+.menu-card {
+    background-color: #fff;
+    border-radius: 16px;
+    overflow: hidden; /* 確保裡面的圖片圓角不會超出邊框 */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* 溫和的陰影 */
+    transition: transform 0.3s ease;
+}
+
+/* 滑鼠移到卡片上時，卡片會微微浮起 */
+.menu-card:hover {
+    transform: translateY(-5px);
+}
+
+/* --- 4. 圖片黃金比例與防變形 --- */
+.menu-img-wrapper {
+    position: relative;
+    width: 100%;
+    height: 220px; /* 固定高度 */
+    overflow: hidden;
+}
+
+.menu-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 核心：自動等比例裁切，絕不拉伸變形 */
+    transition: transform 0.5s ease;
+}
+
+/* 滑鼠移上去時，圖片會微微放大，很有質感 */
+.menu-card:hover .menu-img-wrapper img {
+    transform: scale(1.08);
+}
+
+/* 主廚推薦標籤 */
+.badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background-color: #b32017;
+    color: white;
+    padding: 4px 10px;
+    font-size: 12px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+/* --- 5. 文字排列區 --- */
+.menu-info {
+    padding: 20px;
+}
+
+.menu-header {
+    display: flex;
+    justify-content: space-between; /* 名字在左、價格在右 */
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.menu-title {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.menu-price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #b32017;
+}
+
+.menu-desc {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+}
