@@ -1,0 +1,86 @@
+/* ==========================================
+   1. 全站全域變數與基礎設定
+   ========================================== */
+:root {
+    /* 定義全站核心色系變數，方便統一管理與更換顏色 */
+    --chinese-red: #7A1E1E;   /* 中式深紅：用於主導覽列背景、重點標題與按鈕 */
+    --chinese-gold: #C5A059;  /* 奢華金：用於邊框、點綴色、文字高亮 */
+    --light-bg: #FCF9F2;      /* 古紙米白：全網頁背景色，營造舒適的中式復古感 */
+    --dark-text: #2B2625;     /* 深炭黑：用於主要內文字體，比純黑更柔和 */
+}
+
+body {
+    background-color: var(--light-bg); /* 套用古紙米白背景 */
+    color: var(--dark-text);           /* 套用深炭黑字體顏色 */
+    /* 優先使用支援中文字體的優質字型 */
+    font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* ==========================================
+   2. 第一條導覽列：最上方功能/資訊列
+   ========================================== */
+.top-navbar {
+    background-color: #1a1515; /* 接近黑色的深炭色，與下方的主紅導覽列做出層次區隔 */
+    font-size: 0.85rem;        /* 字體縮小，使其呈現為次要的輔助資訊 */
+    padding: 6px 0;            /* 內距：上下空出微小間隔，維持精緻感 */
+}
+
+/* 控制第一條導覽列中的所有超連結樣式 */
+.top-navbar a {
+    color: #d1c7bd;            /* 預設為淡灰米色 */
+    text-decoration: none;     /* 移除超連結下劃線 */
+    transition: color 0.3s ease; /* 當滑鼠游標移入時，顏色在0.3秒內平滑過渡 */
+}
+
+/* 當滑鼠懸停在第一條導覽列的連結上時 */
+.top-navbar a:hover {
+    color: var(--chinese-gold); /* 變更為奢華金，提示使用者此項目可點擊 */
+}
+
+/* ==========================================
+   3. 第二條導覽列：主選單導覽列
+   ========================================== */
+.main-navbar {
+    background-color: var(--chinese-red); /* 套用中式深紅作為主視覺背景 */
+    border-bottom: 4px solid var(--chinese-gold); /* 底部加上金邊，呼應標誌中的金邊元素 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);  /* 加上陰影，使導覽列在捲動時有浮立於內容之上的立體感 */
+}
+
+/* 主導覽列左側的品牌名稱（聚福樓） */
+.main-navbar .navbar-brand {
+    letter-spacing: 3px; /* 字距放大，增加文字的大氣與儀式感 */
+}
+
+/* 主導覽列中的每一個選單連結 */
+.main-navbar .nav-link {
+    color: #ffffff !important;      /* 強制將文字設為白色 */
+    font-size: 1.1rem;              /* 字體放大，讓主要導覽醒目 */
+    font-weight: 500;               /* 字體加粗 */
+    padding: 12px 20px !important;  /* 放大點擊範圍，提升使用者體驗 */
+    letter-spacing: 2px;            /* 字距稍微拉開 */
+    transition: all 0.3s ease;      /* 讓所有樣式變化（背景、顏色）都有平滑動畫 */
+}
+
+/* 當滑鼠懸停在主選單項目，或該項目屬於「目前所在頁面（active）」時 */
+.main-navbar .nav-link:hover, 
+.main-navbar .nav-item.active .nav-link {
+    color: var(--chinese-gold) !important; /* 文字變成金色 */
+    background-color: rgba(0, 0, 0, 0.1);  /* 背景稍微變暗，產生被按壓的視覺反饋 */
+}
+
+/* 行動裝置（手機）版出現的漢堡選單按鈕 */
+.navbar-toggler-icon-custom {
+    color: var(--chinese-gold); /* 將手機版三條線圖標改為金色，符合整體配色 */
+    font-size: 1.5rem;          /* 調整圖標大小 */
+}
+
+/* ==========================================
+   4. 全站通用頁尾 (Footer)
+   ========================================== */
+footer {
+    background-color: #1a1515; /* 採用與頂部導覽列相同的黑色系，達成上下呼應 */
+    color: #bfaea0;            /* 柔和的淺褐灰色，避免純白文字在黑底上太刺眼 */
+    border-top: 5px solid var(--chinese-gold); /* 上方加上金邊，與主導覽列的下金邊形成視覺包圍 */
+}
