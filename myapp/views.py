@@ -10,3 +10,7 @@ def menu(request):
         'dishes': dishes_data
     }
     return render(request,'menu.html',context)
+def user_login(request):
+    return render(request,'user_login.html')
+def adduser(request):
+    return render(request,'adduser.html')

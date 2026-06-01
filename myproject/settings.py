@@ -123,3 +123,10 @@ MEDIA_URL = '/media/'
 
 # 圖片實際存在你電腦裡的資料夾位置
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+#認證後台設定
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+

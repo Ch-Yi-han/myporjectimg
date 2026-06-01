@@ -53,6 +53,12 @@ body {
     letter-spacing: 3px; /* 字距放大，增加文字的大氣與儀式感 */
 }
 
+.main-navbar .logo {
+    width: 150px; /* 調整品牌圖標大小，使其與文字比例協調 */
+    height: auto; /* 保持圖像的原始寬高比 */
+    margin-right: 10px; /* 圖標與文字之間增加空隙，提升辨識度 */
+}
+
 /* 主導覽列中的每一個選單連結 */
 .main-navbar .nav-link {
     color: #ffffff !important;      /* 強制將文字設為白色 */
