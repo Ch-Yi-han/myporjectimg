@@ -1,16 +1,23 @@
 {% extends 'base.html' %}
-{% load static %} {% block title %}美味餐點{% endblock %}
+{% load static %}
 
-{% block ext_css %}
-<link rel="stylesheet" href="{% static 'menu/style.css' %}">
+{% block title %}美味餐點{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/menu.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="category-tabs">
     <button class="tab-btn active" data-filter="all">全品項</button>
-    <button class="tab-btn" data-filter="appetizer">開場</button>
-    <button class="tab-btn" data-filter="beef">路上跑的牛</button>
-    <button class="tab-btn" data-filter="pork">或豬</button>
+    <button class="tab-btn" data-filter="appetizer">開胃菜</button>
+    <button class="tab-btn" data-filter="meat">肉類</button>
+    <button class="tab-btn" data-filter="seafood">海鮮</button>
+    <button class="tab-btn" data-filter="vegetarian">素食</button>
+    <button class="tab-btn" data-filter="soup">湯品</button>
+    <button class="tab-btn" data-filter="dessert">甜點</button>
+    <button class="tab-btn" data-filter="rice_and_noodles">飯類和麵類</button>
+    <button class="tab-btn" data-filter="egg_and_tofu">蛋類和豆腐類</button>
 </div>
 
 <div class="menu-grid">
@@ -38,4 +45,32 @@
     {% endfor %}
 </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('.tab-btn');
+    const cards = document.querySelectorAll('.menu-card');
+
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            // 切換按鈕的選取狀態
+            buttons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+
+            // 取得被點擊按鈕的分類名稱
+            const filterValue = this.getAttribute('data-filter');
+
+            // 篩選卡片
+            cards.forEach(card => {
+                if (filterValue === 'all') {
+                    card.style.display = 'block';
+                } else if (card.classList.contains(filterValue)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+});
+</script>
 {% endblock %}
