@@ -180,8 +180,4 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
-Include/
-Lib/
-Scripts/
-pyvenv.cfg
-CACHEDIR.TAG
+
