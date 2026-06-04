@@ -1,92 +1,266 @@
 /* ==========================================
-   1. 全站全域變數與基礎設定
+   1. 全局基礎重設 & 變數定義
    ========================================== */
 :root {
-    /* 定義全站核心色系變數，方便統一管理與更換顏色 */
-    --chinese-red: #7A1E1E;   /* 中式深紅：用於主導覽列背景、重點標題與按鈕 */
-    --chinese-gold: #C5A059;  /* 奢華金：用於邊框、點綴色、文字高亮 */
-    --light-bg: #FCF9F2;      /* 古紙米白：全網頁背景色，營造舒適的中式復古感 */
-    --dark-text: #2B2625;     /* 深炭黑：用於主要內文字體，比純黑更柔和 */
+    --primary-red: #b32017;      /* 聚福樓招牌紅 */
+    --gold-color: #ffc107;       /* 皇家宮廷黃 */
+    --dark-bg: #1a1a1a;          /* 導覽列與頁尾的深黑色 */
+    --text-white: #ffffff;
+    --text-muted: #888888;
 }
 
-body {
-    background-color: var(--light-bg); /* 套用古紙米白背景 */
-    color: var(--dark-text);           /* 套用深炭黑字體顏色 */
-    /* 優先使用支援中文字體的優質字型 */
-    font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+html, body {
+    height: 100%;
     margin: 0;
     padding: 0;
 }
 
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    display: flex;
+    flex-direction: column;      /* 讓網頁垂直由上往下排 */
+    min-height: 100vh;           /* 確保滿版高度 */
+    background-color: #fcfcfc;
+}
+
+/* 移除所有預設超連結底線與清單點點 */
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.3s ease;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* 限制內容最大寬度，在大螢幕上看才會置中靠攏 */
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
 /* ==========================================
-   2. 第一條導覽列：最上方功能/資訊列
+   2. 最頂端小導覽列 (Top Navbar)
    ========================================== */
 .top-navbar {
-    background-color: #1a1515; /* 接近黑色的深炭色，與下方的主紅導覽列做出層次區隔 */
-    font-size: 0.85rem;        /* 字體縮小，使其呈現為次要的輔助資訊 */
-    padding: 6px 0;            /* 內距：上下空出微小間隔，維持精緻感 */
+    background-color: #111111;
+    color: var(--text-white);
+    font-size: 13px;
+    padding: 8px 0;
+    border-bottom: 1px solid #222;
 }
 
-/* 控制第一條導覽列中的所有超連結樣式 */
-.top-navbar a {
-    color: #d1c7bd;            /* 預設為淡灰米色 */
-    text-decoration: none;     /* 移除超連結下劃線 */
-    transition: color 0.3s ease; /* 當滑鼠游標移入時，顏色在0.3秒內平滑過渡 */
+.info-item {
+    margin-right: 20px;
 }
 
-/* 當滑鼠懸停在第一條導覽列的連結上時 */
-.top-navbar a:hover {
-    color: var(--chinese-gold); /* 變更為奢華金，提示使用者此項目可點擊 */
+.icon-gold {
+    color: var(--gold-color);
+    margin-right: 5px;
 }
 
-/* ==========================================
-   3. 第二條導覽列：主選單導覽列
-   ========================================== */
-.main-navbar {
-    background-color: var(--chinese-red); /* 套用中式深紅作為主視覺背景 */
-    border-bottom: 4px solid var(--chinese-gold); /* 底部加上金邊，呼應標誌中的金邊元素 */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);  /* 加上陰影，使導覽列在捲動時有浮立於內容之上的立體感 */
+.nav-link-item {
+    margin-left: 20px;
+    opacity: 0.8;
 }
 
-/* 主導覽列左側的品牌名稱（聚福樓） */
-.main-navbar .navbar-brand {
-    letter-spacing: 3px; /* 字距放大，增加文字的大氣與儀式感 */
+.nav-link-item:hover {
+    opacity: 1;
+    color: var(--gold-color);
 }
 
-.main-navbar .logo {
-    width: 150px; /* 調整品牌圖標大小，使其與文字比例協調 */
-    height: auto; /* 保持圖像的原始寬高比 */
-    margin-right: 10px; /* 圖標與文字之間增加空隙，提升辨識度 */
-}
-
-/* 主導覽列中的每一個選單連結 */
-.main-navbar .nav-link {
-    color: #ffffff !important;      /* 強制將文字設為白色 */
-    font-size: 1.1rem;              /* 字體放大，讓主要導覽醒目 */
-    font-weight: 500;               /* 字體加粗 */
-    padding: 12px 20px !important;  /* 放大點擊範圍，提升使用者體驗 */
-    letter-spacing: 2px;            /* 字距稍微拉開 */
-    transition: all 0.3s ease;      /* 讓所有樣式變化（背景、顏色）都有平滑動畫 */
-}
-
-/* 當滑鼠懸停在主選單項目，或該項目屬於「目前所在頁面（active）」時 */
-.main-navbar .nav-link:hover, 
-.main-navbar .nav-item.active .nav-link {
-    color: var(--chinese-gold) !important; /* 文字變成金色 */
-    background-color: rgba(0, 0, 0, 0.1);  /* 背景稍微變暗，產生被按壓的視覺反饋 */
-}
-
-/* 行動裝置（手機）版出現的漢堡選單按鈕 */
-.navbar-toggler-icon-custom {
-    color: var(--chinese-gold); /* 將手機版三條線圖標改為金色，符合整體配色 */
-    font-size: 1.5rem;          /* 調整圖標大小 */
+/* 在手機版隱藏左側的電話和店址 */
+@media (max-width: 768px) {
+    .contact-info {
+        display: none;
+    }
+    .top-navbar .nav-container {
+        justify-content: flex-end;
+    }
 }
 
 /* ==========================================
-   4. 全站通用頁尾 (Footer)
+   3. 主導覽列 (Main Navbar)
    ========================================== */
-footer {
-    background-color: #4e4a42; /* 採用與頂部導覽列相同的黑色系，達成上下呼應 */
-    color: #bfaea0;            /* 柔和的淺褐灰色，避免純白文字在黑底上太刺眼 */
-    border-top: 5px solid var(--chinese-gold); /* 上方加上金邊，與主導覽列的下金邊形成視覺包圍 */
+.main-header {
+    background-color: var(--dark-bg);
+    position: sticky;            /* 💡 效果同 sticky-top：往下捲動時會固定在最上方 */
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    padding: 10px 0;
+    border-bottom: 3px solid var(--gold-color);
+}
+
+.main-nav-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Logo 與店名 */
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-img {
+    height: 45px;                /* 控制 Logo 大小 */
+    width: auto;
+}
+
+.brand-name {
+    color: var(--gold-color);
+    font-size: 26px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+/* 導覽列選單 */
+.menu-list {
+    display: flex;
+    gap: 25px;
+}
+
+.menu-list a {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 16px;
+    font-weight: 500;
+    padding: 8px 4px;
+}
+
+.menu-list a i {
+    margin-right: 4px;
+}
+
+/* 滑鼠移過去的金色底線與發光效果 */
+.menu-list a:hover {
+    color: var(--gold-color);
+}
+
+/* RWD：手機版時選單自動橫向捲動，避免破版 */
+@media (max-width: 992px) {
+    .main-nav-flex {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .menu-list {
+        gap: 15px;
+        overflow-x: auto;
+        width: 100%;
+        padding-bottom: 5px;
+        justify-content: center;
+    }
+    .menu-list a {
+        font-size: 15px;
+        white-space: nowrap; /* 避免手機版字體折行 */
+    }
+}
+
+/* ==========================================
+   4. 中間內容與神奇頁尾 (Sticky Footer)
+   ========================================== */
+.content-wrapper {
+    flex: 1 0 auto;              /* 💡 核心：把內容區撐到最大，將頁尾強行推到底部 */
+}
+
+.site-footer {
+    flex-shrink: 0;              /* 確保頁尾不會被壓縮 */
+    background-color: var(--dark-bg);
+    color: var(--text-white);
+    text-align: center;
+    padding: 45px 20px;          /* 取代原本的 py-5 */
+    border-top: 3px solid var(--primary-red); /* 頂部加一條紅線更有設計感 */
+}
+
+.footer-logo {
+    color: var(--gold-color);
+    font-size: 24px;
+    margin: 0 0 12px 0;
+    letter-spacing: 4px;
+}
+
+.footer-slogan {
+    margin: 0 0 12px 0;
+    font-size: 15px;
+    opacity: 0.9;
+}
+
+.footer-copy {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+.hero-section {
+    position: relative;
+    width: 100%;
+    min-height: 500px;              /* 設定一個適合的大橫幅基本高度 */
+    height: 60vh;                   /* 讓它佔據螢幕視窗高度的 60% */
+    background-image: url('您的圖片路徑.jpg'); /* 請確認圖片路徑 */
+    background-size: cover;          /* 💡 關鍵：讓圖片縮放並完整覆蓋，不變形 */
+    background-position: center;     /* 💡 關鍵：圖片置中對齊 */
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;            /* 讓文字垂直置中 */
+    justify-content: flex-start;    /* 讓文字靠左對齊 (可依需求改 center) */
+}
+
+/* 為背景圖加上一層深色遮罩，避免文字與背景太接近看不清楚 */
+.hero-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4); /* 40% 的黑色半透明遮罩 */
+    z-index: 1;
+}
+
+/* 文字內容容器 */
+.hero-content {
+    position: relative;
+    z-index: 2;                     /* 確保文字在遮罩之上 */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+    width: 100%;
+    color: var(--text-white);
+}
+
+/* 標題與內文調整 */
+.hero-content h1 {
+    font-size: 3rem;
+    color: var(--gold-color);      /* 使用您定義的皇家宮廷黃 */
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.hero-content p {
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+/* 響應式手機版調整 */
+@media (max-width: 768px) {
+    .hero-section {
+        height: 40vh;               /* 手機版高度縮小 */
+        min-height: 300px;
+    }
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+    .hero-content p {
+        font-size: 1.1rem;
+    }
 }

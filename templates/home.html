@@ -8,36 +8,28 @@
 {% endblock %}
 
 {% block content %}
-<div id="jufuCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-pause="false">
-    <div class="carousel-inner">
-        
-        <!-- 第一張：店招 -->
-        <div class="carousel-item active" data-bs-interval="6000">
-            <img src="{% static 'images/home-cut-vegetables.png' %}" class="d-block w-100 jufu-carousel-img" alt="聚福樓尊榮店招">
-            <div class="carousel-caption-custom d-flex flex-column justify-content-center align-items-center">
-                <h1 class="display-2">聚福樓</h1>
-                <p class="style-letter">正宗中式料理 · 蘊含宮廷千百風味</p>
-            </div>
+<div class="jufu-hero">
+    <div class="jufu-overlay"></div>
+    
+    <div class="slideshow-bg item-1">
+        <div class="hero-text-container">
+            <h1 class="hero-title">聚福樓</h1>
+            <p class="hero-subtitle">正宗中式料理 · 蘊含宮廷千百風味</p>
         </div>
-
-        <!-- 第二張：主廚推薦 -->
-        <div class="carousel-item" data-bs-interval="6000">
-            <img src="{% static 'images/home-stir-fry.png' %}" class="d-block w-100 jufu-carousel-img" alt="主廚推薦珍饈">
-            <div class="carousel-caption-custom d-flex flex-column justify-content-center align-items-center">
-                <h1 class="display-2">匠心獨具</h1>
-                <p class="style-letter">嚴選頂級旬鮮 · 傳承火候入味</p>
-            </div>
-        </div>
-
-        <!-- 第三張：廚師職人（新加入） -->
-        <div class="carousel-item" data-bs-interval="6000">
-            <img src="{% static 'images/home-stir-fry1.png' %}" class="d-block w-100 jufu-carousel-img" alt="廚師精湛刀工與火候炒菜">
-            <div class="carousel-caption-custom d-flex flex-column justify-content-center align-items-center">
-                <h1 class="display-2">職人精神</h1>
-                <p class="style-letter">刀工細緻精湛 · 揮灑烈火雄心</p>
-            </div>
-        </div>
-
     </div>
+    <div class="slideshow-bg item-2">
+        <div class="hero-text-container">
+            <h1 class="hero-title">匠心獨具</h1>
+            <p class="hero-subtitle">嚴選頂級旬鮮 · 傳承火候入味</p>
+        </div>
+    </div>
+    <div class="slideshow-bg item-3">
+        <div class="hero-text-container">
+            <h1 class="hero-title">職人精神</h1>
+            <p class="hero-subtitle">刀工細緻精湛 · 揮灑烈火雄心</p>
+        </div>
+    </div>
+
+
 </div>
 {% endblock %}

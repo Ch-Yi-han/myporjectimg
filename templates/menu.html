@@ -1,28 +1,28 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}美味餐點{% endblock %}
+{% block title %}精選菜單 - 聚福樓{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/menu.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="category-tabs">
+<nav class="category-tabs">
     <button class="tab-btn active" data-filter="all">全品項</button>
     <button class="tab-btn" data-filter="appetizer">開胃菜</button>
-    <button class="tab-btn" data-filter="meat">肉類</button>
-    <button class="tab-btn" data-filter="seafood">海鮮</button>
-    <button class="tab-btn" data-filter="vegetarian">素食</button>
-    <button class="tab-btn" data-filter="soup">湯品</button>
+    <button class="tab-btn" data-filter="meat">大口吃肉</button>
+    <button class="tab-btn" data-filter="seafood">水裡游</button>
+    <button class="tab-btn" data-filter="vegetarian">吃點菜</button>
+    <button class="tab-btn" data-filter="soup">暖胃湯</button>
     <button class="tab-btn" data-filter="dessert">甜點</button>
     <button class="tab-btn" data-filter="rice_and_noodles">飯類和麵類</button>
-    <button class="tab-btn" data-filter="egg_and_tofu">蛋類和豆腐類</button>
-</div>
+    <button class="tab-btn" data-filter="egg_and_tofu">蛋和豆腐</button>
+</nav>
 
-<div class="menu-grid">
+<section class="menu-grid">
     {% for dish in dishes %}
-    <div class="menu-card {{ dish.category }}">
+    <article class="menu-card {{ dish.category }}">
         
         <div class="menu-img-wrapper">
             <img src="{{ dish.image.url }}" alt="{{ dish.name }}" loading="lazy">
@@ -39,35 +39,31 @@
             <p class="menu-desc">{{ dish.description }}</p>
         </div>
 
-    </div>
+    </article>
     {% empty %}
-    <p>目前還沒有任何美味餐點上架喔！</p>
+    <div class="menu-empty">
+        <p>目前還沒有任何美味餐點上架喔！</p>
+    </div>
     {% endfor %}
-</div>
+</section>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     const buttons = document.querySelectorAll('.tab-btn');
     const cards = document.querySelectorAll('.menu-card');
 
     buttons.forEach(button => {
         button.addEventListener('click', function() {
-            // 切換按鈕的選取狀態
+            // 1. 切換按鈕選取狀態
             buttons.forEach(btn => btn.classList.remove('active'));
             this.classList.add('active');
 
-            // 取得被點擊按鈕的分類名稱
-            const filterValue = this.getAttribute('data-filter');
-
-            // 篩選卡片
+            // 2. 執行卡片即時篩選
+            const filterValue = this.dataset.filter; // 💡 精簡寫法：代替 getAttribute
+            
             cards.forEach(card => {
-                if (filterValue === 'all') {
-                    card.style.display = 'block';
-                } else if (card.classList.contains(filterValue)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
+                const isMatch = filterValue === 'all' || card.classList.contains(filterValue);
+                card.style.display = isMatch ? 'block' : 'none'; // 💡 精簡寫法：用三元運算式取代 if-else
             });
         });
     });

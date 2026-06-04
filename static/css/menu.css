@@ -4,11 +4,16 @@
     gap: 15px;               /* 按鈕之間的間距 */
     margin: 30px 0;
     flex-wrap: wrap;         /* 手機版寬度不夠時自動折行 */
+    /* 💡 新增：限制按鈕最寬只到 1000px，並在兩側留出安全安全空白 */
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 40px;         /* 左右預留 40px 的防撞空白 */
 }
 
 .tab-btn {
     background-color: #fff;
-    border: 1px solid #b32017;
+    border: 1px solid #bd2525;
     color: #b32017;
     padding: 8px 24px;
     border-radius: 25px;
@@ -25,13 +30,27 @@
 
 /* --- 2. 下方菜單網格 (使用 CSS Grid 自動分配) --- */
 .menu-grid {
-    display: grid;
-    /* 核心：格子寬度最少 280px，不夠就自動往下塞，天生 RWD */
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 30px;
-    padding: 20px;
+    display: grid ;
+    
+    /* 💡 關鍵魔改 1：把 280px 大幅提升到 340px！ */
+    /* 這樣一來，中間 1060px 的寬度最多只能塞下 3 張卡片，第 4 張會自動掉到下一排。
+       格子變大、數量變少，左右自然就會有非常舒服的開闊留白！ */
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)) !important;
+    
+    /* 💡 關鍵魔改 2：把卡片之間的間距拉大到 40px，讓空氣感更明顯 */
+    gap: 40px ;
+    
+    /* 限制菜單整體最大寬度（如果想要兩邊空白更多，可以把這裡調小，例如 1000px） */
+    max-width: 1120px ;       
+    
+    /* 左右 auto 負責在全螢幕時將整個區塊置中 */
+    margin: 40px auto 80px auto ;
+    
+    /* 手機版與平板版的左右安全防撞留白，加大到 50px */
+    padding: 0 50px ;        
+    
+    justify-content: center ;
 }
-
 /* --- 3. 菜色卡片細節設計 --- */
 .menu-card {
     background-color: #fff;
@@ -41,10 +60,6 @@
     transition: transform 0.3s ease;
 }
 
-/* 滑鼠移到卡片上時，卡片會微微浮起 */
-.menu-card:hover {
-    transform: translateY(-5px);
-}
 
 /* --- 4. 圖片黃金比例與防變形 --- */
 .menu-img-wrapper {
@@ -61,10 +76,6 @@
     transition: transform 0.5s ease;
 }
 
-/* 滑鼠移上去時，圖片會微微放大，很有質感 */
-.menu-card:hover .menu-img-wrapper img {
-    transform: scale(1.08);
-}
 
 /* 主廚推薦標籤 */
 .badge {
@@ -82,12 +93,17 @@
 /* --- 5. 文字排列區 --- */
 .menu-info {
     padding: 20px;
+    text-align: center;     /* 💡 關鍵 1：讓區塊內的所有文字（包含描述）預設全部置中 */
+    display: flex;
+    flex-direction:column;  /* 讓內容由上往下垂直排列 */
+    align-items: center;    /* 讓內容在水平方向也置中 */
 }
 
 .menu-header {
     display: flex;
-    justify-content: space-between; /* 名字在左、價格在右 */
-    align-items: center;
+    flex-direction: column; /* 💡 關鍵 2：由左右排列改成「上下排列」，名字在上、價格在下 */
+    align-items: center;    
+    gap:6 px;
     margin-bottom: 10px;
 }
 

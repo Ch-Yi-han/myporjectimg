@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib .auth.models import AbstractUser
 # Create your models here.
 class Dish(models.Model):
     name = models.CharField(max_length=100)
@@ -9,7 +9,8 @@ class Dish(models.Model):
     spicy_level = models.IntegerField(default=0, verbose_name="辣度等級")
     description = models.TextField(blank=True, null=True, verbose_name="介紹")
     
-    
+    is_recommended = models.BooleanField(default=False, verbose_name="主廚推薦")
+
     CATEGORY_CHOICES = [
         ('appetizer', '開胃菜'),
         ('meat', '肉類'),
@@ -35,3 +36,19 @@ class Dish(models.Model):
         default='all',
         verbose_name="網頁分類標籤"
     )
+
+class CustomUser(AbstractUser):
+
+    phone = models.CharField('電話號碼',max_length=15, blank=True, null=True)
+    birthday=models.DateField('生日',blank=True, null=True)
+    gender_choices=[
+        ("M","男"),
+        ("F","女"),
+        ("O","其他"),
+    ]
+    gender=models.CharField('性別',max_length=1,choices=gender_choices,blank=True,null=True)
+
+
+
+    def __str__(self):
+        return self.email
