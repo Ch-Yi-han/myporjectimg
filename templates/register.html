@@ -1,33 +1,43 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block title %}註冊{% endblock  %}
 
-{% block  %}
-<link rel="stylesheet" href="{% static 'css/register.css' %}">
+ 
+{% block content %}
+ <link rel="stylesheet" href="{% static 'css/register.css' %}">
 
 <div class="register-container">
     <h2>會員註冊</h2>
-    <form action="post" novalidate>
+    <form method="post" action="" novalidate>
         {% csrf_token %}
 
+        {% if form.non_field_errors %}
+            <div class="non-field-errors">
+                {% for error in form.non_field_errors %}
+                    <small class="error-message" style="color: red; display: block;">{{ error }}</small>
+                {% endfor %}
+            </div>
+        {% endif %}
+            
         {% for field in form %}
             <div class="form-group">
-                <label for="{{field.id_for_label}}">{{field.label}}</label>
-                {{field}}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
 
                 {% if field.help_text %}
-                    <small class="help-text">{{field.help_text}}</small>
+                    <small class="help-text">{{ field.help_text }}</small>
                 {% endif %}
 
                 {% for error in field.errors %}
-                    <small class="error-message">{{error}}</small>
+                    <small class="error-message">{{ error }}</small>
                 {% endfor %}
             </div>
         {% endfor %}
-        <button type="submit" class="btn-submit"></button>
+      
+        <button type="submit" class="btn-submit">註冊</button>
     </form>
 </div>
-
 
 {% endblock  %}
 

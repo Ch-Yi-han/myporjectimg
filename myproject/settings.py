@@ -134,8 +134,8 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-#會員帳戶設定
-AUTH_USER_MODEL = 'myapp.CustomUser'
+
+
 
 SITE_ID = 1
 

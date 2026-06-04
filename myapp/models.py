@@ -37,7 +37,7 @@ class Dish(models.Model):
         verbose_name="網頁分類標籤"
     )
 
-class CustomUser(AbstractUser):
+class UserProfile(models.Model):
 
     phone = models.CharField('電話號碼',max_length=15, blank=True, null=True)
     birthday=models.DateField('生日',blank=True, null=True)
