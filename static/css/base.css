@@ -264,3 +264,8 @@ ul {
         font-size: 1.1rem;
     }
 }
+.member-name-nav {
+    color: #ffbe2e; /* 聚福樓質感金 */
+    font-weight: bold;
+    cursor: default; /* 讓滑鼠移上去時不要顯示手指形狀，因為它不是超連結 */
+}

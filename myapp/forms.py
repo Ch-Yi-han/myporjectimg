@@ -1,72 +1,45 @@
-import re 
+import re
 from django import forms
-from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from .models import UserProfile
+from django.contrib.auth.hashers import make_password # 💡 引入 Django 的加密大師
+from .models import CustomMember
 
-
-User = get_user_model()
-
-class RegisterForm(forms.ModelForm):
-    username = forms.CharField(
-        label='帳號', 
-        widget=forms.TextInput(attrs={'placeholder': '請輸入自訂帳號'})
-    )
-    email = forms.EmailField(
-        label='電子信箱', 
-        widget=forms.EmailInput(attrs={'placeholder': 'example@mail.com'})
-    )
-    password = forms.CharField(
-        label='密碼',
-        widget=forms.PasswordInput(attrs={'placeholder':'請輸入密碼'}),
-        help_text='密碼必須至少8個字，且至少包含一個英文字母。'
-    )
-    password_confirm = forms.CharField(
-        label= '確認密碼',
-        widget=forms.PasswordInput(attrs={'placeholder':'請再次輸入密碼'})
-    )
+class CustomRegisterForm(forms.ModelForm):
+    password = forms.CharField(label='密碼', widget=forms.PasswordInput(attrs={'placeholder': '請輸入密碼'}))
+    password_confirm = forms.CharField(label='確認密碼', widget=forms.PasswordInput(attrs={'placeholder': '請再次輸入密碼'}))
 
     class Meta:
-        model = UserProfile
-        fields = ['phone','birthday','gender']
-        widgets={ 
-            'phone':forms.TextInput(attrs={'placeholder':'請輸入電話號碼'}),
-            'birthday':forms.DateInput(attrs={'type':'date'}),
+        model = CustomMember
+        fields = ['username', 'last_name', 'first_name','email','phone', 'birthday', 'gender', 'password']
+        widgets = {
+            'username': forms.TextInput(attrs={'placeholder': '請輸入自訂帳號'}),
+            'last_name': forms.TextInput(attrs={'placeholder': '陳'}),
+            'first_name': forms.TextInput(attrs={'placeholder': '小明'}),
+            'email': forms.EmailInput(attrs={'placeholder': 'example@mail.com'}),
+            'phone': forms.TextInput(attrs={'placeholder': '0912345678'}),
+            'birthday': forms.DateInput(attrs={'type': 'date'}),
         }
 
-    def clean_password(self):
-        password=self.cleaned_data.get('passowrd')
-        
-        if not password:
-            return password
-        
+    # 檢查帳號是否重複
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if CustomMember.objects.filter(username=username).exists():
+            raise ValidationError('這個帳號已經被注冊過了！')
+        return username
 
-        if len(password)< 8:
-            raise ValidationError('密碼長度必須超過8個字元。')
-        
-        if not re.search(r'[a-zA-Z]',password):
-            raise ValidationError('密碼必須包含至少一個英文字母')
-        
-        return password
-        
+    # 檢查兩次密碼
     def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get('password')
         password_confirm = cleaned_data.get('password_confirm')
-
-        if password and password_confirm and password != password_confirm:
-            self.add_error('password_confirm','兩次輸入密碼不一致')
-
+        if password != password_confirm:
+            self.add_error('password_confirm', '兩次輸入的密碼不一致。')
         return cleaned_data
-        
-    def save(self,commit=True):
-        user = User.objects.create_user(
-            username=self.cleaned_data['username'],
-            email=self.cleaned_data['email'],
-            password=self.cleaned_data['password']
-        )
-        profile= super().save(commit=False)
-        profile.user=user
+
+    # 儲存時攔截密碼，加密後再存入資料庫
+    def save(self, commit=True):
+        member = super().save(commit=False)
+        member.password = make_password(self.cleaned_data['password'])
         if commit:
-            profile.save()
-        return profile
+            member.save()
+        return member

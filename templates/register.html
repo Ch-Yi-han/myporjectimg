@@ -9,7 +9,7 @@
 
 <div class="register-container">
     <h2>會員註冊</h2>
-    <form method="post" action="" novalidate>
+    <form method="post" action="{% url 'register' %}" novalidate>
         {% csrf_token %}
 
         {% if form.non_field_errors %}
