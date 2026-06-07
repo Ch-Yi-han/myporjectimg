@@ -1,8 +1,11 @@
 from .models import Dish,CustomMember
 from django.shortcuts import render, redirect
 from .forms import CustomRegisterForm
-
-from django.contrib.auth.hashers import check_password, make_password
+from django.contrib.auth.hashers import check_password,make_password
+from myapp.models import CustomMember
+from django.contrib import messages
+import random
+from django.core.mail import send_mail
 
 def index(request):
     member_name = request.session.get('member_name')
@@ -68,3 +71,69 @@ def logout(request):
         
     print("👋 會員已安全登出")
     return redirect('index')
+
+def forgot_password_request(request):
+    if request.method == "POST":
+        username=request.POST.get('username')
+        email=request.POST.get('email')
+
+        try:
+            user=CustomMember.objects.get(username=username ,email=email)
+            code=str(random.randit(100000,999999))
+
+            request.session['reset_code'] = code
+            request.session['reset_user_id'] = user.id
+            request.session.set_expiry(300)
+
+            send_mail(
+                '【網站名稱】密碼重設驗證碼',
+                f'您的驗證碼為：{code}，請於 5 分鐘內輸入。',
+                'from@example.com',
+                [email],
+                fail_silently=False
+            )
+
+            messages.success(request,"驗證碼已發送到您的信箱!")
+            return redirect('verify_code')
+
+        except CustomMember.DoesNotExist:
+            messages.error(request,"帳號或是電子信箱不正確")
+    return render(request,'forgot_password_request.html')
+
+def verify_code(request):
+    if 'reset_code' not in request.session:
+        messages.error(request,"驗證碼已失效，請重新申請")
+        return redirect('forgot_password_request')
+    
+    if request.method == "POST":
+        input_code =request.POST.get('code')
+        session_code=request.session.get('reset_code')
+        
+        if input_code == session_code:
+            request.session['code_verified']=True
+            return redirect('reset_password')
+        else:
+            messages.error(request,"驗證碼錯誤，請重新輸入")
+    
+    return render(request,'verify_code.html')
+
+def reset_passwoerd(request):
+    if not request.session.get('code_verified'):
+        messages.error(request,"請先完成驗證")
+        return redirect('forgot_password_request')
+    if request.method == "POST":
+        password= request.POST.get('password')
+        password_confirm =request.POST.get('password_confirm')
+
+        if password !=password_confirm:
+            messages.error(request,"兩次輸入的密碼不相同")
+            return render(request,'reset_password.html')
+        
+        user_id = request.session.get('reset_user_id')
+        user = CustomMember.objects.get(id=user_id)
+        user.password = make_password(password)
+        user.save()
+
+        request.session.flush()
+        messages.success(request,"密碼修改成功")
+        return redirect('login')
