@@ -29,6 +29,9 @@ urlpatterns = [
     path('user_login/',views.user_login,name='user_login'),
     path('register/',views.register,name='register'),
     path('logout/', views.logout, name='logout'),
+    path('forgot_password/', views.forgot_password_request, name='forgot_password_request'),
+    path('verify_code/', views.verify_code, name='verify_code'),
+    path('reset_password/',views.reset_password, name='reset_password'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

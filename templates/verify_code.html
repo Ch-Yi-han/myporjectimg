@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>輸入驗證碼</title>
+</head>
+<body>
+    <div style="margin: 50px auto; max-width: 400px; text-align: center;">
+        <h2>輸入驗證碼</h2>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <p style="color: red;">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <div style="margin-bottom: 15px;">
+                <input type="text" name="code" placeholder="請輸入 6 位數驗證碼" required 
+                       style="padding: 10px; width: 100%; text-align: center; letter-spacing: 2px;">
+            </div>
+            <button type="submit" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer;">
+                送出驗證
+            </button>
+        </form>
+    </div>
+</body>
+</html>

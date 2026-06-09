@@ -82,7 +82,7 @@ def forgot_password_request(request):
 
         try:
             user=CustomMember.objects.get(username=username ,email=email)
-            code=str(random.randit(100000,999999))
+            code=str(random.randint(100000,999999))
 
             request.session['reset_code'] = code
             request.session['reset_user_id'] = user.id
@@ -120,7 +120,7 @@ def verify_code(request):
     
     return render(request,'verify_code.html')
 
-def reset_passwoerd(request):
+def reset_password(request):
     if not request.session.get('code_verified'):
         messages.error(request,"請先完成驗證")
         return redirect('forgot_password_request')
