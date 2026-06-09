@@ -1,11 +1,14 @@
 from .models import Dish,CustomMember
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from .forms import CustomRegisterForm
 from django.contrib.auth.hashers import check_password,make_password
 from myapp.models import CustomMember
 from django.contrib import messages
 import random
 from django.core.mail import send_mail
+from django.http import JsonResponse
+from .models import CustomMember,MenuItem,CarItem,Order,OrderItem
+
 
 def index(request):
     member_name = request.session.get('member_name')
@@ -137,3 +140,87 @@ def reset_passwoerd(request):
         request.session.flush()
         messages.success(request,"密碼修改成功")
         return redirect('login')
+
+
+def get_current_member(request):
+    member_id= request.session.get('member_id')
+    if not member_id:
+        return None
+    try:
+        return CustomMember.objects.get(id=member_id)
+    except CustomMember.DoesNotExist:
+        return None
+
+# ========1. 加入購物車 ===========
+def add_to_cart(request):
+    member = get_current_member(request)
+    if not member:
+        return redirect('member_login')
+
+    if request.method == 'POSt':
+        item_id = request.POST.get('item_id')
+        quantity = int(request.POST.get('qnantity',1))
+        item = get_object_or_404(MenuItem,id=item_id)
+        #檢查購物車是否已有該有會員點餐的這項餐點
+        cart_item,created=CarItem.objects.get_or_create(
+            member=member,
+            item= item,
+            defaults={'quantity':quantity}
+        )
+        if not created:
+            cart_item.quantity +=quantity
+            cart_item.save()
+
+        return redirect('view_cart')
+
+#=========2.查看購物車============
+def view_cart(request):
+    member = get_current_member(request)
+    if not member:
+        return redirect('member_login')
+    
+    cart_items = CarItem.objects.filter(member=member)
+    total_amount = sum(item.total_price() for item in cart_items)
+
+    context= {
+        'cart_items':cart_items,
+        'total_amount':total_amount
+    }
+    return render(request)
+
+#=======3.建立訂單(結帳) =========
+def checkout(request):
+    member=get_current_member(request)
+    if not member:
+        return redirect('member_login')
+    
+    cart_items = CarItem.objects.filter(member=member)
+    if not cart_items.exists():
+        return redirect(view_cart)
+    
+    if request.method =='POST':
+        total_amount= sum(item.total_price()for item in cart_items)
+        order=Order.objects.create(
+            member=member,
+            total_amount=total_amount,
+            status ='pending'
+        )
+
+        for cart_item in cart_items:
+            Order.objects.create(
+                order=order,
+                item_name=cart_item.item.name,
+                price=cart_item.item.price,
+                quantity=cart_item.quantity
+            )
+        cart_items.delete()
+        return redirect('order_detail',order=order.id)
+
+def order_history(request):
+    member = get_current_member(request)
+    if not member:
+        return redirect('member_login')
+    orders = Order.objects.filter(member=member).order_by('-created_at')
+
+    return render(request,'order_history.html',{'orders':orders})
+

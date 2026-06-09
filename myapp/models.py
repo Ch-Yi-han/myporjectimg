@@ -1,8 +1,5 @@
+
 from django.db import models
-from django.contrib .auth.models import AbstractUser
-from django.conf import settings
-from django.db import models
-from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 
@@ -60,3 +57,39 @@ class CustomMember(models.Model):
 
     def __str__(self):
         return self.username
+
+class MenuItem(models.Model):
+    name= models.CharField(max_length=100,verbose_name="餐點名稱")
+    price = models.IntegerField(verbose_name="價格")
+    is_available=models.BooleanField(default=True,verbose_name="是否供應")
+
+    def __str__(self):
+        return self.name
+
+class CarItem(models.Model):
+    member =models.ForeignKey(CustomMember,on_delete=models.CASCADE,verbose_name="會員")
+    item = models.ForeignKey(MenuItem,on_delete=models.CASCADE,verbose_name="餐點")
+    quantity=models.PositiveIntegerField(default=1,verbose_name="數量")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.item.price * self.quantity
+
+class Order(models.Model):
+    STATUS_CHOICES =[
+        ('pending','未付款'),
+        ('paid','已付款/準備中'),
+        ('completed','已完成'),
+        ('cancelled','已取消'),
+    ]
+    member = models.ForeignKey(CustomMember,on_delete=models.CASCADE,verbose_name="會員")
+    total_amount= models.IntegerField(verbose_name="總金額")
+    status = models.CharField(max_length=20,choices=STATUS_CHOICES,default='pending',verbose_name='頂單狀態')
+    created_at = models.DateTimeField(auto_created=True,verbose_name='訂單時間')
+    merchant_trade_no = models.CharField(max_length=50,unique=True,blank=True,null=True)
+
+class OrderItem(models.Model):
+    order =models.ForeignKey(Order,on_delete=models.CASCADE,related_name='items',verbose_name='訂單')
+    item_name=models.CharField(max_length=100,verbose_name="餐點名稱(快照)")
+    price = models.IntegerField(verbose_name="購買時價格")
+    quantity = models.PositiveIntegerField(verbose_name="數量")
