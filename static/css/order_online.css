@@ -1,0 +1,217 @@
+/* ==========================================================================
+   聚福樓古風經典點餐系統 - 完整美化版 CSS
+   ========================================================================== */
+
+/* 基礎全域設定 */
+body {
+    font-family: "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif;
+    background-color: #fcfaf7; /* 改為溫潤的淡淡米白古風底色 */
+    color: #3e2723;            /* 改為沉穩的深木色文字 */
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* 標題與導覽列 */
+.header-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #e67e22;
+    padding-bottom: 15px;
+}
+
+.header-area h2 {
+    margin: 0;
+    color: #8c2d19; /* 聚福樓宮廷紅 */
+    font-size: 26px;
+}
+
+/* ==========================================================================
+   ✨ 頂部點選標籤（分類按鈕）修飾
+   ========================================================================== */
+.category-tabs {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;       /* 確保手機版會自動折行 */
+    margin-bottom: 35px;
+    padding: 10px 0;
+}
+
+.tab-btn {
+    background-color: #fff;
+    color: #795548;
+    border: 1px solid #d7ccc8;
+    padding: 8px 18px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 20px;   /* 膠囊造型標籤 */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+/* 懸浮效果 */
+.tab-btn:hover {
+    background-color: #fbe9e7;
+    color: #e67e22;
+    border-color: #e67e22;
+}
+
+/* 💡 當按鈕被選取時的「作用中」狀態 */
+.tab-btn.active {
+    background-color: #e67e22; /* 暖橘主色 */
+    color: #fff;
+    border-color: #e67e22;
+    box-shadow: 0 4px 8px rgba(230, 126, 34, 0.3);
+}
+
+
+/* ==========================================================================
+   ✨ 網格佈局與卡片 - 修正底部歪掉的關鍵
+   ========================================================================== */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.menu-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+    border: 1px solid #f1ebd9;
+    overflow: hidden;
+    
+    /* 🌟 對齊魔法：開啟 flex 垂直佈局 */
+    display: flex;
+    flex-direction: column; 
+    justify-content: space-between; /* 讓卡片內部元件頂天立地分散對齊 */
+    height: 100%;                   /* 強迫所有卡片高度絕對一模一樣 */
+}
+
+/* 圖片框設定 */
+.menu-img-wrapper {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background-color: #faf7f2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border-bottom: 1px solid #f9f5eb;
+}
+
+.menu-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* ⭕ 這裡改回 cover 會比較大器，因為 contain 兩邊會留白；如果你還是想看完整縮小原圖，可以改成 contain */
+}
+
+/* 主廚推薦標籤 */
+.menu-img-wrapper .badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background-color: #d32f2f; /* 喜慶紅 */
+    color: white;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* 中間文字區域 */
+.menu-info {
+    padding: 20px;
+    /* 🌟 核心關鍵：這個區域會自動吃掉剩餘的空間，並把下方的表單往下推到底部齊平！ */
+    flex-grow: 1; 
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.menu-title {
+    margin: 0;
+    font-size: 19px;
+    font-weight: bold;
+    color: #2d1a15;
+}
+
+.menu-price {
+    font-size: 18px;
+    color: #d32f2f;
+    font-weight: bold;
+}
+
+.menu-desc {
+    color: #795548;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 8px 0 0 0;
+}
+
+/* ==========================================================================
+   ✨ 購物車表單區域 - 完美對齊底部
+   ========================================================================== */
+.menu-card form {
+    padding: 0 20px 20px 20px; /* 讓表單內縮，維持完美邊距 */
+    background: #fff;
+}
+
+/* 數量輸入行 */
+.quantity-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #5d4037;
+}
+
+.quantity-input {
+    width: 60px;
+    text-align: center;
+    padding: 6px;
+    border: 1px solid #d7ccc8;
+    border-radius: 6px;
+    font-weight: bold;
+    color: #3e2723;
+}
+
+/* 加入購物車按鈕 */
+.btn-submit {
+    width: 100%;
+    background-color: #e67e22;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    box-shadow: 0 3px 6px rgba(230, 126, 34, 0.2);
+}
+
+.btn-submit:hover {
+    background-color: #d35400;
+}
+
+.btn-submit:active {
+    transform: scale(0.98); /* 按下去的微縮回饋感 */
+}

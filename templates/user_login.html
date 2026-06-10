@@ -13,7 +13,15 @@
       <h2>歡迎回來</h2>
       <p>請輸入您的帳號密碼以登入會員</p>
     </div>
-
+{% if messages %}
+<div class="messages" style="margin-bottom: 20px;">
+    {% for message in messages %}
+        <div style="background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 12px; border-radius: 6px; font-weight: bold; text-align: center; font-size: 14px;">
+            {{ message }}
+        </div>
+{% endfor %}
+</div>
+{% endif %}
     {% if error_message %}
       <div class="alert-error-container">
         <p class="error-text">⚠️ {{ error_message }}</p>

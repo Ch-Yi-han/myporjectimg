@@ -24,7 +24,8 @@ class Dish(models.Model):
         ('rice_and_noodles', '飯類和麵類'),
         ('egg_and_tofu', '蛋類和豆腐類'),
     ]
-
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='appetizer', verbose_name="分類")
+    is_available = models.BooleanField(default=True, verbose_name="是否供應") # 點餐功能需要這個
     class Meta:
         verbose_name = "菜色"
         verbose_name_plural = "菜單管理"
@@ -66,9 +67,9 @@ class MenuItem(models.Model):
     def __str__(self):
         return self.name
 
-class CarItem(models.Model):
+class CartItem(models.Model):
     member =models.ForeignKey(CustomMember,on_delete=models.CASCADE,verbose_name="會員")
-    item = models.ForeignKey(MenuItem,on_delete=models.CASCADE,verbose_name="餐點")
+    item = models.ForeignKey(Dish,on_delete=models.CASCADE,verbose_name="餐點")
     quantity=models.PositiveIntegerField(default=1,verbose_name="數量")
     created_at = models.DateTimeField(auto_now_add=True)
 

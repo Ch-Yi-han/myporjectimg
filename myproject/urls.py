@@ -32,6 +32,10 @@ urlpatterns = [
     path('forgot_password/', views.forgot_password_request, name='forgot_password_request'),
     path('verify_code/', views.verify_code, name='verify_code'),
     path('reset_password/',views.reset_password, name='reset_password'),
+    path('order_online/',views.order_online,name='order_online'),
+    path('order_history/',views.order_history,name='order_history'),
+    path('view_cart/',views.view_cart,name='view_cart'),
+    path('add_to_cart/', views.add_to_cart, name='add_to_cart'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -2,12 +2,10 @@ from .models import Dish,CustomMember
 from django.shortcuts import render, redirect,get_object_or_404
 from .forms import CustomRegisterForm
 from django.contrib.auth.hashers import check_password,make_password
-from myapp.models import CustomMember
 from django.contrib import messages
 import random
 from django.core.mail import send_mail
-from django.http import JsonResponse
-from .models import CustomMember,MenuItem,CarItem,Order,OrderItem
+from .models import CustomMember,Dish,CartItem,Order,OrderItem
 
 
 def index(request):
@@ -117,6 +115,7 @@ def verify_code(request):
             return redirect('reset_password')
         else:
             messages.error(request,"驗證碼錯誤，請重新輸入")
+        
     
     return render(request,'verify_code.html')
 
@@ -151,18 +150,42 @@ def get_current_member(request):
     except CustomMember.DoesNotExist:
         return None
 
+
+
+def order_online(request):
+    # 1. 🔍 核心防線：檢查 Session 盒子裡有沒有會員的 ID
+    member_id = request.session.get('member_id')
+
+    # 2. 🛡️ 判定：如果沒有 ID，代表根本沒登入，或者是登入過期了
+    if not member_id:
+        # 💡 貼心小技巧：在彈回去之前，塞一個警告訊息給前端畫面
+        messages.warning(request, "請先登入聚福樓會員，即可開始線上點餐功能喔！")
+        
+        # 彈回你的登入頁面（請確保 'user_login' 名稱跟 urls.py 裡面對應的 name 一模一樣）
+        return redirect('user_login') 
+
+    # ==========================================================================
+    # 3. 🏁 通過防線：只有登入成功的人，才能走到下面這段「撈取美味佳餚」的程式碼
+    # ==========================================================================
+    
+
+    # 撈出所有的菜
+    all_dishes = Dish.objects.all()
+    
+    # 順利渲染點餐網頁
+    return render(request, 'order_online.html', {'dishes': all_dishes})
 # ========1. 加入購物車 ===========
 def add_to_cart(request):
     member = get_current_member(request)
     if not member:
-        return redirect('member_login')
+        return redirect('user_login')
 
-    if request.method == 'POSt':
+    if request.method == 'POST':
         item_id = request.POST.get('item_id')
-        quantity = int(request.POST.get('qnantity',1))
-        item = get_object_or_404(MenuItem,id=item_id)
+        quantity = int(request.POST.get('quantity',1))
+        item = get_object_or_404(Dish,id=item_id)
         #檢查購物車是否已有該有會員點餐的這項餐點
-        cart_item,created=CarItem.objects.get_or_create(
+        cart_item,created=CartItem.objects.get_or_create(
             member=member,
             item= item,
             defaults={'quantity':quantity}
@@ -171,32 +194,32 @@ def add_to_cart(request):
             cart_item.quantity +=quantity
             cart_item.save()
 
-        return redirect('view_cart')
+        return redirect('order_online')
 
 #=========2.查看購物車============
 def view_cart(request):
     member = get_current_member(request)
     if not member:
-        return redirect('member_login')
+        return redirect('user_login')
     
-    cart_items = CarItem.objects.filter(member=member)
-    total_amount = sum(item.total_price() for item in cart_items)
+    cart_items = CartItem.objects.filter(member=member)
+    total_amount = sum(cart_item.item.price * cart_item.quantity for cart_item in cart_items)
 
     context= {
         'cart_items':cart_items,
         'total_amount':total_amount
     }
-    return render(request)
+    return render(request,'view_cart.html',context)
 
 #=======3.建立訂單(結帳) =========
 def checkout(request):
     member=get_current_member(request)
     if not member:
-        return redirect('member_login')
+        return redirect('user_login')
     
-    cart_items = CarItem.objects.filter(member=member)
+    cart_items = CartItem.objects.filter(member=member)
     if not cart_items.exists():
-        return redirect(view_cart)
+        return redirect('view_cart')
     
     if request.method =='POST':
         total_amount= sum(item.total_price()for item in cart_items)
@@ -209,7 +232,7 @@ def checkout(request):
         for cart_item in cart_items:
             Order.objects.create(
                 order=order,
-                item_name=cart_item.item.name,
+                item_name=cart_item.item,
                 price=cart_item.item.price,
                 quantity=cart_item.quantity
             )
@@ -219,8 +242,8 @@ def checkout(request):
 def order_history(request):
     member = get_current_member(request)
     if not member:
-        return redirect('member_login')
-    orders = Order.objects.filter(member=member).order_by('-created_at')
+        return redirect('user_login')
+    orders = OrderItem.objects.filter(member=member).order_by('-created_at')
 
     return render(request,'order_history.html',{'orders':orders})
 

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}精選菜單 - 聚福樓{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/order_online.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="order-nav-bar" style="display: flex; justify-content: flex-end; margin-bottom: 20px; padding: 0 10px;">
+    <a href="{% url 'view_cart' %}" style="background-color: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-right: 10px;">查看購物車 🛒</a>
+    <a href="{% url 'order_history' %}" style="background-color: #6c757d; color: white; padding: 10px 15px; text-decoration: none; border-radius: 6px; font-weight: bold;">歷史訂單 📜</a>
+</div>
+
+<nav class="category-tabs">
+    <button class="tab-btn active" data-filter="all">全品項</button>
+    <button class="tab-btn" data-filter="appetizer">開胃菜</button>
+    <button class="tab-btn" data-filter="meat">大口吃肉</button>
+    <button class="tab-btn" data-filter="seafood">水裡游</button>
+    <button class="tab-btn" data-filter="vegetarian">吃點菜</button>
+    <button class="tab-btn" data-filter="soup">暖胃湯</button>
+    <button class="tab-btn" data-filter="dessert">甜點</button>
+    <button class="tab-btn" data-filter="rice_and_noodles">飯類和麵類</button>
+    <button class="tab-btn" data-filter="egg_and_tofu">蛋和豆腐</button>
+</nav>
+
+<section class="menu-grid">
+    {% for dish in dishes %}
+    <article class="menu-card {{ dish.category }}">
+        
+        <div class="menu-img-wrapper">
+            <img src="{{ dish.image.url }}" alt="{{ dish.name }}" loading="lazy">
+            {% if dish.is_recommended %}
+            <span class="badge">主廚推薦</span>
+            {% endif %}
+        </div>
+
+        <div class="menu-info">
+            <div class="menu-header">
+                <h3 class="menu-title">{{ dish.name }}</h3>
+                <span class="menu-price">${{ dish.price }}</span>
+            </div>
+            <p class="menu-desc">{{ dish.description }}</p>
+        </div> <form action="{% url 'add_to_cart' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="item_id" value="{{ dish.id }}">
+            
+            <div class="quantity-row">
+                <label>數量：</label>
+                <input type="number" name="quantity" value="1" min="1" max="10" class="quantity-input">
+            </div>
+            
+            <button type="submit" class="btn-submit">
+                加入購物車
+            </button>
+        </form>
+    </article>
+    {% empty %}
+    <div class="menu-empty" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #795548; font-weight: bold;">
+        <p>目前還沒有任何美味餐點上架喔！</p>
+    </div>
+    {% endfor %}
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll('.tab-btn');
+    const cards = document.querySelectorAll('.menu-card');
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            buttons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            const filterValue = this.dataset.filter;
+            cards.forEach(card => {
+                const isMatch = filterValue === 'all' || card.classList.contains(filterValue);
+                card.style.display = isMatch ? 'flex' : 'none'; // 💡 配合我們卡片的 flex 佈局，顯示時改用 'flex' 就不會跑版
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

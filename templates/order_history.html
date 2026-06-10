@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}歷史訂單紀錄 - 聚福樓{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/order_history.css' %}">
+
+{% endblock %}
+
+{% block content %}
+<div class="order-container">
+    <div class="top-bar">
+        <h2 style="color: #2c3e50; margin: 0;">📜 您的歷史點餐紀錄</h2>
+        <a href="{% url 'order_online' %}" style="background: #e67e22; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;">繼續點餐 ➔</a>
+    </div>
+
+    {% if orders %}
+        {% for order in orders %}
+        <details>
+            <summary>
+                <div class="order-summary-flex">
+                    <div>
+                        <span style="color: #2c3e50;">訂單編號：#{{ order.id }}</span>
+                        <span class="order-meta">{{ order.created_at|date:"Y-m-d H:i" }}</span>
+                    </div>
+                    <div class="order-right">
+                        <span class="order-total">${{ order.total_amount }}</span>
+                        
+                        {% if order.status == 'pending' %}
+                            <span class="badge bg-warning">未付款</span>
+                        {% elif order.status == 'paid' %}
+                            <span class="badge bg-info">準備中</span>
+                        {% elif order.status == 'completed' %}
+                            <span class="badge bg-success">已完成</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </summary>
+            
+            <div class="order-details-content">
+                <h4 style="margin-top: 0; color: #7f8c8d; border-bottom: 1px solid #eee; padding-bottom: 8px;">美味明細</h4>
+                <ul class="item-list">
+                    {% for item in order.items.all %}
+                    <li class="item-row">
+                        <div>
+                            <span>{{ item.item_name }}</span> 
+                            <span style="color: #95a5a6; margin-left: 10px; font-size: 13px;">x {{ item.quantity }}份</span>
+                        </div>
+                        <strong>${{ item.price }}</strong>
+                    </li>
+                    {% endfor %}
+                </ul>
+                
+                {% if order.status == 'pending' %}
+                <div style="text-align: right;">
+                    <a href="#" class="btn-pay">前往線上刷卡付款</a>
+                </div>
+                {% endif %}
+            </div>
+        </details>
+        {% endfor %}
+    {% else %}
+        <div style="text-align: center; padding: 60px 20px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.03); color: #7f8c8d;">
+            <p style="font-size: 18px; margin: 0;">您在聚福樓還沒有任何點餐紀錄喔！</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

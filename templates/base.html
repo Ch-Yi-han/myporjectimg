@@ -26,7 +26,7 @@
                     <a href="{% url 'user_login' %}" class="nav-link-item"><i class="fas fa-user"></i> 會員登入</a>
                 {% endif %}
                 
-                <a href="#" class="nav-link-item"><i class="fas fa-shopping-bag"></i> 線上點餐</a>
+                <a href="{% url "order_online" %}" class="nav-link-item"><i class="fas fa-shopping-bag"></i> 線上點餐</a>
             </div>
         </div>
     </nav>
