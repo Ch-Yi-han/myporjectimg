@@ -1,56 +1,85 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}我的購物車 - 聚福樓{% endblock %}
+{% block title %}您的購物車 - 聚福樓{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/cart.css' %}">
-
+<link rel="stylesheet" href="{% static 'css/order_online.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="cart-container">
-    <a href="{% url 'order_online' %}" class="btn-back">← 返回線上點餐</a>
-    <h2 style="color: #2c3e50; margin-bottom: 20px;">🛒 您的點餐購物車</h2>
 
     {% if cart_items %}
-    <div class="cart-card">
+        <div class="back-to-menu">
+            <a href="{% url 'order_online' %}">← 返回線上點餐</a>
+        </div>
+
+        <h2 class="cart-title">🛒 您的點餐購物車</h2>
+
         <table class="cart-table">
             <thead>
                 <tr>
                     <th>佳餚名稱</th>
                     <th class="text-center">單價</th>
                     <th class="text-center">數量</th>
-                    <th class="text-end">小計</th>
+                    <th class="text-right">小計</th>
+                    
                 </tr>
             </thead>
             <tbody>
-                {% for cart_item in cart_items %}
+                {% for item in cart_items %}
                 <tr>
-                    <td><strong style="color: #333;">{{ cart_item.item.name }}</strong></td>
-                    <td class="text-center">${{ cart_item.item.price }}</td>
-                    <td class="text-center">{{ cart_item.quantity }} 組</td>
-                    <td class="text-end" style="color: #e67e22; font-weight: bold;">${{ cart_item.total_price }}</td>
+                    <td class="dish-name">{{ item.item.name }}</td>
+
+                    <td class="text-center dish-price">${{ item.item.price }}</td>
+
+                    <td class="text-center">
+                        <div class="quantity-controller" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                            <a href="{% url 'update_cart_quantity' item.item.id 'decrease' %}" 
+                            class="btn-qty-minus" 
+                            style="text-decoration: none; background: #f1ebd9; color: #3e2723; padding: 2px 10px; border-radius: 4px; font-weight: bold; font-size: 16px;">
+                                -
+                            </a>
+                            
+                            <span style="font-weight: bold; min-width: 30px; display: inline-block;">{{ item.quantity }}</span>
+                            
+                            <a href="{% url 'update_cart_quantity' item.item.id 'increase' %}" 
+                            class="btn-qty-plus" 
+                            style="text-decoration: none; background: #e67e22; color: white; padding: 2px 10px; border-radius: 4px; font-weight: bold; font-size: 16px;">
+                                +
+                            </a>
+                        </div> </td> <td class="text-right dish-subtotal">${{ item.subtotal }}</td>
+                       
+                    
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
 
-        <div class="total-section">
-            <span>本次點餐總計：</span>
-            <span class="total-price">${{ total_amount }}</span>
+        <div class="cart-summary-area">
+            <div class="cart-total">
+                本次點餐總計：<span class="total-price-text">${{ total_amount }}</span>
+            </div>
+            
+            <form action="{% url 'checkout' %}" method="POST" class="checkout-form">
+                {% csrf_token %}
+                <button type="submit" class="btn-checkout">
+                    確認訂單並送出 ➔
+                </button>
+            </form>
         </div>
 
-        <form action="{% url 'checkout' %}" method="POST" style="overflow: hidden;">
-            {% csrf_token %}
-            <button type="submit" class="btn-checkout">確認訂單並送出 ➔</button>
-        </form>
-    </div>
     {% else %}
-    <div class="empty-cart">
-        <p style="font-size: 18px; color: #7f8c8d; margin: 0;">您的購物車目前空空如也，肚子是不是也空空的？</p>
-        <a href="{% url 'order_online' %}" class="btn-go-order">立刻挑選美味佳餚</a>
-    </div>
+        <div class="cart-empty-box">
+            <div class="empty-icon">🛒💨</div>
+            <h3>您的聚福樓購物車目前是空的喔！</h3>
+            <p>如果想調整餐點，請點擊下方按鈕回到菜單重新選購。</p>
+            <a href="{% url 'order_online' %}" class="btn-go-order">
+                ← 前往精選菜單點餐
+            </a>
+        </div>
     {% endif %}
+
 </div>
 {% endblock %}

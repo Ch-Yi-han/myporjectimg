@@ -153,27 +153,31 @@ def get_current_member(request):
 
 
 def order_online(request):
-    # 1. 🔍 核心防線：檢查 Session 盒子裡有沒有會員的 ID
     member_id = request.session.get('member_id')
-
-    # 2. 🛡️ 判定：如果沒有 ID，代表根本沒登入，或者是登入過期了
-    if not member_id:
-        # 💡 貼心小技巧：在彈回去之前，塞一個警告訊息給前端畫面
-        messages.warning(request, "請先登入聚福樓會員，即可開始線上點餐功能喔！")
-        
-        # 彈回你的登入頁面（請確保 'user_login' 名稱跟 urls.py 裡面對應的 name 一模一樣）
-        return redirect('user_login') 
-
-    # ==========================================================================
-    # 3. 🏁 通過防線：只有登入成功的人，才能走到下面這段「撈取美味佳餚」的程式碼
-    # ==========================================================================
+    member_name = None
     
-
-    # 撈出所有的菜
-    all_dishes = Dish.objects.all()
+    # 🚩 測試旗子 1：看看有沒有拿到 Session ID
+    print(f"=== [測試] 當前點餐頁面的 member_id 是: {member_id} ===")
     
-    # 順利渲染點餐網頁
-    return render(request, 'order_online.html', {'dishes': all_dishes})
+    if member_id:
+        try:
+            member = CustomMember.objects.get(id=member_id)
+            if member.last_name or member.first_name:
+                member_name = f"{member.last_name}{member.first_name}"
+            else:
+                member_name = member.username # 防呆：如果剛好沒填姓名，就拿帳號頂替
+        except CustomMember.DoesNotExist:
+            pass
+
+    # 確保這行有撈到菜單
+    dishes = Dish.objects.all() 
+
+    # 🌟 用最乾淨的方式一口氣打包，絕對不重複宣告 context
+    return render(request, 'order_online.html', {
+        'dishes': dishes,
+        'member_name': member_name,
+        'is_login': True if member_name else False
+    })
 # ========1. 加入購物車 ===========
 def add_to_cart(request):
     member = get_current_member(request)
@@ -198,18 +202,59 @@ def add_to_cart(request):
 
 #=========2.查看購物車============
 def view_cart(request):
-    member = get_current_member(request)
-    if not member:
+    # 🛡️ 核心未登入防禦：只要拿不到 session 裡的 member_id，立刻踢去登入
+    member_id = request.session.get('member_id')
+    if not member_id:
         return redirect('user_login')
     
-    cart_items = CartItem.objects.filter(member=member)
-    total_amount = sum(cart_item.item.price * cart_item.quantity for cart_item in cart_items)
+    # 🔍 已登入，順利拿著 member_id 去撈 CustomMember 的 username
+    member_name = None
+    try:
+        member = CustomMember.objects.get(id=member_id)
+        if member.last_name or member.first_name:
+            member_name = f"{member.last_name}{member.first_name}"
+        else:
+            member_name = member.username
+    except CustomMember.DoesNotExist:
+        pass
 
-    context= {
-        'cart_items':cart_items,
-        'total_amount':total_amount
+    # 🛒 撈出購物車項目並現場計算總金額
+    cart_items = CartItem.objects.filter(member_id=member_id)
+    for item in cart_items:
+        item.subtotal = item.item.price * item.quantity
+    total_amount = sum(cart_item.item.price * cart_item.quantity for cart_item in cart_items)
+    
+    context = {
+        'cart_items': cart_items,
+        'total_amount': total_amount,
+        'member_name': member_name,
+        'is_login': True if member_name else False
     }
-    return render(request,'view_cart.html',context)
+    return render(request, 'view_cart.html', context)
+def update_cart_quantity(request, item_id, action):
+    member_id = request.session.get('member_id')
+    if not member_id:
+        return redirect('user_login')
+        
+    # 🔍 抓出購物車裡對應的餐點項目
+    cart_item = get_object_or_404(CartItem, member_id=member_id, item_id=item_id)
+    
+    if action == 'increase':
+        # ➕ 按了加號，數量加 1
+        cart_item.quantity += 1
+        cart_item.save()
+    elif action == 'decrease':
+        # ➖ 按了減號，數量減 1
+        cart_item.quantity -= 1
+        
+        # 🌟【核心關鍵】：如果減完後數量變成 0（或小於0），直接從購物車徹底移除這道菜！
+        if cart_item.quantity <= 0:
+            cart_item.delete()
+        else:
+            cart_item.save()
+            
+    # 🔄 處理完畢後，流暢地重新整理購物車畫面
+    return redirect('view_cart')
 
 #=======3.建立訂單(結帳) =========
 def checkout(request):
@@ -222,7 +267,7 @@ def checkout(request):
         return redirect('view_cart')
     
     if request.method =='POST':
-        total_amount= sum(item.total_price()for item in cart_items)
+        total_amount = sum(item.item.price * item.quantity for item in cart_items)
         order=Order.objects.create(
             member=member,
             total_amount=total_amount,
@@ -244,6 +289,5 @@ def order_history(request):
     if not member:
         return redirect('user_login')
     orders = OrderItem.objects.filter(member=member).order_by('-created_at')
-
     return render(request,'order_history.html',{'orders':orders})
 

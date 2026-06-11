@@ -99,6 +99,7 @@ body {
 /* 圖片框設定 */
 .menu-img-wrapper {
     width: 100%;
+    max-width: 100%;
     height: 220px;
     overflow: hidden;
     background-color: #faf7f2;
@@ -108,7 +109,6 @@ body {
     position: relative;
     border-bottom: 1px solid #f9f5eb;
 }
-
 .menu-img-wrapper img {
     width: 100%;
     height: 100%;
@@ -214,4 +214,190 @@ body {
 
 .btn-submit:active {
     transform: scale(0.98); /* 按下去的微縮回饋感 */
+}
+
+/* ==========================================================================
+   ✨ 購物車專用排版與美化樣式 (抽離自 HTML)
+   ========================================================================== */
+
+.cart-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-family: sans-serif;
+}
+
+.back-to-menu {
+    margin-bottom: 20px;
+}
+
+.back-to-menu a {
+    color: #795548;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.back-to-menu a:hover {
+    color: #e67e22;
+}
+
+.cart-title {
+    color: #3e2723;
+    margin-bottom: 25px;
+}
+
+/* 購物車表格基礎設定 */
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    overflow: hidden;
+}
+
+.cart-table th {
+    padding: 15px 20px;
+    border-bottom: 2px solid #f1ebd9;
+    color: #795548;
+    text-align: left;
+    font-size: 15px;
+    background-color: #faf7f2;
+}
+
+.cart-table td {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    font-size: 15px;
+    color: #3e2723;
+}
+
+.cart-table .dish-name {
+    font-weight: bold;
+}
+
+.cart-table .dish-price {
+    color: #666;
+}
+
+.cart-table .dish-subtotal {
+    color: #e67e22;
+    font-weight: bold;
+}
+
+/* 對齊用通用類別 */
+.text-center { text-align: center !important; }
+.text-right  { text-align: right !important; }
+
+/* 🔴 移除按鈕美化 */
+.btn-remove {
+    color: #dc3545;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 13px;
+    padding: 6px 12px;
+    border: 1px solid #dc3545;
+    border-radius: 4px;
+    background-color: transparent;
+    transition: all 0.2s ease;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.btn-remove:hover {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+/* 總計與送出區域排版 */
+.cart-summary-area {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 15px;
+}
+
+.cart-total {
+    font-size: 16px;
+    font-weight: bold;
+    color: #3e2723;
+}
+
+.total-price-text {
+    color: #d32f2f;
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.checkout-form {
+    overflow: hidden;
+}
+
+/* 🟢 確認結帳按鈕 */
+.btn-checkout {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 3px 6px rgba(40, 167, 69, 0.2);
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-checkout:hover {
+    background-color: #218838;
+}
+
+.btn-checkout:active {
+    transform: scale(0.98);
+}
+
+/* 💨 空購物車箱子樣式 */
+.cart-empty-box {
+    text-align: center;
+    padding: 60px 20px;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #f1ebd9;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.cart-empty-box .empty-icon {
+    font-size: 50px;
+    margin-bottom: 20px;
+}
+
+.cart-empty-box h3 {
+    color: #3e2723;
+    margin-bottom: 10px;
+}
+
+.cart-empty-box p {
+    color: #795548;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+/* 前往點餐按鈕 */
+.btn-go-order {
+    background-color: #e67e22;
+    color: white;
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 15px;
+    display: inline-block;
+    transition: background 0.2s;
+    box-shadow: 0 3px 6px rgba(230, 126, 34, 0.2);
+}
+
+.btn-go-order:hover {
+    background-color: #d35400;
 }

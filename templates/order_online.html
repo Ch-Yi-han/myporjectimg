@@ -25,6 +25,16 @@
     <button class="tab-btn" data-filter="egg_and_tofu">蛋和豆腐</button>
 </nav>
 
+{% if messages %}
+<div class="messages" style="margin-bottom: 25px;">
+    {% for message in messages %}
+        <div style="background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 12px; border-radius: 6px; font-weight: bold; text-align: center;">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
 <section class="menu-grid">
     {% for dish in dishes %}
     <article class="menu-card {{ dish.category }}">
@@ -42,7 +52,9 @@
                 <span class="menu-price">${{ dish.price }}</span>
             </div>
             <p class="menu-desc">{{ dish.description }}</p>
-        </div> <form action="{% url 'add_to_cart' %}" method="POST">
+        </div>
+
+        <form action="{% url 'add_to_cart' %}" method="POST">
             {% csrf_token %}
             <input type="hidden" name="item_id" value="{{ dish.id }}">
             
@@ -74,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const filterValue = this.dataset.filter;
             cards.forEach(card => {
                 const isMatch = filterValue === 'all' || card.classList.contains(filterValue);
-                card.style.display = isMatch ? 'flex' : 'none'; // 💡 配合我們卡片的 flex 佈局，顯示時改用 'flex' 就不會跑版
+                card.style.display = isMatch ? 'flex' : 'none';
             });
         });
     });
