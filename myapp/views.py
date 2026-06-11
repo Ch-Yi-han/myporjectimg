@@ -6,7 +6,7 @@ from django.contrib import messages
 import random
 from django.core.mail import send_mail
 from .models import CustomMember,Dish,CartItem,Order,OrderItem
-
+from django.utils import timezone
 
 def index(request):
     member_name = request.session.get('member_name')
@@ -268,26 +268,26 @@ def checkout(request):
     
     if request.method =='POST':
         total_amount = sum(item.item.price * item.quantity for item in cart_items)
-        order=Order.objects.create(
+        order = Order.objects.create(
             member=member,
             total_amount=total_amount,
-            status ='pending'
+            status='pending', # 或是你原本設定的狀態欄位
+            created_at=timezone.now() # 🌟 核心修正：把現在時間塞進去！
         )
-
-        for cart_item in cart_items:
-            Order.objects.create(
-                order=order,
-                item_name=cart_item.item,
-                price=cart_item.item.price,
-                quantity=cart_item.quantity
-            )
+        for item in cart_items:
+            OrderItem.objects.create(  # 🌟 改成你的訂單明細/項目模型！
+            order=order,            # 連接剛剛建立好的那筆主訂單
+            item_name=item.item.name,
+            price=item.item.price,
+            quantity=item.quantity
+        )
         cart_items.delete()
-        return redirect('order_detail',order=order.id)
+        return redirect('order_history')
 
 def order_history(request):
     member = get_current_member(request)
     if not member:
         return redirect('user_login')
-    orders = OrderItem.objects.filter(member=member).order_by('-created_at')
+    orders = Order.objects.filter(member=member).order_by('-created_at')
     return render(request,'order_history.html',{'orders':orders})
 
