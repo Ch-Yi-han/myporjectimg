@@ -7,6 +7,15 @@ import random
 from django.core.mail import send_mail
 from .models import CustomMember,Dish,CartItem,Order,OrderItem
 from django.utils import timezone
+import time
+from datetime import datetime
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+# 引入綠界 SDK 相關套件（此處為示範邏輯）
+import hashlib
+import urllib.parse
+from ecpay_payment_sdk import ECPayPaymentSdk
+from django.shortcuts import get_object_or_404, redirect
 
 def index(request):
     member_name = request.session.get('member_name')
@@ -291,3 +300,149 @@ def order_history(request):
     orders = Order.objects.filter(member=member).order_by('-created_at')
     return render(request,'order_history.html',{'orders':orders})
 
+def delete_order(request, order_id):
+    # 🛡️ 安全防禦 1：沒登入不能亂刪
+    member_id = request.session.get('member_id')
+    if not member_id:
+        return redirect('user_login')
+        
+    # 🔍 抓出這筆訂單（同時確保這筆訂單真的是這個會員的）
+    order = get_object_or_404(Order, id=order_id, member_id=member_id)
+    
+    # 🛡️ 安全防禦 2：只有「未付款」才能刪除！如果已經付款，不給刪！
+    # 💡 請對照你資料庫存未付款的字串，如果是 'pending' 或 '未付款'，請改成對應的字串
+    if order.status == '未付款' or order.status == 'pending':
+        # 💥 瀟灑刪除訂單！（Django 會自動連帶把跟這筆訂單綁在一起的 OrderItem 明細一起刪乾淨）
+        order.delete()
+        messages.success(request, "訂單已成功取消並刪除！")
+    else:
+        messages.error(request, "該訂單已進入製作或已付款，無法取消！")
+        
+    # 🔄 刪除完畢後，流暢地回到歷史訂單頁面
+    return redirect('order_history')
+
+
+def go_to_pay(request, order_id):
+    member_id = request.session.get('member_id')
+    if not member_id:
+        return redirect('user_login')
+        
+    order = get_object_or_404(Order, id=order_id, member_id=member_id)
+    
+    # 1. 🎯 使用剛才截圖中，官方正牌的 V5 測試環境特店三件套初始化！
+    ecpay_payment_sdk = ECPayPaymentSdk(
+        MerchantID='3002607',
+        HashKey='pwFHCqoQZGmho4w6',
+        HashIV='EkRm7iFT261dpevs'
+    )
+    
+    YOUR_DOMAIN = "http://192.168.1.112:8080" 
+    
+    # 2. 抓取同一個時間物件，確保訂單號和欄位時間絕對同步
+    current_time = datetime.now()
+    trade_no = current_time.strftime("JFL%Y%m%d%H%M%S")
+    trade_date = current_time.strftime('%Y/%m/%d %H:%M:%S')
+    
+    # 3. 準備最純淨的參數給官方 SDK 大腦
+    # 注意：TotalAmount 必須是 int（整數），因為 SDK 內部會進行型態檢查！
+    order.merchant_trade_no = trade_no
+    order.save() # 記得一定要 save() 存進資料庫！
+    client_parameters = {
+        'MerchantTradeNo': trade_no, 
+        'MerchantTradeDate': trade_date,
+        'PaymentType': 'aio',
+        'TotalAmount': int(order.total_amount), 
+        'TradeDesc': 'JufuLouShopOrderDescription',
+        'ItemName': 'JufuLouDeliciousMeal',
+        'ReturnURL': f'{YOUR_DOMAIN}/ecpay_callback/', 
+        'ChoosePayment': 'Credit', 
+        'EncryptType': 1, # 1 代表用 SHA256 加密
+        'OrderResultURL': f'{YOUR_DOMAIN}/ecpay_return/',
+    }
+    
+    try:
+        # 4. ⭕ 讓官方 SDK 自己去跑內部邏輯！
+        # 它會自動補上 MerchantID，並且用它內建的完整公式算出 100% 正確的 CheckMacValue
+        final_params = ecpay_payment_sdk.create_order(client_parameters)
+        
+        action_url = 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5'
+        
+        # 5. 讓 SDK 噴出自動提交的 HTML 表單
+        html_form = ecpay_payment_sdk.gen_html_post_form(action_url, final_params)
+        return HttpResponse(html_form)
+        
+    except Exception as e:
+        return HttpResponse(f'建立訂單失敗: {e}')
+@csrf_exempt # 🚨 綠界是從外部發 POST 過來，必須關閉 CSRF 保護，否則會被 Django 擋掉！
+def ecpay_callback(request):
+    if request.method == 'POST':
+        # 綠界會把所有交易結果塞在 request.POST 裡面
+        ecpay_data = request.POST.dict()
+        
+        # 🟢 綠界官方規範：當 RtnCode == '1' 時，代表消費者真的付款成功了！
+        rtn_code = ecpay_data.get('RtnCode')
+        merchant_trade_no = ecpay_data.get('MerchantTradeNo') # 例如 JFL20260613XXXX
+        
+        if rtn_code == '1':
+            try:
+                # 1. 解析出我們當初在訂單編號裡埋的真實資料庫 Order ID
+                # 我們當初的格式是：f"JFL{order.id}x{時間戳記}" 或者時間流水號
+                # 如果你是用時間流水號，通常會在建立訂單時，把這個 trade_no 存進資料庫的某個欄位（例如 status_code 或備用欄位）
+                # 這裡假設你的 Order Model 有一個欄位叫 `merchant_trade_no` 用來記錄這次發給綠界的單號：
+                order = Order.objects.get(merchant_trade_no=merchant_trade_no)
+                
+                # 2. 🟢 成功付款！將狀態改為「準備中」
+                order.status = 'preparing' 
+                order.is_paid = True # 標記已付款
+                order.save()
+                
+                # 3. 告訴綠界：我們收到囉！不准再發重試訊號過來（這行是綠界官方規定的標準回應）
+                return HttpResponse('1|OK')
+            except Order.DoesNotExist:
+                return HttpResponse('0|Order NotFound')
+                
+    return HttpResponse('0|Fail')
+
+@csrf_exempt
+def ecpay_return(request):
+    if request.method == 'POST':
+        ecpay_data = request.POST.dict()
+        rtn_code = ecpay_data.get('RtnCode')
+        merchant_trade_no = ecpay_data.get('MerchantTradeNo')
+        
+        # 為了保險，這裡跳轉回來時我們再撈一次訂單改狀態，防止本機端背景收不到訊號
+        if rtn_code == '1': 
+            try:
+                order = Order.objects.get(merchant_trade_no=merchant_trade_no)
+                order.status = 'preparing'  # 改為廚房準備中
+                order.is_paid = True        # 標記已付款
+                order.save()
+            except Order.DoesNotExist:
+                pass
+                
+    # 🎯【就是加在這裡！】處理完綠界的 POST 資料後，一腳把顧客踢去歷史點餐紀錄頁面！
+    # ⚠️ 注意：請把 'order_history' 換成你專案中顧客看歷史紀錄那條路由的 name
+    # 如果你不知道叫什麼，看你下一張圖的網址如果是 /order_history/ 或是 /history/，通常名字就叫 'order_history' 
+    return redirect('order_history')
+
+def kitchen_dashboard(request):
+    # 這裡可以加上管理員權限檢查，暫時先開放給所有人測試
+    
+    # 撈出所有已經付款、正在準備中，或是今天剛完成的訂單
+    preparing_orders = Order.objects.filter(status='preparing').order_by('created_at')
+    completed_orders = Order.objects.filter(status='completed').order_by('-id')[:10] # 只顯示最新10筆完成的
+    
+    context = {
+        'preparing_orders': preparing_orders,
+        'completed_orders': completed_orders,
+    }
+    return render(request, 'kitchen_dashboard.html', context)
+
+# 🟢 點擊按鈕切換狀態的動作
+def complete_order(request, order_id):
+    # 找到訂單，並把狀態從「準備中」改成「準備完成」
+    order = get_object_or_404(Order, id=order_id)
+    if order.status == 'preparing':
+        order.status = 'completed'
+        order.save()
+    return redirect('kitchen_dashboard')

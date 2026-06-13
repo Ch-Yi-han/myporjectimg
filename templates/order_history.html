@@ -5,14 +5,13 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/order_history.css' %}">
-
 {% endblock %}
 
 {% block content %}
 <div class="order-container">
     <div class="top-bar">
-        <h2 style="color: #2c3e50; margin: 0;">📜 您的歷史點餐紀錄</h2>
-        <a href="{% url 'order_online' %}" style="background: #e67e22; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;">繼續點餐 ➔</a>
+        <h2 class="page-title">📜 您的歷史點餐紀錄</h2>
+        <a href="{% url 'order_online' %}" class="btn-continue-order">繼續點餐 ➔</a>
     </div>
 
     {% if orders %}
@@ -20,8 +19,8 @@
         <details>
             <summary>
                 <div class="order-summary-flex">
-                    <div>
-                        <span style="color: #2c3e50;">訂單編號：#{{ order.id }}</span>
+                    <div class="order-left-meta">
+                        <span class="order-id">訂單編號：#{{ order.id }}</span>
                         <span class="order-meta">{{ order.created_at|date:"Y-m-d H:i" }}</span>
                     </div>
                     <div class="order-right">
@@ -39,30 +38,37 @@
             </summary>
             
             <div class="order-details-content">
-                <h4 style="margin-top: 0; color: #7f8c8d; border-bottom: 1px solid #eee; padding-bottom: 8px;">美味明細</h4>
+                <h4 class="section-title">美味明細</h4>
+                
                 <ul class="item-list">
                     {% for item in order.items.all %}
                     <li class="item-row">
-                        <div>
-                            <span>{{ item.item_name }}</span> 
-                            <span style="color: #95a5a6; margin-left: 10px; font-size: 13px;">x {{ item.quantity }}份</span>
+                        <div class="item-info">
+                            <span class="item-name">{{ item.item_name }}</span> 
+                            <span class="item-qty">x {{ item.quantity }}份</span>
                         </div>
-                        <strong>${{ item.price }}</strong>
+                        <strong class="item-price">${{ item.price }}</strong>
                     </li>
                     {% endfor %}
                 </ul>
                 
-                {% if order.status == 'pending' %}
-                <div style="text-align: right;">
-                    <a href="#" class="btn-pay">前往線上刷卡付款</a>
+                <div class="order-actions">
+                    {% if order.status == '未付款' or order.status == 'pending' %}
+                        <a href="{% url 'delete_order' order.id %}" 
+                           onclick="return confirm('您確定要取消並刪除這筆訂單嗎？');" 
+                           class="btn-delete-order">
+                           取消訂單 ❌
+                        </a>
+                    {% endif %}
+
+                    <a href="{% url 'go_to_pay' order.id %}" class="btn-pay">前往線上刷卡付款</a>
                 </div>
-                {% endif %}
             </div>
         </details>
         {% endfor %}
     {% else %}
-        <div style="text-align: center; padding: 60px 20px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.03); color: #7f8c8d;">
-            <p style="font-size: 18px; margin: 0;">您在聚福樓還沒有任何點餐紀錄喔！</p>
+        <div class="empty-order-state">
+            <p>您在聚福樓還沒有任何點餐紀錄喔！</p>
         </div>
     {% endif %}
 </div>

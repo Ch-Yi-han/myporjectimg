@@ -38,6 +38,13 @@ urlpatterns = [
     path('update_cart_quantity/<int:item_id>/<str:action>/', views.update_cart_quantity, name='update_cart_quantity'),
     path('add_to_cart/', views.add_to_cart, name='add_to_cart'),
     path('checkout/', views.checkout, name='checkout'),
+    path('delete_order/<int:order_id>/', views.delete_order, name='delete_order'),
+    path('go_to_pay/<int:order_id>/', views.go_to_pay, name='go_to_pay'),
+    path('ecpay_callback/', views.ecpay_callback, name='ecpay_callback'),
+    path('kitchen/', views.kitchen_dashboard, name='kitchen_dashboard'),
+    path('kitchen/complete/<int:order_id>/', views.complete_order, name='complete_order'),
+    path('ecpay_return/', views.ecpay_return, name='ecpay_return'),
 ]
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
