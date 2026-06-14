@@ -1,0 +1,67 @@
+/* 聚福樓 廚房出餐控制台 專屬樣式表 */
+
+/* 確保左右兩箱高度完全對齊，並留有舒服的呼吸空間 */
+.dashboard-container {
+    padding: 24px;
+}
+
+.dashboard-title {
+    margin-bottom: 24px;
+    text-align: center;
+    font-weight: bold;
+    color: #212529;
+}
+
+/* 核心：強迫左右兩邊的外框高度 100% 同步 */
+.dashboard-card-wrapper {
+    height: 100%;
+}
+
+.dashboard-card-header {
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
+/* 訂單獨立小卡片設計 */
+.order-sub-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #dee2e6 !important;
+    margin-bottom: 16px;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.order-sub-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+}
+
+/* 點餐明細小灰色區塊 */
+.details-box {
+    padding: 12px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    margin-top: 12px;
+    font-size: 1rem;
+}
+
+.details-box-warning {
+    border: 1px solid #fff3cd;
+}
+
+.details-box-success {
+    border: 1px solid #d1e7dd;
+}
+
+/* 調整細項清單間距，劃掉預設點點 */
+.details-list {
+    list-style: none;
+    padding-left: 12px !important;
+    margin-bottom: 0;
+}
+
+.details-list li {
+    padding: 4px 0;
+    color: #212529;
+}

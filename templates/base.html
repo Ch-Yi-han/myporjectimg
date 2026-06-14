@@ -17,16 +17,16 @@
                 <span class="info-item"><i class="fas fa-map-marker-alt icon-gold"></i> 店址：桃園市中壢區六福街2號</span>
             </div>
             <div class="member-links">
-                {% if member_name %}
+                {% if request.session.member_id %}
                     <span class="nav-link-item member-name-nav">
-                        <i class="fas fa-user-circle icon-gold"></i> {{ member_name }} 您好
+                        <i class="fas fa-user-circle icon-gold"></i> {{ request.session.member_name }} 您好
                     </span>
                     <a href="{% url 'logout' %}" class="nav-link-item"><i class="fas fa-sign-out-alt"></i> 登出</a>
                 {% else %}
                     <a href="{% url 'user_login' %}" class="nav-link-item"><i class="fas fa-user"></i> 會員登入</a>
                 {% endif %}
                 
-                <a href="{% url "order_online" %}" class="nav-link-item"><i class="fas fa-shopping-bag"></i> 線上點餐</a>
+                <a href="{% url 'order_online'%}"  class="nav-link-item"><i class="fas fa-shopping-bag"></i> 線上點餐</a>
             </div>
         </div>
     </nav>

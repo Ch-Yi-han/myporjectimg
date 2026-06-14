@@ -16,55 +16,52 @@
 
     {% if orders %}
         {% for order in orders %}
-        <details>
-            <summary>
-                <div class="order-summary-flex">
-                    <div class="order-left-meta">
-                        <span class="order-id">訂單編號：#{{ order.id }}</span>
-                        <span class="order-meta">{{ order.created_at|date:"Y-m-d H:i" }}</span>
-                    </div>
-                    <div class="order-right">
-                        <span class="order-total">${{ order.total_amount }}</span>
-                        
-                        {% if order.status == 'pending' %}
-                            <span class="badge bg-warning">未付款</span>
-                        {% elif order.status == 'paid' %}
-                            <span class="badge bg-info">準備中</span>
-                        {% elif order.status == 'completed' %}
-                            <span class="badge bg-success">已完成</span>
-                        {% endif %}
-                    </div>
+        <div class="order-card">
+            <div class="order-header">
+                <div class="order-info-left">
+                    <h5 class="order-id">訂單編號：#{{ order.id }}</h5>
+                    <small class="order-date">{{ order.created_at|date:"Y-m-d H:i" }}</small>
                 </div>
-            </summary>
-            
-            <div class="order-details-content">
-                <h4 class="section-title">美味明細</h4>
                 
-                <ul class="item-list">
-                    {% for item in order.items.all %}
-                    <li class="item-row">
-                        <div class="item-info">
-                            <span class="item-name">{{ item.item_name }}</span> 
-                            <span class="item-qty">x {{ item.quantity }}份</span>
-                        </div>
-                        <strong class="item-price">${{ item.price }}</strong>
-                    </li>
-                    {% endfor %}
-                </ul>
-                
-                <div class="order-actions">
-                    {% if order.status == '未付款' or order.status == 'pending' %}
-                        <a href="{% url 'delete_order' order.id %}" 
-                           onclick="return confirm('您確定要取消並刪除這筆訂單嗎？');" 
-                           class="btn-delete-order">
-                           取消訂單 ❌
-                        </a>
+                <div class="order-info-right">
+                    <span class="order-price">${{ order.total_amount }}</span>
+                    
+                    {% if order.status == 'paid' %}
+                        <span class="status-tag preparing">🔥 準備中</span>
+                    {% elif order.status == 'completed' %}
+                        <span class="status-tag completed">✅ 已完成</span>
+                    {% else %}
+                        <span class="status-tag unpaid">❌ 未付款</span>
                     {% endif %}
-
-                    <a href="{% url 'go_to_pay' order.id %}" class="btn-pay">前往線上刷卡付款</a>
                 </div>
             </div>
-        </details>
+
+            <hr>
+
+            <div class="order-details">
+                <h6 class="details-title">美味明細</h6>
+                <ul class="item-list">
+                    {% for item in order.items.all %}
+                        <li class="item-row">
+                            <span>🍳 {{ item.item_name }} x {{ item.quantity }}份</span>
+                            <span class="item-price">${{ item.price }}</span>
+                        </li>
+                    {% empty %}
+                        <li class="empty-items">（無菜品明細資料）</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="order-actions">
+                {% if order.status != 'paid' and order.status != 'completed' %}
+                    <a href="{% url 'go_to_pay' order.id %}" class="btn-pay">
+                        前往線上刷卡付款
+                    </a>
+                {% else %}
+                    <span class="thanks-text">✨ 感謝您對聚福樓的支持，餐點製做中！</span>
+                {% endif %}
+            </div>
+        </div>
         {% endfor %}
     {% else %}
         <div class="empty-order-state">
