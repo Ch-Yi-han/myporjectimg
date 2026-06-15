@@ -51,7 +51,15 @@
                     {% endfor %}
                 </ul>
             </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label text-secondary">取餐日期</label>
+                <input type="date" name="pickup_date" id="pickup_date" class="form-control" required>
+            </div>
 
+            <div class="col-md-6 mb-3">
+                <label class="form-label text-secondary">取餐時間</label>
+                <input type="time" name="pickup_hour" id="pickup_hour" class="form-control" required>
+            </div>
             <div class="order-actions">
                 {% if order.status != 'paid' and order.status != 'completed' %}
                     <a href="{% url 'go_to_pay' order.id %}" class="btn-pay">
@@ -69,4 +77,34 @@
         </div>
     {% endif %}
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('pickup_date').setAttribute('min', today);
+
+    // 🎯 監聽表單送出事件（假設你的結帳表單 id 或 class 叫 #checkout-form）
+    const checkoutForm = document.querySelector('form'); // 換成你實際的表單標籤
+    
+    checkoutForm.addEventListener('submit', function(e) {
+        const timeInput = document.getElementById('pickup_hour').value; // 拿到例如 "09:30" 或 "22:00"
+        
+        if (timeInput) {
+            // 轉換成純數字比對
+            const [hour, minute] = timeInput.split(':').map(Number);
+            const totalMinutes = hour * 60 + minute;
+            
+            const minMinutes = 11 * 60; // 11:00 -> 660 分鐘
+            const maxMinutes = 21 * 60; // 21:00 -> 1260 分鐘
+            
+            if (totalMinutes < minMinutes || totalMinutes > maxMinutes) {
+                e.preventDefault(); // 🛑 核心大絕：死死攔截、不准送出表單！
+                
+                // 跳出警告（可以用你之前裝的 SweetAlert2 或是原生 alert）
+                alert('抱歉！聚福樓的營業取餐時間為 11:00 ~ 21:00，請重新選擇時間喔！');
+                return false;
+            }
+        }
+    });
+});
+</script>
 {% endblock %}

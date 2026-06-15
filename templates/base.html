@@ -14,7 +14,7 @@
         <div class="nav-container">
             <div class="contact-info">
                 <span class="info-item"><i class="fas fa-phone-alt icon-gold"></i> 訂位專線：02-123-4567</span>
-                <span class="info-item"><i class="fas fa-map-marker-alt icon-gold"></i> 店址：桃園市中壢區六福街2號</span>
+                <span class="info-item"><i class="fas fa-map-marker-alt icon-gold" ></i> 店址：桃園市中壢區六福街2號</span>
             </div>
             <div class="member-links">
                 {% if request.session.member_id %}
@@ -42,8 +42,8 @@
                     <li><a href="{% url 'index' %}"><i class="fas fa-home"></i> 首頁</a></li>
                     <li><a href="{% url 'menu' %}"><i class="fas fa-utensils"></i> 精選菜單</a></li>
                     <li><a href="#"><i class="fas fa-calendar-check"></i> 線上訂位</a></li>
-                    <li><a href="#"><i class="fas fa-history"></i> 品牌故事</a></li>
-                    <li><a href="#"><i class="fas fa-envelope"></i> 聯絡我們</a></li>
+                    <li><a href="{% url "brand_story" %}"><i class="fas fa-history"></i> 品牌故事</a></li>
+                    <li><a href="{% url "contact_us" %}"><i class="fas fa-envelope"></i> 聯絡我們</a></li>
                 </ul>
             </nav>
         </div>

@@ -54,7 +54,7 @@
             <p class="menu-desc">{{ dish.description }}</p>
         </div>
 
-        <form action="{% url 'add_to_cart' %}" method="POST">
+        <form class="add-to-cart-form" data-url="{% url 'add_to_cart' %}">
             {% csrf_token %}
             <input type="hidden" name="item_id" value="{{ dish.id }}">
             
@@ -92,4 +92,59 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 監聽網頁上所有加入購物車的表單
+    const forms = document.querySelectorAll('.add-to-cart-form');
+    
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // 🛑 核心大絕：阻止網頁重新整理與跳轉！
+            
+            const formData = new FormData(this);
+            const actionUrl = this.getAttribute('data-url');
+            
+            // 使用 AJAX 非同步發送請求給後台
+            fetch(actionUrl, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest' // 讓 Django 知道這是 AJAX
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // 🎉 成功加入：跳出超精美的不跳轉動態小提示
+                    Swal.fire({
+                        icon: 'success',
+                        title: '已加入購物車！',
+                        text: `成功將餐點加入您的購物清單`,
+                        showConfirmButton: false,
+                        timer: 1500, // 1.5 秒後自動消失
+                        toast: true, // 變成右上角小通知，不阻擋客人繼續點餐
+                        position: 'top-end'
+                    });
+                    
+                    // 💡 如果你右上角有購物車數量的標籤（例如叫 #cart-count），可以在這裡同步更新它：
+                    if(data.cart_count) {
+                        document.getElementById('cart-count').innerText = data.cart_count;
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '加入失敗',
+                        text: data.message || '請稍後再試。'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+});
+</script>
+
 {% endblock %}

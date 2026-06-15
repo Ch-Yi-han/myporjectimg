@@ -2,7 +2,7 @@
 from django.db import models
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
-
+from django.utils import timezone
 # Create your models here.
 class Dish(models.Model):
     name = models.CharField(max_length=100)
@@ -88,6 +88,8 @@ class Order(models.Model):
     status = models.CharField(max_length=20,choices=STATUS_CHOICES,default='pending',verbose_name='頂單狀態')
     created_at = models.DateTimeField(auto_created=True,verbose_name='訂單時間')
     merchant_trade_no = models.CharField(max_length=50,unique=True,blank=True,null=True)
+    pickup_time = models.DateTimeField(blank=False, null=False, default=timezone.now,verbose_name="預約取餐時間")
+    created_at = models.DateTimeField(auto_now_add=True)
 
 class OrderItem(models.Model):
     order =models.ForeignKey(Order,on_delete=models.CASCADE,related_name='items',verbose_name='訂單')

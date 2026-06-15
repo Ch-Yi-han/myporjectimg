@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %}品牌故事{% endblock  %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static "css/brand_story.css" %}">
+{% endblock  %}
+{% block content %}
+<section class="brand-story-section">
+  <div class="story-container">
+    <div class="story-content">
+      <span class="story-subtitle">BRAND STORY</span>
+      <h2 class="story-title">匠心傳承，舌尖上的宮廷千百風味</h2>
+      <p class="story-highlight">
+        一代廚藝的堅持，將昔日宮廷御膳，化為今日尋常百姓家的溫暖聚會。
+      </p>
+      <div class="story-text">
+        <p>在「聚福樓」，每一道佳餚都是一場跨越時空的味蕾旅行。我們的故事始於對正宗中式料理的極致追求。主廚承襲了古法宮廷菜餚的精髓，從火侯的精準掌控、刀工的細膩雕琢，到對每一樣在地食材的嚴格篩選，始終堅持「廚藝即心意」的職人精神。</p>
+        <p>「聚」是團圓的福氣，「樓」是品味的傳承。不論是香麻入味的口水雞、金黃濃郁的金沙蝦球，還是慢火細燉的剝皮辣椒雞湯，我們將繁複的宮廷工藝，融入現代人喜愛的家常滋味。</p>
+        <p>聚福樓不僅是一家餐廳，更是一個讓家人、好友齊聚一堂，在裊裊熱氣與歡笑聲中，共同創造美好記憶的地方。誠摯邀請您入座，與我們一同細品這份蘊含千百風味的堅持。</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock  %}

@@ -7,13 +7,11 @@ import random
 from django.core.mail import send_mail
 from .models import CustomMember,Dish,CartItem,Order,OrderItem
 from django.utils import timezone
-import time
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 # 引入綠界 SDK 相關套件（此處為示範邏輯）
-import hashlib
-import urllib.parse
+
 from ecpay_payment_sdk import ECPayPaymentSdk
 from django.shortcuts import get_object_or_404, redirect
 
@@ -191,7 +189,9 @@ def order_online(request):
 def add_to_cart(request):
     member = get_current_member(request)
     if not member:
-        return redirect('user_login')
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'status': 'error', 'message': '請先登入會員再開始點餐喔！'})
+        return redirect('login')
 
     if request.method == 'POST':
         item_id = request.POST.get('item_id')
@@ -206,6 +206,21 @@ def add_to_cart(request):
         if not created:
             cart_item.quantity +=quantity
             cart_item.save()
+        # 3. 🎯 核心修改：計算目前該會員購物車裡的「總餐點件數」
+        # 這樣右上角的購物車數量圖示（如果有做的話）才能即時更新
+        from django.db.models import Sum
+        total_items = CartItem.objects.filter(member_id=member).aggregate(Sum('quantity'))['quantity__sum'] or 0
+        
+        # 4. 🎯 核心大絕：判斷如果是前端 JavaScript (AJAX) 發過來的請求
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({
+                'status': 'success',
+                'message': f'成功將 {item.name} 加入購物車！',
+                'cart_count': total_items # 傳回最新總數量
+            })
+            
+        # 保險：如果是不支援 JavaScript 的老舊瀏覽器，維持原本的整頁跳轉
+        return redirect('order_online')
 
         return redirect('order_online')
 
@@ -240,6 +255,16 @@ def view_cart(request):
         'is_login': True if member_name else False
     }
     return render(request, 'view_cart.html', context)
+def create_order(request):
+    if request.method == "POST":
+        pickup_hour_str = request.POST.get('pickup_hour') # 例如 "10:24"
+        
+        if pickup_hour_str:
+            hour = int(pickup_hour_str.split(':')[0])
+            # 🎯 檢查：如果小於 11 點或大於 21 點
+            if hour < 11 or hour > 21:
+                messages.error(request, "超出營業時間，取餐時間請選擇 11:00 ~ 21:00 之間！")
+                return redirect('order_cart_page')
 def update_cart_quantity(request, item_id, action):
     member_id = request.session.get('member_id')
     if not member_id:
@@ -339,7 +364,7 @@ def go_to_pay(request, order_id):
         HashIV='EkRm7iFT261dpevs'
     )
     
-    YOUR_DOMAIN = "http://192.168.1.112:8080" 
+    YOUR_DOMAIN = "http://192.168.59.2:8080" 
     
     # 2. 抓取同一個時間物件，確保訂單號和欄位時間絕對同步
     current_time = datetime.now()
@@ -417,7 +442,8 @@ def ecpay_return(request):
         if rtn_code == '1': 
             try:
                 order = Order.objects.get(merchant_trade_no=merchant_trade_no)
-                order.status = 'preparing'  # 改為廚房準備中
+                
+                order.status = 'paid'
                 order.is_paid = True        # 標記已付款
                 order.save()
             except Order.DoesNotExist:
@@ -430,7 +456,7 @@ def ecpay_return(request):
 
 def kitchen_dashboard(request):
     # 換回最原始、可執行的 items
-    preparing_orders = Order.objects.filter(status='preparing').prefetch_related('items').order_by('created_at')
+    preparing_orders = Order.objects.filter(status='paid').prefetch_related('items').order_by('created_at')
     completed_orders = Order.objects.filter(status='completed').prefetch_related('items').order_by('-id')[:10]
     
     context = {
@@ -442,7 +468,11 @@ def kitchen_dashboard(request):
 def complete_order(request, order_id):
     # 找到訂單，並把狀態從「準備中」改成「準備完成」
     order = get_object_or_404(Order, id=order_id)
-    if order.status == 'preparing':
+    if order.status == 'paid':
         order.status = 'completed'
         order.save()
     return redirect('kitchen_dashboard')
+def brand_story(request):
+    return render(request,'brand_story.html')
+def contact_us (request):
+    return render(request,'contact_us.html')

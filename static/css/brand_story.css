@@ -1,0 +1,115 @@
+/* 全螢幕背景故事區塊 */
+.brand-story-section {
+  position: relative;
+  /* 💡 關鍵：將圖片設為背景，並採用 cover 讓它填滿不變形 */
+  background-image: url('../images/broger.png'); /* 請根據您的 static 資料夾結構調整路徑，通常 css 在 static/css，圖片在 static/images，所以用 ../ 往上一層 */
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* 💡 滾動時背景固定的高級視差效果，若不喜歡可刪除這行 */
+  
+  color: #ffffff;
+  padding: 100px 20px;
+  font-family: "Microsoft JhengHei", sans-serif;
+  
+  /* 填滿螢幕，徹底消滅白條 */
+  min-height: calc(100vh - 160px); 
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* 深色半透明遮罩：防止背景太亮導致文字看不清 */
+.story-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.75); /* 0.75 代表 75% 的黑，可依喜好微調 */
+  z-index: 1;
+}
+
+/* 內容包裝盒 */
+.story-container {
+  max-width: 100%; /* 💡 將文字寬度限縮在中間，閱讀起來更像高檔雜誌 */
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  position: relative;
+  z-index: 2; /* 確保文字在遮罩之上 */
+  text-align: left; /* 💡 文字置中排版，非常適合滿版背景的風格 */
+  justify-content: flex-start;
+  padding-left: 20%;
+  box-sizing: border-box;
+}
+
+.story-content {
+  max-width: 600px; /* 💡 限制文字最多只佔 600px 寬，完美待在左側暗處 */
+  width: 100%;
+}
+
+/* 文字細節調整 */
+.story-subtitle {
+  color: #cca43b;
+  font-size: 14px;
+  letter-spacing: 3px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 15px;
+}
+
+.story-title {
+  color: #ffffff;
+  font-size: 36px;
+  margin-bottom: 30px;
+  font-weight: 700;
+  display: inline-block;
+}
+
+/* 標題下方的紅色裝飾線（從置中改為靠左） */
+.story-title::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 3px;
+  background-color: #b22222;
+  margin: 15px 0 0 0; /* 💡 關鍵：左右 margin 改為 0，讓紅色線條靠左對齊 */
+}
+
+.story-highlight {
+  color: #f0e6d2;
+  font-size: 20px;
+  line-height: 1.8;
+  font-weight: 600;
+  margin-bottom: 35px;
+  border-left: 4px solid #cca43b; /* 💡 小巧思：左側加上金色裝飾線，點綴靠左排版 */
+  padding-left: 15px;             /* 給金色線條一點呼吸空間 */
+}
+
+.story-text p {
+  color: #e0e0e0;
+  font-size: 16px;
+  line-height: 2;
+  margin-bottom: 20px;
+  text-align: justify; /* 💡 改為左右對齊，文字邊緣會更整齊漂亮 */
+  letter-spacing: 1px;
+}
+
+/* 響應式設計：手機版維持置中比較好讀 */
+@media (max-width: 768px) {
+  .story-container {
+    text-align: center;
+    justify-content: center;
+  }
+  .story-title::after {
+    margin: 15px auto 0 auto;
+  }
+  .story-highlight {
+    border-left: none;
+    padding-left: 0;
+  }
+  .story-text p {
+    text-align: center;
+  }
+}
