@@ -122,6 +122,7 @@ def verify_code(request):
             return redirect('reset_password')
         else:
             messages.error(request,"驗證碼錯誤，請重新輸入")
+            return redirect('verify_code')
         
     
     return render(request,'verify_code.html')
@@ -145,8 +146,8 @@ def reset_password(request):
 
         request.session.flush()
         messages.success(request,"密碼修改成功")
-        return redirect('login')
-
+        return redirect('user_login')
+    return render(request, 'reset_password.html')
 
 def get_current_member(request):
     member_id= request.session.get('member_id')
@@ -254,17 +255,26 @@ def view_cart(request):
         'member_name': member_name,
         'is_login': True if member_name else False
     }
+    START_HOUR = 11
+    END_HOUR = 21
+    TIME_INTERVAL = 15
+    
+    time_choices = []
+    for hour in range(START_HOUR, END_HOUR + 1):
+        for minute in range(0, 60, TIME_INTERVAL):
+            # 如果是最後一個小時（21 點），通常只需要 21:00 即可，後面的 21:15... 略過
+            if hour == END_HOUR and minute > 0:
+                continue
+            time_str = f"{hour:02d}:{minute:02d}"
+            time_choices.append(time_str)
+
+    context = {
+        'cart_items': cart_items,
+        'total_amount': total_amount,
+        'time_choices': time_choices, # 🔥 將合併好的名冊送往前端
+    }
     return render(request, 'view_cart.html', context)
-def create_order(request):
-    if request.method == "POST":
-        pickup_hour_str = request.POST.get('pickup_hour') # 例如 "10:24"
-        
-        if pickup_hour_str:
-            hour = int(pickup_hour_str.split(':')[0])
-            # 🎯 檢查：如果小於 11 點或大於 21 點
-            if hour < 11 or hour > 21:
-                messages.error(request, "超出營業時間，取餐時間請選擇 11:00 ~ 21:00 之間！")
-                return redirect('order_cart_page')
+
 def update_cart_quantity(request, item_id, action):
     member_id = request.session.get('member_id')
     if not member_id:
@@ -293,6 +303,7 @@ def update_cart_quantity(request, item_id, action):
 #=======3.建立訂單(結帳) =========
 def checkout(request):
     member=get_current_member(request)
+    
     if not member:
         return redirect('user_login')
     
@@ -300,13 +311,23 @@ def checkout(request):
     if not cart_items.exists():
         return redirect('view_cart')
     
-    if request.method =='POST':
+    if request.method == 'POST':
+        pickup_date_str = request.POST.get('pickup_date')         # 例如 "2026-06-16"
+        pickup_time_slot = request.POST.get('pickup_time_slot')   # 例如 "18:30"
+        
+        pickup_datetime = timezone.now()
         total_amount = sum(item.item.price * item.quantity for item in cart_items)
+        
+        # 🎯 組合標準字串，直接把日期和時間槽串在一起
+        if pickup_date_str and pickup_time_slot:
+            combined_str = f"{pickup_date_str} {pickup_time_slot}" # 完美得到 "2026-06-16 18:30"
+            naive_datetime = datetime.strptime(combined_str, "%Y-%m-%d %H:%M")
+            pickup_datetime = timezone.make_aware(naive_datetime)
         order = Order.objects.create(
             member=member,
             total_amount=total_amount,
             status='pending', # 或是你原本設定的狀態欄位
-            created_at=timezone.now() # 🌟 核心修正：把現在時間塞進去！
+            pickup_time=pickup_datetime # 🌟 核心修正：把現在時間塞進去！
         )
         for item in cart_items:
             OrderItem.objects.create(  # 🌟 改成你的訂單明細/項目模型！
@@ -322,8 +343,8 @@ def order_history(request):
     member_id = request.session.get('member_id')
     # 💡 預防 Session 掉線的防護罩：如果沒登入，先隨便導向一個測試用的預設會員(例如 1)，或是引導去登入
     if not member_id:
-        # 為了測試方便不卡住，我們先暫時讓他抓 member_id=1 的歷史紀錄，或者你改成 redirect('user_login')
-        member_id = 1 
+     
+        return redirect('user_login')
         
     # 換回最原始、可執行的 items 預先載入
     orders = Order.objects.filter(member_id=member_id).prefetch_related('items').order_by('-id')
@@ -472,6 +493,17 @@ def complete_order(request, order_id):
         order.status = 'completed'
         order.save()
     return redirect('kitchen_dashboard')
+    
+def create_order(request):
+    if request.method == "POST":
+        pickup_hour_str = request.POST.get('pickup_hour') # 例如 "10:24"
+        
+        if pickup_hour_str:
+            hour = int(pickup_hour_str.split(':')[0])
+            # 🎯 檢查：如果小於 11 點或大於 21 點
+            if hour < 11 or hour > 21:
+                messages.error(request, "超出營業時間，取餐時間請選擇 11:00 ~ 21:00 之間！")
+                return redirect('order_cart_page')
 def brand_story(request):
     return render(request,'brand_story.html')
 def contact_us (request):

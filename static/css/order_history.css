@@ -43,7 +43,12 @@ body {
 .btn-continue-order:hover {
     background: #d35400;
 }
-
+.status-tag {
+    color: #bd2130;
+    font-size: 16px;       /* 1. 改變字體大小（例如原本預設可能是14px，改成16px變大） */
+    font-weight: 700;      /* 2. 改變字體粗細（數字越大越粗，400是正常，700是粗體） */
+    letter-spacing: 1px;
+}
 /* 摺疊卡片整體外框 */
 details {
     background: white;
