@@ -56,6 +56,11 @@ def register(request):
             
             # 🚀 直接高高興興地彈回首頁（此時已經是 100% 合法顧客登入狀態）
             return redirect('index')
+    else:
+        form = CustomRegisterForm()
+        
+    # 🌟 靈魂補救：就是漏了這行！確保 GET 請求進來時，會乖乖把註冊網頁畫出來！
+    return render(request, 'register.html', {'form': form})
 
 def user_login(request):
     error_message = None
@@ -553,29 +558,35 @@ def contact_us (request):
     return render(request,'contact_us.html')
 
 
-@login_required(login_url='/user_login/') # 🌟 加上這行！沒登入就踢去登入頁（網址請改成你的登入網址）
+@login_required(login_url='/user_login/')
 def book_table(request):
-
-
     user_full_name = f"{request.user.last_name}{request.user.first_name}"
+    
     if request.method == 'POST':
-        post_data = request.POST.copy()
-        post_data['user'] = request.user.id
+        # 🌟 直接用原本的 request.POST，不搞複製了
         form = ReservationForm(request.POST)
+        
         if form.is_valid():
+            # 🌟 關鍵核心：先 commit=False 拿到訂位物件，這時資料庫還沒寫入
             reservation = form.save(commit=False)
-            reservation.user = request.user # 🌟 因為有上面那行，這裡 100% 能抓到 request.user，絕對不會出錯！
+            
+            # 🌟 在這裡，親手把目前登入的官方會員 request.user 狠狠塞給它！
+            reservation.user = request.user
+            
+            # 正式寫入資料庫！
             reservation.save()
+            
             messages.success(request, '訂位成功！')
             return redirect('book_table')
-    
+        else:
+            print(form.errors) # 防呆印出
+            
     else:
-        # 因為絕對是會員，直接自動帶入資料
         initial_data = {
             'name': user_full_name,
             'phone': getattr(request.user, 'phone', ''),
             'email': request.user.email,
         }
         form = ReservationForm(initial=initial_data)
-        
+
     return render(request, 'book_table.html', {'form': form})
