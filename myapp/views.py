@@ -428,7 +428,7 @@ def go_to_pay(request, order_id):
         HashIV='EkRm7iFT261dpevs'
     )
     
-    YOUR_DOMAIN = "http://192.168.59.2:8080" 
+    YOUR_DOMAIN = "http://192.168.1.112:8080" 
     
     # 2. 抓取同一個時間物件，確保訂單號和欄位時間絕對同步
     current_time = datetime.now()
