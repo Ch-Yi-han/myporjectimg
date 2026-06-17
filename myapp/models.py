@@ -1,8 +1,11 @@
 
 from django.db import models
-from django.dispatch import receiver
-from django.contrib.auth import get_user_model
+from django.conf import settings
 from django.utils import timezone
+from django.core.validators import MinValueValidator, MaxValueValidator
+import datetime
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager,PermissionsMixin
+
 # Create your models here.
 class Dish(models.Model):
     name = models.CharField(max_length=100)
@@ -41,7 +44,31 @@ class Dish(models.Model):
         verbose_name="網頁分類標籤"
     )
 
-class CustomMember(models.Model):
+class CustomMemberManager(BaseUserManager):
+    def create_user(self, username, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        if not username:
+            raise ValueError('必須輸入使用者名稱')
+        user = self.model(username=username, **extra_fields)
+        if password:
+            user.set_password(password) # 自動幫密碼雜湊加密
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, username, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser 必須設定 is_staff=True。')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser 必須設定 is_superuser=True。')
+
+        # 最後再呼叫上面的顧客邏輯去幫管理者加密密碼並存檔
+        return self.create_user(username, password, **extra_fields)
+    
+class CustomMember(AbstractBaseUser,PermissionsMixin):
     # 帳號設定為唯一值 (unique=True)，不允許重複
     username = models.CharField('會員帳號', max_length=50, unique=True)
     last_name = models.CharField('姓氏', max_length=20)
@@ -56,8 +83,64 @@ class CustomMember(models.Model):
     
     created_at = models.DateTimeField('註冊時間', auto_now_add=True)
 
+    is_active = models.BooleanField(default=True, verbose_name="啟用狀態")
+    is_staff = models.BooleanField(default=False, verbose_name="後台登入權限")
+
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email']
+    objects = CustomMemberManager()
+
     def __str__(self):
         return self.username
+    class Meta:
+        db_table = 'myapp_custommember'
+        app_label = 'myapp'
+    
+class Reservation(models.Model):
+    # 關聯會員（做法 B）
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+     
+        verbose_name="關聯會員",
+        related_name="reservations"
+    )
+
+    # 客戶基本資料
+    name = models.CharField(max_length=50, verbose_name="訂位人姓名")
+    phone = models.CharField(max_length=15, verbose_name="聯絡電話")
+    email = models.EmailField(verbose_name="電子信箱", blank=True, null=True)
+    
+    # 訂位詳細資訊
+    date = models.DateField(verbose_name="訂位日期")
+    
+    # 🌟 這裡就是更動的地方：不需要 choices 也不需要關聯別的表，直接用 CharField 存時間字串
+    time_slot = models.CharField(max_length=10, verbose_name="用餐時段")
+    
+    guests = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(20)], 
+        verbose_name="用餐人數"
+    )
+    notes = models.TextField(blank=True, null=True, verbose_name="備註")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="填單時間")
+
+    class Meta:
+        verbose_name = "線上訂位"
+        verbose_name_plural = "線上訂位管理"
+        ordering = ['-date', 'time_slot']
+
+    def __str__(self):
+        return f"{self.date} {self.time_slot} - {self.name} ({self.guests}人)"
+
+    # 檢查剩餘座位邏輯（維持不變，依然可用）
+    @staticmethod
+    def get_available_seats(date, time_slot):
+        MAX_SEATS = 50  # 餐廳每時段上限人數
+        booked_guests = Reservation.objects.filter(
+            date=date, 
+            time_slot=time_slot
+        ).aggregate(total=models.Sum('guests'))['total'] or 0
+        return MAX_SEATS - booked_guests
 
 class MenuItem(models.Model):
     name= models.CharField(max_length=100,verbose_name="餐點名稱")
@@ -96,3 +179,4 @@ class OrderItem(models.Model):
     item_name=models.CharField(max_length=100,verbose_name="餐點名稱(快照)")
     price = models.IntegerField(verbose_name="購買時價格")
     quantity = models.PositiveIntegerField(verbose_name="數量")
+

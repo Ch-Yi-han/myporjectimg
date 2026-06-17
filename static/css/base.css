@@ -270,3 +270,20 @@ ul {
     font-weight: bold;
     cursor: default; /* 讓滑鼠移上去時不要顯示手指形狀，因為它不是超連結 */
 }
+
+.member-links {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* 控制每個項目（包含修改資料、登出、線上點餐）之間的左右間距 */
+}
+
+.member-links .nav-link-item {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+/* 滑鼠懸停效果，可自由搭配聚福樓的金色調 */
+.member-links .nav-link-item:hover {
+    color: #ffc107; 
+}

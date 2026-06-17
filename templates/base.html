@@ -17,16 +17,19 @@
                 <span class="info-item"><i class="fas fa-map-marker-alt icon-gold" ></i> 店址：桃園市中壢區六福街2號</span>
             </div>
             <div class="member-links">
-                {% if request.session.member_id %}
+                {% if request.user.is_authenticated %}
                     <span class="nav-link-item member-name-nav">
-                        <i class="fas fa-user-circle icon-gold"></i> {{ request.session.member_name }} 您好
+                        <i class="fas fa-user-circle icon-gold"></i> {{ request.user.last_name }}{{ request.user.first_name }} 您好
                     </span>
+                    <a href="{% url 'edit_profile' %}" class="nav-link-item">
+                        <i class="fas fa-user-edit"></i> 修改資料
+                    </a>
                     <a href="{% url 'logout' %}" class="nav-link-item"><i class="fas fa-sign-out-alt"></i> 登出</a>
                 {% else %}
                     <a href="{% url 'user_login' %}" class="nav-link-item"><i class="fas fa-user"></i> 會員登入</a>
                 {% endif %}
-                
-                <a href="{% url 'order_online'%}"  class="nav-link-item"><i class="fas fa-shopping-bag"></i> 線上點餐</a>
+
+                <a href="{% url 'order_online' %}" class="nav-link-item"><i class="fas fa-shopping-bag"></i> 線上點餐</a>
             </div>
         </div>
     </nav>
@@ -41,7 +44,7 @@
                 <ul class="menu-list">
                     <li><a href="{% url 'index' %}"><i class="fas fa-home"></i> 首頁</a></li>
                     <li><a href="{% url 'menu' %}"><i class="fas fa-utensils"></i> 精選菜單</a></li>
-                    <li><a href="#"><i class="fas fa-calendar-check"></i> 線上訂位</a></li>
+                    <li><a href="{% url "book_table" %}"><i class="fas fa-calendar-check"></i> 線上訂位</a></li>
                     <li><a href="{% url "brand_story" %}"><i class="fas fa-history"></i> 品牌故事</a></li>
                     <li><a href="{% url "contact_us" %}"><i class="fas fa-envelope"></i> 聯絡我們</a></li>
                 </ul>

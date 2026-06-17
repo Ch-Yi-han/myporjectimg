@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/book_table.css' %}">
+
+<section class="booking-section">
+    <div class="booking-card">
+        
+        <div class="booking-header">
+            <h2 class="booking-title">聚福樓 線上訂位系統</h2>
+            <p class="booking-subtitle">尊榮會員專屬通道 · 請填寫您的用餐資訊</p>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="booking-alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" action="">
+            {% csrf_token %}
+            {{ form.user }}
+            {% if form.errors %}
+                <div class="alert alert-danger" style="color: red; background: #fee; padding: 10px; margin-bottom: 15px;">
+                    {{ form.errors }}
+                </div>
+            {% endif %}
+            <div class="booking-grid">
+                <div class="form-group">
+                    <label class="form-label">訂位人姓名 *</label>
+                    {{ form.name }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">聯絡電話 *</label>
+                    {{ form.phone }}
+                </div>
+
+                <div class="form-group full-width">
+                    <label class="form-label">電子信箱</label>
+                    {{ form.email }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">訂位日期 *</label>
+                    {{ form.date }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">用餐時段 *</label>
+                    {{ form.time_slot }}
+                </div>
+
+                <div class="form-group full-width">
+                    <label class="form-label">用餐人數 *</label>
+                    {{ form.guests }}
+                </div>
+
+                <div class="form-group full-width">
+                    <label class="form-label">備註</label>
+                    {{ form.notes }}
+                </div>
+
+                <button type="submit" class="btn-submit">確認提交尊榮訂位</button>
+            </div>
+        </form>
+
+    </div>
+</section>
+{% endblock %}

@@ -3,9 +3,12 @@
 
 {% block title %}註冊{% endblock  %}
 
- 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/register.css' %}">
+{% endblock  %}
+
 {% block content %}
- <link rel="stylesheet" href="{% static 'css/register.css' %}">
+
 
 <div class="register-container">
     <h2>會員註冊</h2>
@@ -24,13 +27,16 @@
             <div class="form-group">
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 {{ field }}
-
+                
+                {% if field.field.required %}
+                    <small class="custom-required-msg">這個欄位是必須的。</small>
+                {% endif %}
                 {% if field.help_text %}
                     <small class="help-text">{{ field.help_text }}</small>
                 {% endif %}
 
                 {% for error in field.errors %}
-                    <small class="error-message">{{ error }}</small>
+                    <small class="custom-required-msg">{{ error }}</small>
                 {% endfor %}
             </div>
         {% endfor %}
