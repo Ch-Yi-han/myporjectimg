@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}會員修改{% endblock  %}
+
+{% block  extra_css %}
+<link rel="stylesheet" href="{% static 'css/edit_profile.css' %}">
+{% endblock  %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-card">
+        
+        <div class="profile-header">
+            <h4 class="header-title">帳號設定</h4>
+        </div>
+        
+        <div class="profile-body">
+            
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" class="profile-form">
+                {% csrf_token %}
+                
+                <h5 class="section-title text-primary">基本資料修改</h5>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">姓氏</label>
+                        {{ form.last_name }}
+                        <div class="error-message">{{ form.last_name.errors }}</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">名字</label>
+                        {{ form.first_name }}
+                        <div class="error-message">{{ form.first_name.errors }}</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">電子信箱</label>
+                        {{ form.email }}
+                        <div class="error-message">{{ form.email.errors }}</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">電話號碼</label>
+                        {{ form.phone }}
+                        <div class="error-message">{{ form.phone.errors }}</div>
+                    </div>
+                </div>
+
+                <hr class="section-divider">
+
+                <h5 class="section-title text-danger">安全與密碼變更</h5>
+                
+                <div class="form-group full-width mb-4">
+                    <label class="form-label notice-text">※ 為了安全起見，不論是否修改密碼，變更資料皆需驗證目前密碼：</label>
+                    {{ form.old_password }}
+                    <div class="error-message">{{ form.old_password.errors }}</div>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">新密碼（若不修改請保持空白）</label>
+                        {{ form.new_password }}
+                        <div class="error-message">{{ form.new_password.errors }}</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">確認新密碼</label>
+                        {{ form.confirm_password }}
+                        <div class="error-message">{{ form.confirm_password.errors }}</div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">儲存所有變更</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{% endblock  %}

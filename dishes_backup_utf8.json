@@ -1,0 +1,226 @@
+[
+{
+    "model": "myapp.dish",
+    "pk": 1,
+    "fields": {
+        "name": "肉絲蛋炒飯",
+        "price": 260,
+        "image": "dishes/肉絲蛋炒飯.png",
+        "spicy_level": 0,
+        "description": "嚴選新鮮肉絲與香濃雞蛋，以大火快炒鎖住食材鮮甜，讓每一粒米飯都裹上濃郁蛋香，粒粒分明、香氣四溢。",
+        "is_recommended": false,
+        "is_available": true,
+        "category": "rice_and_noodles"
+    }
+},
+{
+    "model": "myapp.dish",
+    "pk": 2,
+    "fields": {
+        "name": "金沙蝦球",
+        "price": 300,
+        "image": "dishes/金沙蝦球.png",
+        "spicy_level": 0,
+        "description": "鮮甜蝦仁裹上酥脆外衣，搭配香濃金沙鹹蛋黃醬翻炒，每一口都能品嚐到鹹香濃郁與鮮甜蝦肉的完美結合，外酥內嫩、層次豐富，令人一吃難忘。",
+        "is_recommended": false,
+        "is_available": true,
+        "category": "seafood"
+    }
+},
+{
+    "model": "myapp.dish",
+    "pk": 3,
+    "fields": {
+        "name": "厚煎菜圃蛋",
+        "price": 240,
+        "image": "dishes/厚煎菜圃蛋.png",
+        "spicy_level": 0,
+        "description": "選用香氣十足的菜脯與新鮮雞蛋厚實煎製，外層金黃微酥、內裡鬆軟滑嫩，鹹香滋味與蛋香完美融合，喚起最熟悉的古早味記憶。",
+        "is_recommended": false,
+        "is_available": true,
+        "category": "egg_and_tofu"
+    }
+},
+{
+    "model": "myapp.dish",
+    "pk": 4,
+    "fields": {
+        "name": "麻辣流口水雞",
+        "price": 340,
+        "image": "dishes/流口水雞.png",
+        "spicy_level": 1,
+        "description": "嚴選鮮嫩雞肉，淋上特製紅油醬汁，融合花椒香氣、蒜香與醬香，麻而不嗆、辣而不燥，入口鮮嫩多汁、層次豐富，令人食指大動、回味無窮。",
+        "is_recommended": true,
+        "is_available": true,
+        "category": "appetizer"
+    }
+},
+{
+    "model": "myapp.dish",
+    "pk": 5,
+    "fields": {
+        "name": "紅燒肉",
+        "price": 360,
+        "image": "dishes/紅燒肉.png",
+        "spicy_level": 0,
+        "description": "嚴選上等五花肉，搭配特製醬汁慢火燉煮，將醬香與肉香完美鎖入肉中，口感軟嫩多汁、鹹香回甘，是令人難以抗拒的經典美味",
+        "is_recommended": false,
+        "is_available": true,
+        "category": "meat"
+    }
+},
+{
+    "model": "myapp.dish",
+    "pk": 6,
+    "fields": {
+        "name": "剝皮辣椒香菇雞湯",
+        "price": 380,
+        "image": "dishes/剝皮辣椒香菇雞湯.png",
+        "spicy_level": 0,
+        "description": "以鮮嫩雞肉、厚實香菇及剝皮辣椒細火慢燉，將雞湯的濃郁鮮香與剝皮辣椒的甘甜微辣完美融合，湯頭溫潤順口，是暖心又暖胃的人氣湯品。",
+        "is_recommended": false,
+        "is_available": true,
+        "category": "soup"
+    }
+},
+{
+    "model": "myapp.dish",
+    "pk": 7,
+    "fields": {
+        "name": "脆皮烤鴨",
+        "price": 600,
+        "image": "dishes/烤鴨.png",
+        "spicy_level": 0,
+        "description": "遵循台式烤鴨工法，將鴨肉醃製後細火慢烤，烤出酥脆外皮與鮮嫩肉質。香氣四溢、層次豐富，不論單吃或搭配餅皮、蔥段都令人回味無窮",
+        "is_recommended": false,
+        "is_available": true,
+        "category": "meat"
+    }
+},
+{
+    "model": "myapp.dish",
+    "pk": 8,
+    "fields": {
+        "name": "陳釀梅子雞",
+        "price": 320,
+        "image": "dishes/陳釀梅子雞.png",
+        "spicy_level": 0,
+        "description": "以陳釀梅子的天然果香襯托雞肉鮮甜，酸甜適中。入口先感受梅香的清爽，再品嚐雞肉的鮮嫩多汁，滋味細膩且餘韻悠長。",
+        "is_recommended": false,
+        "is_available": true,
+        "category": "meat"
+    }
+},
+{
+    "model": "myapp.dish",
+    "pk": 9,
+    "fields": {
+        "name": "麻婆豆腐",
+        "price": 320,
+        "image": "dishes/麻婆豆腐.png",
+        "spicy_level": 0,
+        "description": "滑嫩豆腐搭配香氣濃郁的特製肉末醬，以辣椒、花椒與秘製醬料大火快炒。豆腐細嫩入味、醬香濃厚，每一口都令人食慾大開。",
+        "is_recommended": false,
+        "is_available": true,
+        "category": "egg_and_tofu"
+    }
+},
+{
+    "model": "myapp.dish",
+    "pk": 10,
+    "fields": {
+        "name": "黑糖滋粑",
+        "price": 260,
+        "image": "dishes/黑糖滋粑.png",
+        "spicy_level": 0,
+        "description": "金黃酥香的滋粑外脆內Q，搭配熬煮香濃的黑糖醬與細緻花生粉，入口散發濃郁黑糖香與糯米甜香，每一口都充滿幸福滋味。",
+        "is_recommended": false,
+        "is_available": true,
+        "category": "dessert"
+    }
+},
+{
+    "model": "myapp.dish",
+    "pk": 11,
+    "fields": {
+        "name": "辣乾拌麵",
+        "price": 180,
+        "image": "dishes/辣乾拌麵.png",
+        "spicy_level": 0,
+        "description": "Q彈麵條拌入特製香辣醬汁，融合辣椒香氣與濃郁醬香，鹹香帶勁、辣而不燥。每一口都能感受到麵條的彈牙口感與層層堆疊的香辣滋味。",
+        "is_recommended": false,
+        "is_available": true,
+        "category": "appetizer"
+    }
+},
+{
+    "model": "myapp.dish",
+    "pk": 12,
+    "fields": {
+        "name": "酸菜魚",
+        "price": 360,
+        "image": "dishes/酸菜魚.png",
+        "spicy_level": 1,
+        "description": "鮮嫩魚片搭配爽脆酸菜，湯頭酸中帶辣、辣中帶鮮，每一口都是味蕾的極致享受。",
+        "is_recommended": false,
+        "is_available": true,
+        "category": "seafood"
+    }
+},
+{
+    "model": "myapp.dish",
+    "pk": 13,
+    "fields": {
+        "name": "蝦醬空心菜",
+        "price": 240,
+        "image": "dishes/蝦醬空心菜.png",
+        "spicy_level": 0,
+        "description": "嚴選鮮嫩空心菜，搭配秘製蝦醬大火快炒，鎖住脆度與鮮味，經典港式風味一次滿足。",
+        "is_recommended": false,
+        "is_available": true,
+        "category": "vegetarian"
+    }
+},
+{
+    "model": "myapp.dish",
+    "pk": 14,
+    "fields": {
+        "name": "蟹黃鮮蝦豆腐煲",
+        "price": 300,
+        "image": "dishes/蟹黃鮮蝦豆腐煲.png",
+        "spicy_level": 0,
+        "description": "滿滿蟹黃精華融入湯汁，搭配鮮甜蝦仁與嫩滑豆腐，每一口都是海味的極致享受。",
+        "is_recommended": false,
+        "is_available": true,
+        "category": "seafood"
+    }
+},
+{
+    "model": "myapp.dish",
+    "pk": 15,
+    "fields": {
+        "name": "櫻花蝦高麗菜",
+        "price": 260,
+        "image": "dishes/櫻花蝦高麗菜.png",
+        "spicy_level": 0,
+        "description": "大火快炒鎖住高麗菜的自然甘甜，搭配櫻花蝦的濃郁海味，鮮香爽脆，越吃越涮嘴！",
+        "is_recommended": false,
+        "is_available": true,
+        "category": "appetizer"
+    }
+},
+{
+    "model": "myapp.dish",
+    "pk": 16,
+    "fields": {
+        "name": "酥炸雞蛋豆腐",
+        "price": 300,
+        "image": "dishes/鐵板雞蛋豆腐.png",
+        "spicy_level": 0,
+        "description": "金黃酥炸雞蛋豆腐搭配熱騰騰鐵板上桌，外皮香酥、內裡滑嫩，搭上秘製醬汁，香氣四溢讓人食指大動。",
+        "is_recommended": false,
+        "is_available": true,
+        "category": "egg_and_tofu"
+    }
+}
+]

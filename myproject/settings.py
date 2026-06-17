@@ -143,3 +143,5 @@ SITE_ID = 1
 EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST_USER = 'h9150435@gmail.com'
 SESSION_COOKIE_AGE = 900
+
+AUTH_USER_MODEL = 'myapp.CustomMember'

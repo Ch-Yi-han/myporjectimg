@@ -1,0 +1,167 @@
+/* myapp/static/css/booking.css */
+
+/* 全域尊榮黑金基調 */
+.booking-section {
+    background-color: #121212;
+    color: #f5f5f5;
+    font-family: "Microsoft JhengHei", "Heiti TC", sans-serif;
+    padding: 60px 20px;
+    min-height: 85vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 居中卡片主體 */
+.booking-card {
+    background-color: #1a1a1a;
+    border: 1px solid #d4af37; /* 聚福樓皇家金 */
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    max-width: 700px;
+    width: 100%;
+    padding: 40px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* 頂部中式祥瑞紅金飾條 */
+.booking-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #b22222, #d4af37, #b22222);
+    border-radius: 12px 12px 0 0;
+}
+
+/* 標題與副標題 */
+.booking-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.booking-title {
+    color: #d4af37;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+    letter-spacing: 2px;
+}
+
+.booking-subtitle {
+    color: #888;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* Django 訊息提示框 */
+.booking-alert {
+    background-color: #262626;
+    border: 1px solid #b22222;
+    color: #ffc107;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 25px;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+/* 表單網格佈局 (用 Grid 完美排版) */
+.booking-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 預設一行兩格 */
+    gap: 20px;
+}
+
+/* 讓滿版欄位單獨佔滿一行 */
+.full-width {
+    grid-column: span 2;
+}
+
+/* 表單單元 */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    color: #c0c0c0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+/* 💡 精準美化 Django 表單生成的各類 input, select, textarea */
+.form-group input,
+.form-group select,
+.form-group textarea {
+    background-color: #262626 !important;
+    border: 1px solid #444 !important;
+    color: #ffffff !important;
+    border-radius: 6px !important;
+    padding: 12px !important;
+    font-size: 1rem;
+    box-sizing: border-box;
+    width: 100%;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* 輸入框聚焦微光 */
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #d4af37 !important;
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+    outline: none;
+}
+
+/* 唯讀唯獨欄位（自動帶入的會員資料）虛線化 */
+.form-group input[readonly] {
+    background-color: #1e1e1e !important;
+    color: #888888 !important;
+    border: 1px dashed #555 !important;
+    cursor: not-allowed;
+}
+
+/* 純手寫完美提交按鈕 */
+.btn-submit {
+    grid-column: span 2; /* 佔滿整行 */
+    background: linear-gradient(135deg, #d4af37 0%, #aa8416 100%);
+    border: none;
+    color: #111;
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: transform 0.2s, box-shadow 0.3s, background 0.3s;
+    margin-top: 15px;
+}
+
+.btn-submit:hover {
+    background: linear-gradient(135deg, #f1cc5b 0%, #d4af37 100%);
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-submit:active {
+    transform: translateY(0);
+}
+
+/* RWD 響應式：手機畫面改為單欄排版 */
+@media (max-width: 600px) {
+    .booking-grid {
+        grid-template-columns: 1fr;
+    }
+    .full-width, .btn-submit {
+        grid-column: span 1;
+    }
+    .booking-card {
+        padding: 25px 15px;
+    }
+}

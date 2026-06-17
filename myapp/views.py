@@ -1,7 +1,6 @@
-from .models import Dish,CustomMember
 from django.shortcuts import render, redirect,get_object_or_404
-from .forms import CustomRegisterForm
-from django.contrib.auth.hashers import check_password,make_password
+from .forms import CustomRegisterForm,UpdateProfileAndConfirmForm,ReservationForm
+from django.contrib.auth import authenticate, login,logout  as django_logout
 from django.contrib import messages
 import random
 from django.core.mail import send_mail
@@ -10,6 +9,8 @@ from django.utils import timezone
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse,JsonResponse
+from django.contrib.auth.decorators import login_required
+
 # 引入綠界 SDK 相關套件（此處為示範邏輯）
 
 from ecpay_payment_sdk import ECPayPaymentSdk
@@ -39,46 +40,93 @@ def user_login(request):
 
 def register(request):
     if request.method == 'POST':
-        form=CustomRegisterForm(request.POST)
+        form = CustomRegisterForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('user_login')
+            # # 1. 拿到資料物件
+            user = form.save(commit=False)
+            
+            # # 2. 密碼雜湊加密
+            user.set_password(form.cleaned_data['password'])
+            
+            # # 3. 正式寫入資料庫
+            user.save()
+            
+            # 🎫 🌟【新加的大招】：註冊成功後，不用逼他去登入頁了，直接強行幫他辦理登入！
+            login(request, user)
+            
+            # 🚀 直接高高興興地彈回首頁（此時已經是 100% 合法顧客登入狀態）
+            return redirect('index')
     else:
-        form=CustomRegisterForm()
-
-    return render(request,'register.html',{'form':form})
+        form = CustomRegisterForm()
+        
+    # 🌟 靈魂補救：就是漏了這行！確保 GET 請求進來時，會乖乖把註冊網頁畫出來！
+    return render(request, 'register.html', {'form': form})
 
 def user_login(request):
     error_message = None
     if request.method == 'POST':
-        user_input_name=request.POST.get('username')
-        user_input_pwd= request.POST.get('password')
-        try:
-                # 去我們自創的表撈人
-                member = CustomMember.objects.get(username=user_input_name)
-                
-                # 👮‍♂️ 比對輸入的密碼跟資料庫的加密密碼合不合
-                if check_password(user_input_pwd, member.password):
-                    # 🎫 密碼正確！手動在瀏覽器 Session 寫入會員憑證
-                    request.session['member_id'] = member.id
-                    full_name = f"{member.last_name}{member.first_name}"
-                    request.session['member_name'] = full_name
-                    return redirect('index') # 前往首頁
-                else:
-                    error_message = "密碼錯誤或帳號錯誤！"
-        except CustomMember.DoesNotExist:
-                error_message = "帳號不存在！"
+        user_input_name = request.POST.get('username')
+        user_input_pwd = request.POST.get('password')
+        
+        # 👮‍♂️ 1. 改用官方認證守門員：自動比對帳號、自動用 check_password 比對加密密碼
+        user = authenticate(request, username=user_input_name, password=user_input_pwd)
+        
+        if user is not None:
+            # 🎫 2. 核心關鍵：調用官方登入功能，這行會同時幫你處理好所有的 Session 和 request.user 綁定！
+            login(request, user)
+            
+            # 3. 順利登入！轉跳到首頁或你想去的地方
+            return redirect('index') 
+        else:
+            # 帳號不存在或密碼錯誤，authenticate 都會回傳 None
+            error_message = "帳號或密碼錯誤！"
 
     return render(request, 'user_login.html', {'error_message': error_message})
+
+
+
 def logout(request):
-    # 💥 直接把瀏覽器 Session 裡的會員憑證撕毀清空
+    # 🎫 呼叫官方登出：這行會一槍斃命，直接把 request.user 的官方登入狀態徹底註銷！
+    django_logout(request)
+    
+    # 🩹 安全補刀：順便把你以前手寫、可能殘留的舊 session 貼紙也清乾淨
     if 'member_id' in request.session:
         del request.session['member_id']
     if 'member_name' in request.session:
         del request.session['member_name']
         
-    print("👋 會員已安全登出")
+    messages.success(request, '您已成功登出！')
+    
+    # 轉跳回首頁
     return redirect('index')
+
+@login_required(login_url='/user_login/') # 🌟 1. 超級大招！沒登入直接踢去登入頁，不用自己寫 if if 了！
+def edit_profile(request):
+    # 🌟 2. 核心關鍵：因為是官方認證，當前登入的會員物件直接就躺在 request.user 裡面！
+    member = request.user 
+
+    if request.method == 'POST':
+        form = UpdateProfileAndConfirmForm(request.POST, instance=member)
+        if form.is_valid():
+            # 🌟 3. 補刀安全防呆：如果你這個表單裡面有欄位是可以修改「密碼」的
+            # 我們要用 set_password 確保密碼在寫入時有被再次狠狠加密！
+            user = form.save(commit=False)
+            if 'password' in form.cleaned_data and form.cleaned_data['password']:
+                user.set_password(form.cleaned_data['password'])
+            
+            user.save()
+            
+            # 🌟 4. 如果使用者改了密碼，官方的 Session 憑證會失效被踢出，這行能幫他自動更新憑證不被踢走！
+            from django.contrib.auth import update_session_auth_hash
+            update_session_auth_hash(request, user)
+            
+            messages.success(request, '個人資料已成功更新！')
+            return redirect('edit_profile')
+    else:
+        form = UpdateProfileAndConfirmForm(instance=member)
+
+    return render(request, 'edit_profile.html', {'form': form})
+    
 
 def forgot_password_request(request):
     if request.method == "POST":
@@ -385,7 +433,7 @@ def go_to_pay(request, order_id):
         HashIV='EkRm7iFT261dpevs'
     )
     
-    YOUR_DOMAIN = "http://192.168.59.2:8080" 
+    YOUR_DOMAIN = "http://192.168.1.112:8080" 
     
     # 2. 抓取同一個時間物件，確保訂單號和欄位時間絕對同步
     current_time = datetime.now()
@@ -508,3 +556,37 @@ def brand_story(request):
     return render(request,'brand_story.html')
 def contact_us (request):
     return render(request,'contact_us.html')
+
+
+@login_required(login_url='/user_login/')
+def book_table(request):
+    user_full_name = f"{request.user.last_name}{request.user.first_name}"
+    
+    if request.method == 'POST':
+        # 🌟 直接用原本的 request.POST，不搞複製了
+        form = ReservationForm(request.POST)
+        
+        if form.is_valid():
+            # 🌟 關鍵核心：先 commit=False 拿到訂位物件，這時資料庫還沒寫入
+            reservation = form.save(commit=False)
+            
+            # 🌟 在這裡，親手把目前登入的官方會員 request.user 狠狠塞給它！
+            reservation.user = request.user
+            
+            # 正式寫入資料庫！
+            reservation.save()
+            
+            messages.success(request, '訂位成功！')
+            return redirect('book_table')
+        else:
+            print(form.errors) # 防呆印出
+            
+    else:
+        initial_data = {
+            'name': user_full_name,
+            'phone': getattr(request.user, 'phone', ''),
+            'email': request.user.email,
+        }
+        form = ReservationForm(initial=initial_data)
+
+    return render(request, 'book_table.html', {'form': form})
