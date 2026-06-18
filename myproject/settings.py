@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import  load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -140,8 +141,23 @@ LOGIN_REDIRECT_URL='index'
 
 SITE_ID = 1
 
-EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST_USER = 'h9150435@gmail.com'
-SESSION_COOKIE_AGE = 900
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(os.path.join(BASE_DIR, '.env'))
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'                 # Gmail 的 SMTP 伺服器
+EMAIL_PORT = 587                              # Gmail TLS 的通訊埠
+
+# 啟動加密連線
+EMAIL_USE_TLS = True                          # 安全性連線開關
+EMAIL_USE_SSL = False
+
+# 填入你的 Google 帳號與剛剛產生的 16 位應用程式密碼
+EMAIL_HOST_USER = os.getenv('EMAIL_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
+
+
+# 預設的寄件者名稱與信箱 (使用者收到信時看到的寄件者)
+DEFAULT_FROM_EMAIL = '聚福樓中式餐廳 <h9150435@gmail.com>'
 
 AUTH_USER_MODEL = 'myapp.CustomMember'

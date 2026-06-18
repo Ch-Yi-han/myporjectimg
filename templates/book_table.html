@@ -70,4 +70,93 @@
 
     </div>
 </section>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 🔍 1. 精準抓取你的訂位日期欄位與時間下拉選單 (根據你 HTML 的實際屬性調整)
+    const dateInput = document.querySelector('input[type="date"]');
+    // ⚠️ 註：這裡假設你的時間下拉選單是 select 標籤，如果不是，請改用你的 class 或 name 抓取
+    const timeSelect = document.querySelector('select'); 
+
+    // 取得今天的台灣時間
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1; 
+    let dd = today.getDate();
+
+    if (mm < 10) mm = '0' + mm;
+    if (dd < 10) dd = '0' + dd;
+    const formattedToday = `${yyyy}-${mm}-${dd}`; // 得到 "2026-06-18" (依當天日期變動)
+
+    if (dateInput) {
+        // 🔒 限制日期不能選過去
+        dateInput.min = formattedToday;
+        if (!dateInput.value || dateInput.value < formattedToday) {
+            dateInput.value = formattedToday;
+        }
+
+        // ⏰ 當日期更換或一開始載入時，發動時間防禦偵測
+        function filterTimeOptions() {
+            if (!timeSelect) return;
+
+            const selectedDate = dateInput.value;
+            const now = new Date();
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+
+            // 如果選的是「今天」，開始篩選時間
+            if (selectedDate === formattedToday) {
+                const options = timeSelect.querySelectorAll('option');
+                let firstValidOption = null;
+
+                options.forEach(option => {
+                    const timeStr = option.value; // 得到 "11:00"、"11:15" 等
+                    if (!timeStr || !timeStr.includes(':')) return;
+
+                    const [hour, minute] = timeStr.split(':').map(Number);
+
+                    // 🛑 如果選項的時間小於或等於現在時間，直接把它藏起來！
+                    if (hour < currentHour || (hour === currentHour && minute <= currentMinute)) {
+                        option.style.display = 'none';
+                        option.disabled = true; // 加保險防止被惡意提交
+                    } else {
+                        option.style.display = 'block';
+                        option.disabled = false;
+                        if (!firstValidOption) firstValidOption = option;
+                    }
+                });
+
+                // 防呆：如果目前選中的時間（例如預設值）已經是過去時間，自動幫他跳到下一個合法時間
+                if (timeSelect.selectedOptions[0] && (timeSelect.selectedOptions[0].style.display === 'none' || timeSelect.selectedOptions[0].disabled)) {
+                    if (firstValidOption) {
+                        timeSelect.value = firstValidOption.value;
+                    } else {
+                        // 如果今天的時間都過期了（比如超過晚上 9 點）
+                        // 自動幫他把日期切到明天，並解除所有時間限制！
+                        const tomorrow = new Date(today);
+                        tomorrow.setDate(tomorrow.getDate() + 1);
+                        let tm = tomorrow.getMonth() + 1;
+                        let td = tomorrow.getDate();
+                        if (tm < 10) tm = '0' + tm;
+                        if (td < 10) td = '0' + td;
+                        dateInput.value = `${tomorrow.getFullYear()}-${tm}-${td}`;
+                        filterTimeOptions();
+                    }
+                }
+            } else {
+                // 🔓 如果选的是「明天或未来」，通通放行，顯示全時段！
+                const options = timeSelect.querySelectorAll('option');
+                options.forEach(option => {
+                    option.style.display = 'block';
+                    option.disabled = false;
+                });
+            }
+        }
+
+        // 監聽日期更換事件
+        dateInput.addEventListener('change', filterTimeOptions);
+        // 頁面初次載入時立刻執行一次過濾
+        filterTimeOptions();
+    }
+});
+</script>
 {% endblock %}

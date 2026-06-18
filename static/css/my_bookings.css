@@ -1,0 +1,164 @@
+/* 聚福樓專屬訂位紀錄樣式表 */
+
+.booking-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    font-family: 'Microsoft JhengHei', sans-serif;
+}
+
+.booking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.page-title {
+    color: #333;
+    margin: 0;
+    font-weight: bold;
+}
+
+.btn-new-booking {
+    background-color: #d67c13;
+    color: white;
+    padding: 10px 18px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.btn-new-booking:hover {
+    background-color: #b3650f;
+}
+
+.divider {
+    border: 0;
+    height: 1px;
+    background: #eee;
+    margin-bottom: 25px;
+}
+
+.alert-message {
+    padding: 12px 20px;
+    background-color: #d4edda;
+    color: #155724;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* 訂位卡片排版 */
+.booking-card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border-left: 5px solid #d67c13;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.booking-info {
+    line-height: 1.8;
+}
+
+.customer-name {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.info-details p {
+    margin: 4px 0;
+    color: #666;
+    font-size: 15px;
+}
+
+.text-success {
+    color: #28a745 !important;
+}
+
+.text-primary {
+    color: #d67c13 !important;
+}
+
+.text-notes {
+    font-style: italic;
+    color: #888 !important;
+}
+
+/* 右側按鈕與標籤控制 */
+.booking-actions {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.status-tag {
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.tag-arrived {
+    background-color: #28a745;
+    color: white;
+}
+
+.tag-pending {
+    background-color: #ffeeba;
+    color: #856404;
+}
+
+.btn-cancel {
+    background-color: #dc3545;
+    color: white;
+    padding: 10px 16px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    box-shadow: 0 2px 5px rgba(220,53,69,0.2);
+}
+
+.btn-cancel:hover {
+    background-color: #bd2130;
+}
+
+/* 空白防呆狀態 */
+.empty-booking-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: #fafafa;
+    border-radius: 12px;
+    border: 2px dashed #eee;
+}
+
+.empty-booking-state p {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.btn-go-book {
+    background-color: #333;
+    color: white;
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.btn-go-book:hover {
+    background-color: #111;
+}

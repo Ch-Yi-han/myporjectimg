@@ -1,0 +1,71 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_urls static admin_list %}
+
+{% block result_list %}
+<div class="results" style="margin: 20px 0; font-family: 'Microsoft JhengHei', sans-serif;">
+    <h3 style="background: #104e5b; color: white; padding: 12px 20px; margin: 0 0 15px 0; border-radius: 4px;">
+        📂 聚福樓智慧訂位日曆 (今日起~未來摺疊檢視)
+    </h3>
+
+    {% if grouped_bookings %}
+        {% for group in grouped_bookings %}
+            <div class="accordion-group" style="margin-bottom: 10px; border: 1px solid #e0e0e0; border-radius: 6px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <button type="button" class="accordion-trigger" onclick="toggleAccordion('date-{{ forloop.counter }}')" style="width: 100%; text-align: left; background: #f8f9fa; border: none; padding: 15px 20px; font-size: 16px; font-weight: bold; color: #333; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s;">
+                    <span>📅 {{ group.date|date:"Y 年 m 月 d 日" }}</span>
+                    <span style="background: #d67c13; color: white; padding: 3px 10px; border-radius: 50px; font-size: 13px;">
+                        共 {{ group.count }} 筆訂位 ▾
+                    </span>
+                </button>
+
+                <div id="date-{{ forloop.counter }}" class="accordion-content" style="display: none; background: white; border-top: 1px solid #eee; padding: 10px 20px;">
+                    <table style="width: 100%; border-collapse: collapse; margin: 10px 0; text-align: left;">
+                        <thead>
+                            <tr style="background: #f1f3f5; color: #555; font-weight: bold; border-bottom: 2px solid #dee2e6;">
+                                <th style="padding: 10px;">訂位人姓名</th>
+                                <th style="padding: 10px;">聯絡電話</th>
+                                <th style="padding: 10px;">用餐時段</th>
+                                <th style="padding: 10px;">用餐人數</th>
+                                <th style="padding: 10px;">備註需求</th>
+                                <th style="padding: 10px; text-align: center;">客人是否已到店</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in group.bookings %}
+                                <tr style="border-bottom: 1px solid #eee;">
+                                    <td style="padding: 12px; font-weight: bold; color: #0056b3;">{{ booking.name }}</td>
+                                    <td style="padding: 12px; color: #666;">{{ booking.phone }}</td>
+                                    <td style="padding: 12px;"><span style="background: #e9ecef; padding: 3px 8px; border-radius: 4px; font-weight: bold;">{{ booking.time_slot }}</span></td>
+                                    <td style="padding: 12px; font-weight: bold; color: #d67c13;">{{ booking.guests }} 人</td>
+                                    <td style="padding: 12px; color: #888; font-style: italic;">{{ booking.notes|default:"-" }}</td>
+                                    <td style="padding: 12px; text-align: center;">
+                                        <input type="checkbox" name="form-{{ forloop.parentloop.counter0 }}-is_arrived" {% if booking.is_arrived %}checked{% endif %} style="transform: scale(1.2); cursor: pointer;">
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p style="padding: 30px; text-align: center; color: #999; background: #fafafa; border: 1px dashed #ccc; border-radius: 4px;">
+            📭 目前今日與未來沒有任何客人訂位喔！
+        </p>
+    {% endif %}
+</div>
+
+<script>
+function toggleAccordion(id) {
+    const content = document.getElementById(id);
+    if (content.style.display === "none") {
+        content.style.display = "block";
+    } else {
+        content.style.display = "none";
+    }
+}
+</script>
+
+<div style="display:none;">
+    {{ block.super }}
+</div>
+{% endblock %}

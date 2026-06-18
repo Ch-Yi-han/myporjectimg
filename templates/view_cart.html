@@ -34,13 +34,17 @@
                     <td class="text-center dish-price">${{ item.item.price }}</td>
                     <td class="text-center">
                         <div class="quantity-controller">
-                            <a href="{% url 'update_cart_quantity' item.item.id 'decrease' %}" class="btn-qty-minus">
-                                -
-                            </a>
-                            <span class="qty-number">{{ item.quantity }}</span>
-                            <a href="{% url 'update_cart_quantity' item.item.id 'increase' %}" class="btn-qty-plus">
-                                +
-                            </a>
+                            <a href="javascript:void(0);" 
+                            data-url="{% url 'update_cart_quantity' item.item.id 'decrease' %}" 
+                            class="btn-qty-minus btn-qty-ajax">-</a>
+                            
+                            <!-- 🔢 數量顯示：加上獨一無二的 class，讓 JS 找得到它 -->
+                            <span class="qty-number qty-num-{{ item.item.id }}">{{ item.quantity }}</span>
+                            
+                            <!-- ➕ 加號按鈕：同樣去掉 href，改用 data-url，加上 class 'btn-qty-ajax' -->
+                            <a href="javascript:void(0);" 
+                            data-url="{% url 'update_cart_quantity' item.item.id 'increase' %}" 
+                            class="btn-qty-plus btn-qty-ajax">+</a>
                         </div>
                     </td>
                     <td class="text-right dish-subtotal">${{ item.subtotal }}</td>
@@ -94,14 +98,153 @@
 
 </div>
 
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const todayStr = new Date().toISOString().split('T')[0];
-    const dateInput = document.getElementById('pickup_date');
-    if (dateInput) {
-        dateInput.setAttribute('min', todayStr);
-        dateInput.value = todayStr;
-    }
+    // 監聽網頁上所有的點擊事件
+    document.body.addEventListener('click', function(e) {
+        // 1. 判斷點擊的是不是你的加減按鈕
+        const targetLink = e.target.closest('a[data-url*="update_cart_quantity"]');
+        if (!targetLink) return;
+        
+        e.preventDefault(); // 🛑 徹底阻止網頁跳轉，不留下上一頁歷史紀錄
+        
+        const url = targetLink.getAttribute('data-url');
+        // 找到目前的加減控制器
+        const controller = targetLink.closest('.quantity-controller');
+        
+        // 使用 AJAX (Fetch) 呼叫後台
+        fetch(url, {
+            method: 'GET',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // 🟢 【精準更新數字】：直接在目前的控制器裡面尋找帶有數字的那個標籤
+                // 你的 HTML 是 <span class="qty-number">{{ item.quantity }}</span>
+                const qtyEl = controller.querySelector('.qty-number');
+                if (qtyEl) {
+                    qtyEl.innerText = data.quantity; // 數字立刻跳動！
+                }
+                
+                // 🟢 【精準更新小計】：直接往上找到這一道菜的整行表格 (tr)
+                const row = targetLink.closest('tr');
+                if (row) {
+                    // 在這行裡面尋找帶有 dish-subtotal 的那一格，並把新金額塞進去
+                    const subtotalEl = row.querySelector('.dish-subtotal');
+                    if (subtotalEl) {
+                        subtotalEl.innerText = `$${data.subtotal}`; // 小計立刻跳動！
+                    }
+                }
+                
+                // 🟢 【精準更新總金額】：更新最下方的結帳總計
+                const totalAmountEl = document.getElementById('cart-total-amount');
+                if (totalAmountEl) {
+                    totalAmountEl.innerText = `$${data.total_amount}`;
+                }
+            } 
+            else if (data.status === 'deleted') {
+                // 🔴 如果數量變成 0 被刪除了，直接整頁重新整理，秀出最正確的購物車狀態
+                window.location.reload();
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
 });
+document.addEventListener('DOMContentLoaded', function() {
+    // 🌟 核心大絕：管他 name 還是 id，只要是網頁上的「日期輸入框（type="date"）」，通通抓出來鎖死！
+    const dateInput = document.querySelector('input[type="date"]');
+    // 自動識別你的時間選單，優先找帶有取餐名稱的，找不到就找網頁上的 select
+    const timeSelect = document.querySelector('select[name="pickup_time_slot"]') || document.querySelector('select'); 
+
+    // 取得今天的台灣時間
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1; 
+    let dd = today.getDate();
+
+    if (mm < 10) mm = '0' + mm;
+    if (dd < 10) dd = '0' + dd;
+    const formattedToday = `${yyyy}-${mm}-${dd}`; 
+
+    if (dateInput) {
+        // 🔒 1. 鎖死過去的日期
+        dateInput.min = formattedToday;
+        if (!dateInput.value || dateInput.value < formattedToday) {
+            dateInput.value = formattedToday;
+        }
+
+        // ⏰ 2. 智慧時間過濾函式
+        function filterCartTimeOptions() {
+            if (!timeSelect) return;
+
+            const selectedDate = dateInput.value;
+            
+            // 🌟 A. 計算「現在時間 + 30 分鐘」的緩衝安全時間
+            const bufferTime = new Date();
+            bufferTime.setMinutes(bufferTime.getMinutes() + 30); // 直接往後推 30 分鐘
+            
+            const targetHour = bufferTime.getHours();
+            const targetMinute = bufferTime.getMinutes();
+
+            // B. 如果選今天，隱藏不符合「現在 + 30分鐘」的過去時段
+            if (selectedDate === formattedToday) {
+                const options = timeSelect.querySelectorAll('option');
+                let firstValidOption = null;
+
+                options.forEach(option => {
+                    const timeStr = option.value || option.innerText; 
+                    if (!timeStr || !timeStr.includes(':')) return;
+
+                    const [hour, minute] = timeStr.split(':').map(Number);
+
+                    // 🛑 核心改變：如果選單的時段，小於「現在+30分鐘」的時間，就直接隱藏！
+                    if (hour < targetHour || (hour === targetHour && minute < targetMinute)) {
+                        option.style.display = 'none';
+                        option.disabled = true;
+                    } else {
+                        option.style.display = 'block';
+                        option.disabled = false;
+                        if (!firstValidOption) firstValidOption = option;
+                    }
+                });
+
+                // 防呆：如果當前選中的時間已過期，自動跳到下一個最早的合法時段
+                if (timeSelect.selectedOptions[0] && (timeSelect.selectedOptions[0].style.display === 'none' || timeSelect.selectedOptions[0].disabled)) {
+                    if (firstValidOption) {
+                        timeSelect.value = firstValidOption.value;
+                    } else {
+                        // 如果今天的剩餘營業時間都不夠塞下 30 分鐘緩衝了（例如快打烊了）
+                        // 自動幫客人的日期切到「明天」
+                        const tomorrow = new Date();
+                        tomorrow.setDate(tomorrow.getDate() + 1);
+                        let tm = tomorrow.getMonth() + 1;
+                        let td = tomorrow.getDate();
+                        if (tm < 10) tm = '0' + tm;
+                        if (td < 10) td = '0' + td;
+                        dateInput.value = `${tomorrow.getFullYear()}-${tm}-${td}`;
+                        filterCartTimeOptions();
+                    }
+                }
+            } else {
+                // C. 如果選未來日子，全部時段大放行
+                const options = timeSelect.querySelectorAll('option');
+                options.forEach(option => {
+                    option.style.display = 'block';
+                    option.disabled = false;
+                });
+            }
+        }
+
+        // 監聽取餐日期更換
+        dateInput.addEventListener('change', filterCartTimeOptions);
+        // 進入網頁購物車時立刻執行一次過濾
+        filterCartTimeOptions();
+    }
+
+});
+
 </script>
+
 {% endblock %}

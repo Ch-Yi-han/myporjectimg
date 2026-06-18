@@ -123,6 +123,7 @@ class Reservation(models.Model):
     )
     notes = models.TextField(blank=True, null=True, verbose_name="備註")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="填單時間")
+    is_arrived = models.BooleanField(default=False, verbose_name="客人是否已到店")
 
     class Meta:
         verbose_name = "線上訂位"

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}我的訂位紀錄 - 聚福樓{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/my_bookings.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="booking-container">
+    
+    <div class="booking-header">
+        <h2 class="page-title">📅 您的專屬訂位紀錄</h2>
+        <a href="{% url 'book_table' %}" class="btn-new-booking">預約新訂位 ➔</a>
+    </div>
+    
+    <hr class="divider">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert-message">
+                ✨ {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if bookings %}
+        {% for booking in bookings %}
+            <div class="booking-card">
+                
+                <div class="booking-info">
+                    <h3 class="customer-name">訂位人：{{ booking.name }}</h3>
+                    <div class="info-details">
+                        <p>📱 聯絡電話：<strong>{{ booking.phone }}</strong></p>
+                        <p class="text-success">📆 用餐日期：<strong>{{ booking.date|date:"Y-m-d" }}</strong></p>
+                        <p class="text-primary">⏰ 用餐時段：<strong>{{ booking.time_slot }}</strong></p>
+                        <p>👥 用餐人數：<strong>{{ booking.guests }} 人</strong></p>
+                        
+                        {% if booking.notes %}
+                            <p class="text-notes">💬 備註需求：{{ booking.notes }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="booking-actions">
+                    
+                    {% if booking.is_arrived %}
+                        <span class="status-tag tag-arrived">✓ 已到店用餐</span>
+                    {% else %}
+                        <span class="status-tag tag-pending">⏳ 尚未到店</span>
+                    {% endif %}
+
+                    {% if not booking.is_arrived %}
+                        <a href="{% url 'cancel_booking' booking.id %}" 
+                           onclick="return confirm('確定要取消這筆在 {{ booking.date }} {{ booking.time_slot }} 的聚福樓預約嗎？');" 
+                           class="btn-cancel">
+                            取消預約
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-booking-state">
+            <p>您目前在聚福樓沒有任何預約訂位紀錄喔！</p>
+            <a href="{% url 'book_table' %}" class="btn-go-book">立即線上訂位 📅</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

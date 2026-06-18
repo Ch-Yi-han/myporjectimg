@@ -47,7 +47,9 @@ urlpatterns = [
     path('brand_story/',views.brand_story,name='brand_story'),
     path('contact_us/',views.contact_us,name='contact_us'),
     path('edit_profile/', views.edit_profile, name='edit_profile'),
-    path('book_table/',views.book_table,name='book_table')
+    path('book_table/',views.book_table,name='book_table'),
+    path('my_bookings/', views.my_bookings, name='my_bookings'),
+    path('cancel_booking/<int:booking_id>/', views.cancel_booking, name='cancel_booking'),
 ]
 
 if settings.DEBUG:
