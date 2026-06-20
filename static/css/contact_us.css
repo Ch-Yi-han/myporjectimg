@@ -1,150 +1,165 @@
 /* ==========================================
-   聚福樓聯絡我們專屬樣式 (ju-contact)
+   聯絡我們頁面整體樣式 ju-contact
    ========================================== */
 
-/* 滿版背景區塊 */
-.ju-contact-section {
-  position: relative;
-  background-image: url('../images/contect_us.png'); /* 💡 請確認您的圖片檔名是 contect_us.png 還是 contact_us.png 喔！ */
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  color: #ffffff;
-  padding: 80px 20px;
-  font-family: "Microsoft JhengHei", sans-serif;
-  min-height: calc(100vh - 160px); 
-  display: flex;
-  align-items: center;
-  box-sizing: border-box;
+/* ==========================================
+   聯絡我們主視覺區塊
+   ========================================== */
+.ju-contact-section { /* 說明：設定聯絡我們頁面的最外層區塊，負責背景圖、字體、尺寸與內容垂直置中。 */
+  position: relative; /* 說明：建立定位基準，讓遮罩與內容容器可以相對此區塊定位。 */
+  background-image: url('../images/contect_us.png'); /* 說明：設定聯絡我們頁背景圖片，保留目前圖片檔名 contect_us.png。 */
+  background-size: cover; /* 說明：讓背景圖片等比例縮放並覆蓋整個區塊，必要時會裁切圖片。 */
+  background-position: center center; /* 說明：讓背景圖片在水平與垂直方向都置中。 */
+  background-repeat: no-repeat; /* 說明：避免背景圖片重複平鋪。 */
+  background-attachment: fixed; /* 說明：讓背景圖片固定在視窗中，頁面捲動時產生視差效果。 */
+  color: #ffffff; /* 說明：設定此區塊預設文字為白色，方便在深色背景上閱讀。 */
+  padding: 80px 20px; /* 說明：上下保留 80px、左右保留 20px，讓內容與畫面邊緣保持距離。 */
+  font-family: "Microsoft JhengHei", sans-serif; /* 說明：使用微軟正黑體作為主要中文字型，沒有時使用無襯線字型。 */
+  min-height: calc(100vh - 160px); /* 說明：最小高度為視窗高度扣掉約 160px，保留頁首與頁尾空間。 */
+  display: flex; /* 說明：使用 flex 排版，方便控制內容在垂直方向的位置。 */
+  align-items: center; /* 說明：讓內部內容在垂直方向置中。 */
+  box-sizing: border-box; /* 說明：讓 padding 被計入元素尺寸內，避免區塊超出預期高度。 */
 }
 
-/* 背景深色半透明遮罩 */
-.ju-contact-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6); 
-  z-index: 1;
+/* ==========================================
+   背景遮罩
+   ========================================== */
+.ju-contact-overlay { /* 說明：設定覆蓋在背景圖片上的半透明黑色遮罩，讓文字資訊更清楚。 */
+  position: absolute; /* 說明：讓遮罩絕對定位在聯絡我們主區塊內。 */
+  top: 0; /* 說明：遮罩從主區塊頂部開始。 */
+  left: 0; /* 說明：遮罩從主區塊左側開始。 */
+  width: 100%; /* 說明：遮罩寬度覆蓋整個主區塊。 */
+  height: 100%; /* 說明：遮罩高度覆蓋整個主區塊。 */
+  background-color: rgba(0, 0, 0, 0.6); /* 說明：設定 60% 透明度的黑色遮罩，降低背景亮度。 */
+  z-index: 1; /* 說明：遮罩層級位於背景上方、聯絡卡片下方。 */
 }
 
-/* 內容主包裝盒（負責把東西推到最右邊） */
-.ju-contact-container {
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
-  position: relative;
-  z-index: 2;
-  display: flex;
-  justify-content: flex-end; /* 💡 關鍵：靠右對齊 */
-  padding-right: 5%; /* 💡 控制字卡離右邊螢幕的距離，可依喜好調整 */
-  box-sizing: border-box;
+/* ==========================================
+   聯絡內容容器
+   ========================================== */
+.ju-contact-container { /* 說明：設定聯絡資訊卡片的外層容器，控制最大寬度與水平位置。 */
+  max-width: 1200px; /* 說明：限制內容最大寬度，避免在大螢幕上過度拉寬。 */
+  width: 100%; /* 說明：容器寬度填滿父層可用空間。 */
+  margin: 0 auto; /* 說明：上下外距為 0，左右自動置中。 */
+  position: relative; /* 說明：讓容器可以設定 z-index 並疊在遮罩上方。 */
+  z-index: 2; /* 說明：內容容器層級高於背景遮罩，確保卡片可見。 */
+  display: flex; /* 說明：使用 flex 排版控制卡片水平位置。 */
+  justify-content: flex-end; /* 說明：桌機版將聯絡卡片靠右排列。 */
+  padding-right: 5%; /* 說明：右側保留 5% 內距，避免卡片貼齊畫面邊緣。 */
+  box-sizing: border-box; /* 說明：讓 padding 計入容器寬度，避免排版超出。 */
 }
 
-/* 右側中式微醺玻璃字卡 */
-.ju-contact-card {
-  max-width: 500px;
-  width: 100%;
-  background: rgba(26, 26, 26, 0.85); 
-  padding: 40px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 193, 7, 0.3); /* 使用宮廷黃變數顏色 */
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(5px);
+/* ==========================================
+   聯絡資訊卡片
+   ========================================== */
+.ju-contact-card { /* 說明：設定聯絡資訊卡片的尺寸、背景與玻璃感外觀。 */
+  max-width: 500px; /* 說明：限制卡片最大寬度，讓資訊集中且容易閱讀。 */
+  width: 100%; /* 說明：卡片在最大寬度內填滿可用空間，方便響應式縮放。 */
+  background: rgba(26, 26, 26, 0.85); /* 說明：使用半透明深色背景，讓背景圖仍隱約可見。 */
+  padding: 40px; /* 說明：卡片內保留 40px 空間，讓文字不貼邊。 */
+  border-radius: 12px; /* 說明：設定卡片圓角，讓外觀更柔和。 */
+  border: 1px solid rgba(255, 193, 7, 0.3); /* 說明：加入淡金色邊框，呼應品牌色。 */
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); /* 說明：加入深色陰影，讓卡片從背景中浮出。 */
+  backdrop-filter: blur(5px); /* 說明：模糊卡片後方背景，形成半透明玻璃效果。 */
 }
 
-/* 字卡內文字排版 */
-.ju-contact-subtitle {
-  color: #ffc107; /* 宮廷黃 */
-  font-size: 13px;
-  letter-spacing: 3px;
-  font-weight: bold;
-  display: block;
-  margin-bottom: 10px;
+/* ==========================================
+   卡片小標與主標題
+   ========================================== */
+.ju-contact-subtitle { /* 說明：設定聯絡卡片上方的小標文字。 */
+  color: #ffc107; /* 說明：小標使用金黃色，作為品牌強調色。 */
+  font-size: 13px; /* 說明：小標文字較小，作為主標題前導。 */
+  letter-spacing: 3px; /* 說明：增加小標字距，營造精緻感。 */
+  font-weight: bold; /* 說明：小標加粗，提升辨識度。 */
+  display: block; /* 說明：讓小標獨占一行。 */
+  margin-bottom: 10px; /* 說明：小標下方保留 10px，與主標題分隔。 */
 }
 
-.ju-contact-title {
-  color: #ffffff;
-  font-size: 32px;
-  margin-bottom: 35px;
-  font-weight: 700;
-  position: relative;
+.ju-contact-title { /* 說明：設定聯絡我們主標題文字。 */
+  color: #ffffff; /* 說明：主標題使用白色，確保在深色卡片上清楚可讀。 */
+  font-size: 32px; /* 說明：設定主標題字級為 32px，形成視覺重點。 */
+  margin-bottom: 35px; /* 說明：主標題下方保留 35px，與聯絡資訊列表分隔。 */
+  font-weight: 700; /* 說明：主標題使用粗體字重，增加份量。 */
+  position: relative; /* 說明：建立定位基準，方便搭配標題裝飾線。 */
 }
 
-/* 標題下方小紅線 */
-.ju-contact-title::after {
-  content: '';
-  display: block;
-  width: 50px;
-  height: 3px;
-  background-color: #b32017; /* 招牌紅 */
-  margin-top: 15px;
+.ju-contact-title::after { /* 說明：在主標題下方加入紅色裝飾線。 */
+  content: ''; /* 說明：產生空的偽元素，用來顯示裝飾線。 */
+  display: block; /* 說明：讓裝飾線成為區塊元素並出現在標題下方。 */
+  width: 50px; /* 說明：設定裝飾線寬度為 50px。 */
+  height: 3px; /* 說明：設定裝飾線高度為 3px。 */
+  background-color: #b32017; /* 說明：裝飾線使用品牌紅色，增加重點。 */
+  margin-top: 15px; /* 說明：裝飾線與標題文字之間保留 15px。 */
 }
 
-/* 聯絡清單 */
-.ju-contact-info-list {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  margin-bottom: 40px;
+/* ==========================================
+   聯絡資訊列表
+   ========================================== */
+.ju-contact-info-list { /* 說明：設定電話、地址、營業時間等聯絡資訊的列表容器。 */
+  display: flex; /* 說明：使用 flex 排版。 */
+  flex-direction: column; /* 說明：讓每筆聯絡資訊垂直排列。 */
+  gap: 25px; /* 說明：每筆聯絡資訊之間保留 25px 間距。 */
+  margin-bottom: 40px; /* 說明：列表下方保留 40px，與按鈕分隔。 */
 }
 
-.ju-info-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 15px;
+.ju-info-item { /* 說明：設定單筆聯絡資訊的排列方式。 */
+  display: flex; /* 說明：讓 icon 與文字內容水平排列。 */
+  align-items: flex-start; /* 說明：讓 icon 與文字區塊從上方對齊。 */
+  gap: 15px; /* 說明：icon 與文字內容之間保留 15px 間距。 */
 }
 
-.ju-info-icon {
-  font-size: 20px;
-  color: #ffc107; 
-  margin-top: 2px;
+.ju-info-icon { /* 說明：設定聯絡資訊 icon 樣式。 */
+  font-size: 20px; /* 說明：設定 icon 大小為 20px。 */
+  color: #ffc107; /* 說明：icon 使用金黃色，提升辨識度並呼應品牌色。 */
+  margin-top: 2px; /* 說明：向下微調 icon 位置，讓它與標題文字視覺上更對齊。 */
 }
 
-.ju-info-text h3 {
-  color: #f0e6d2; 
-  font-size: 18px;
-  margin: 0 0 5px 0;
-  font-weight: 600;
+.ju-info-text h3 { /* 說明：設定每筆聯絡資訊的小標題，例如電話、地址或營業時間。 */
+  color: #f0e6d2; /* 說明：小標題使用米白色，與一般內容文字做出層次。 */
+  font-size: 18px; /* 說明：設定小標題字級為 18px。 */
+  margin: 0 0 5px 0; /* 說明：移除上左右外距，底部保留 5px 與內容分隔。 */
+  font-weight: 600; /* 說明：小標題使用半粗體，提升欄位辨識度。 */
 }
 
-.ju-info-text p {
-  color: #cccccc;
-  font-size: 15px;
-  line-height: 1.6;
-  margin: 0;
+.ju-info-text p { /* 說明：設定每筆聯絡資訊的詳細內容文字。 */
+  color: #cccccc; /* 說明：詳細內容使用淺灰色，呈現次要資訊。 */
+  font-size: 15px; /* 說明：設定內容文字大小。 */
+  line-height: 1.6; /* 說明：增加行高，讓多行內容更容易閱讀。 */
+  margin: 0; /* 說明：移除段落預設外距，避免列表間距失控。 */
 }
 
-/* 線上訂位按鈕 */
-.ju-contact-btn {
-  display: block;
-  text-align: center;
-  background-color: #ffc107; 
-  color: #1a1a1a;
-  text-decoration: none;
-  padding: 14px 0;
-  border-radius: 6px;
-  font-weight: bold;
-  font-size: 16px;
-  letter-spacing: 1px;
-  transition: all 0.3s ease;
+/* ==========================================
+   聯絡按鈕
+   ========================================== */
+.ju-contact-btn { /* 說明：設定聯絡我們頁面的主要行動按鈕。 */
+  display: block; /* 說明：讓按鈕以區塊方式呈現並可填滿寬度。 */
+  text-align: center; /* 說明：讓按鈕文字水平置中。 */
+  background-color: #ffc107; /* 說明：按鈕背景使用金黃色，形成主要操作重點。 */
+  color: #1a1a1a; /* 說明：按鈕文字使用深色，與金色背景形成對比。 */
+  text-decoration: none; /* 說明：移除連結底線，讓它呈現按鈕外觀。 */
+  padding: 14px 0; /* 說明：上下保留 14px 內距，增加可點擊範圍。 */
+  border-radius: 6px; /* 說明：按鈕使用 6px 圓角。 */
+  font-weight: bold; /* 說明：按鈕文字加粗，提升可點擊感。 */
+  font-size: 16px; /* 說明：設定按鈕文字大小。 */
+  letter-spacing: 1px; /* 說明：增加按鈕文字字距，提升視覺質感。 */
+  transition: all 0.3s ease; /* 說明：讓按鈕的顏色與陰影變化更平滑。 */
 }
 
-.ju-contact-btn:hover {
-  background-color: #b32017;
-  color: #ffffff;
-  box-shadow: 0 5px 15px rgba(179, 32, 23, 0.4);
+.ju-contact-btn:hover { /* 說明：設定聯絡按鈕滑鼠移入時的樣式。 */
+  background-color: #b32017; /* 說明：hover 時背景改為品牌紅色，增加互動回饋。 */
+  color: #ffffff; /* 說明：hover 時文字改為白色，確保對比清楚。 */
+  box-shadow: 0 5px 15px rgba(179, 32, 23, 0.4); /* 說明：hover 時加入紅色陰影，讓按鈕更突出。 */
 }
 
-/* RWD 手機版置中 */
-@media (max-width: 768px) {
-  .ju-contact-container {
-    justify-content: center;
-    padding-right: 0;
+/* ==========================================
+   手機版 RWD
+   ========================================== */
+@media (max-width: 768px) { /* 說明：當螢幕寬度小於等於 768px 時，套用手機版聯絡我們排版。 */
+  .ju-contact-container { /* 說明：手機版調整聯絡卡片容器位置。 */
+    justify-content: center; /* 說明：手機版將卡片水平置中，避免靠右造成閱讀不便。 */
+    padding-right: 0; /* 說明：移除右側內距，讓卡片能真正置中。 */
   }
-  .ju-contact-card {
-    padding: 30px 20px;
+  .ju-contact-card { /* 說明：手機版調整聯絡資訊卡片內距。 */
+    padding: 30px 20px; /* 說明：縮小卡片內距，讓手機畫面有更多可用寬度。 */
   }
 }
