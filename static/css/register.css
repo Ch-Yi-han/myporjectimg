@@ -4,12 +4,14 @@
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+/* 說明：重設所有元素的盒模型、外距、內距與預設字型。 */
 
 body {
     background-color: #f4f7f6;
 
 
 }
+/* 說明：設定註冊頁面的整體背景色。 */
 
 .register-container {
     background-color: #ffffff;
@@ -20,18 +22,21 @@ body {
     max-width: 450px;
     margin: 60px auto;
 }
+/* 說明：建立置中的註冊表單卡片，包含白底、陰影與固定最大寬度。 */
 
 h2 {
     text-align: center;
     margin-bottom: 24px;
     color: #333;
 }
+/* 說明：設定註冊標題置中與下方間距。 */
 
 .form-group {
     margin-bottom: 20px;
     display: flex;
     flex-direction: column;
 }
+/* 說明：讓每組表單欄位垂直排列並保持區塊間距。 */
 
 .form-group label {
     font-size: 14px;
@@ -39,6 +44,7 @@ h2 {
     margin-bottom: 8px;
     color: #555;
 }
+/* 說明：設定表單欄位標籤的字級、粗細與顏色。 */
 
 /* 鎖定 Django 生成的 input 與 select 控制項 */
 .form-group input, 
@@ -50,17 +56,20 @@ h2 {
     outline: none;
     transition: border-color 0.2s;
 }
+/* 說明：統一 Django 輸入框與下拉選單的尺寸、邊框與互動過渡效果。 */
 
 .form-group input:focus,
 .form-group select:focus {
     border-color: #4a90e2;
 }
+/* 說明：表單欄位取得焦點時改變邊框顏色，提示目前正在輸入。 */
 
 .help-text {
     font-size: 12px;
     color: #777;
     margin-top: 4px;
 }
+/* 說明：設定欄位輔助說明文字的大小、顏色與間距。 */
 
 .custom-required-msg {
     font-size: 12px;
@@ -68,6 +77,7 @@ h2 {
     margin-top: 4px;
     font-weight: 500;
 }
+/* 說明：設定必填或驗證提示訊息的紅色醒目樣式。 */
 
 .btn-submit {
     background-color: #4a90e2;
@@ -82,7 +92,9 @@ h2 {
     margin-top: 10px;
     transition: background-color 0.2s;
 }
+/* 說明：設定註冊送出按鈕的主要外觀、寬度與滑鼠互動效果。 */
 
 .btn-submit:hover {
     background-color: #357abd;
 }
+/* 說明：滑鼠移到送出按鈕時加深背景色，提供可點擊回饋。 */

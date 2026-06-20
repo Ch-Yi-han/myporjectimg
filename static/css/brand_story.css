@@ -1,115 +1,125 @@
-/* 全螢幕背景故事區塊 */
-.brand-story-section {
-  position: relative;
-  /* 💡 關鍵：將圖片設為背景，並採用 cover 讓它填滿不變形 */
-  background-image: url('../images/broger.png'); /* 請根據您的 static 資料夾結構調整路徑，通常 css 在 static/css，圖片在 static/images，所以用 ../ 往上一層 */
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-attachment: fixed; /* 💡 滾動時背景固定的高級視差效果，若不喜歡可刪除這行 */
+/* ==========================================
+   品牌故事頁面主視覺區塊
+   ========================================== */
+.brand-story-section { /* 說明：設定品牌故事頁最外層區塊，負責背景圖、文字顏色、版面高度與內容垂直置中。 */
+  position: relative; /* 說明：建立定位基準，讓遮罩與內部內容可以相對此區塊定位。 */
+  background-image: url('../images/broger.png'); /* 說明：設定品牌故事頁背景圖片，路徑從 static/css 回到 static/images。 */
+  background-size: cover; /* 說明：讓背景圖片等比例縮放並完整覆蓋整個區塊，必要時會裁切圖片。 */
+  background-position: center center; /* 說明：讓背景圖片水平與垂直都以中心點對齊。 */
+  background-repeat: no-repeat; /* 說明：避免背景圖片重複平鋪。 */
+  background-attachment: fixed; /* 說明：讓背景圖片固定在視窗中，捲動頁面時產生視差效果。 */
   
-  color: #ffffff;
-  padding: 100px 20px;
-  font-family: "Microsoft JhengHei", sans-serif;
+  color: #ffffff; /* 說明：設定此區塊內預設文字為白色，方便在深色遮罩上閱讀。 */
+  padding: 100px 20px; /* 說明：上下保留 100px、左右保留 20px 內距，讓內容不貼齊邊緣。 */
+  font-family: "Microsoft JhengHei", sans-serif; /* 說明：使用微軟正黑體作為主要中文字型，沒有時使用無襯線字型。 */
   
-  /* 填滿螢幕，徹底消滅白條 */
-  min-height: calc(100vh - 160px); 
-  display: flex;
-  align-items: center;
-  box-sizing: border-box;
+  min-height: calc(100vh - 160px); /* 說明：設定最小高度為視窗高度扣掉約 160px，讓內容區接近滿版但保留頁首頁尾空間。 */
+  display: flex; /* 說明：使用 flex 排版，方便控制內容在垂直方向的位置。 */
+  align-items: center; /* 說明：讓內部內容在垂直方向置中。 */
+  box-sizing: border-box; /* 說明：讓 padding 被計入元素尺寸內，避免區塊高度計算超出預期。 */
 }
 
-/* 深色半透明遮罩：防止背景太亮導致文字看不清 */
-.story-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.75); /* 0.75 代表 75% 的黑，可依喜好微調 */
-  z-index: 1;
+/* ==========================================
+   背景遮罩
+   ========================================== */
+.story-overlay { /* 說明：設定覆蓋在背景圖片上的半透明黑色遮罩，提升文字可讀性。 */
+  position: absolute; /* 說明：讓遮罩絕對定位在品牌故事主區塊內。 */
+  top: 0; /* 說明：遮罩從區塊頂部開始。 */
+  left: 0; /* 說明：遮罩從區塊左側開始。 */
+  width: 100%; /* 說明：遮罩寬度覆蓋整個主區塊。 */
+  height: 100%; /* 說明：遮罩高度覆蓋整個主區塊。 */
+  background-color: rgba(0, 0, 0, 0.75); /* 說明：設定 75% 透明度的黑色遮罩，使背景變暗。 */
+  z-index: 1; /* 說明：遮罩層級位於背景圖上方、文字內容下方。 */
 }
 
-/* 內容包裝盒 */
-.story-container {
-  max-width: 100%; /* 💡 將文字寬度限縮在中間，閱讀起來更像高檔雜誌 */
-  margin: 0 auto;
-  width: 100%;
-  display: flex;
-  position: relative;
-  z-index: 2; /* 確保文字在遮罩之上 */
-  text-align: left; /* 💡 文字置中排版，非常適合滿版背景的風格 */
-  justify-content: flex-start;
-  padding-left: 20%;
-  box-sizing: border-box;
+/* ==========================================
+   內容容器
+   ========================================== */
+.story-container { /* 說明：設定品牌故事文字內容的外層容器，負責定位與對齊。 */
+  max-width: 100%; /* 說明：允許容器最多使用父層全部寬度。 */
+  margin: 0 auto; /* 說明：上下外距為 0，左右自動置中。 */
+  width: 100%; /* 說明：讓容器寬度填滿父層可用空間。 */
+  display: flex; /* 說明：使用 flex 排版，方便控制文字內容位置。 */
+  position: relative; /* 說明：讓容器可以設定 z-index 並疊在遮罩上方。 */
+  z-index: 2; /* 說明：內容層級高於遮罩，確保文字可以顯示在最上方。 */
+  text-align: left; /* 說明：桌機版文字靠左對齊，形成閱讀區塊感。 */
+  justify-content: flex-start; /* 說明：讓內容從容器左側開始排列。 */
+  padding-left: 20%; /* 說明：左側保留 20% 空間，使文字區塊偏左但不貼邊。 */
+  box-sizing: border-box; /* 說明：讓 padding 計入容器寬度，避免內容超出。 */
 }
 
-.story-content {
-  max-width: 600px; /* 💡 限制文字最多只佔 600px 寬，完美待在左側暗處 */
-  width: 100%;
+.story-content { /* 說明：設定品牌故事文字實際內容寬度。 */
+  max-width: 600px; /* 說明：限制文字最大寬度為 600px，避免段落過長影響閱讀。 */
+  width: 100%; /* 說明：在最大寬度內填滿可用空間，方便響應式縮放。 */
 }
 
-/* 文字細節調整 */
-.story-subtitle {
-  color: #cca43b;
-  font-size: 14px;
-  letter-spacing: 3px;
-  font-weight: bold;
-  display: block;
-  margin-bottom: 15px;
+/* ==========================================
+   小標、標題與裝飾線
+   ========================================== */
+.story-subtitle { /* 說明：設定品牌故事上方的小標文字樣式。 */
+  color: #cca43b; /* 說明：小標使用金棕色，作為品牌色的輔助強調。 */
+  font-size: 14px; /* 說明：設定小標字級較小，作為標題前導文字。 */
+  letter-spacing: 3px; /* 說明：增加小標字距，營造精緻感。 */
+  font-weight: bold; /* 說明：小標加粗，讓它在背景上更清楚。 */
+  display: block; /* 說明：讓小標獨占一行，與主標題分開。 */
+  margin-bottom: 15px; /* 說明：小標下方保留 15px 與主標題分隔。 */
 }
 
-.story-title {
-  color: #ffffff;
-  font-size: 36px;
-  margin-bottom: 30px;
-  font-weight: 700;
-  display: inline-block;
+.story-title { /* 說明：設定品牌故事主標題樣式。 */
+  color: #ffffff; /* 說明：主標題使用白色，確保在暗色背景上清楚可見。 */
+  font-size: 36px; /* 說明：設定主標題字級為 36px，形成頁面主要視覺重點。 */
+  margin-bottom: 30px; /* 說明：主標題下方保留 30px，與後續內容分隔。 */
+  font-weight: 700; /* 說明：主標題使用較粗字重，提升視覺份量。 */
+  display: inline-block; /* 說明：讓標題寬度依文字內容決定，方便下方裝飾線跟標題搭配。 */
 }
 
-/* 標題下方的紅色裝飾線（從置中改為靠左） */
-.story-title::after {
-  content: '';
-  display: block;
-  width: 80px;
-  height: 3px;
-  background-color: #b22222;
-  margin: 15px 0 0 0; /* 💡 關鍵：左右 margin 改為 0，讓紅色線條靠左對齊 */
+.story-title::after { /* 說明：在品牌故事主標題下方加入紅色裝飾線。 */
+  content: ''; /* 說明：產生空的偽元素，用來顯示裝飾線。 */
+  display: block; /* 說明：讓偽元素成為區塊元素，出現在標題下方。 */
+  width: 80px; /* 說明：設定裝飾線寬度為 80px。 */
+  height: 3px; /* 說明：設定裝飾線高度為 3px。 */
+  background-color: #b22222; /* 說明：裝飾線使用紅色，呼應品牌主色。 */
+  margin: 15px 0 0 0; /* 說明：裝飾線上方保留 15px，並靠左對齊標題。 */
 }
 
-.story-highlight {
-  color: #f0e6d2;
-  font-size: 20px;
-  line-height: 1.8;
-  font-weight: 600;
-  margin-bottom: 35px;
-  border-left: 4px solid #cca43b; /* 💡 小巧思：左側加上金色裝飾線，點綴靠左排版 */
-  padding-left: 15px;             /* 給金色線條一點呼吸空間 */
+/* ==========================================
+   重點文字與段落
+   ========================================== */
+.story-highlight { /* 說明：設定品牌故事中的重點引言或重點段落。 */
+  color: #f0e6d2; /* 說明：重點文字使用米白色，與一般段落做出層次。 */
+  font-size: 20px; /* 說明：重點文字字級較大，讓內容更醒目。 */
+  line-height: 1.8; /* 說明：設定較高行高，提高長句閱讀舒適度。 */
+  font-weight: 600; /* 說明：重點文字使用半粗體，增加強調效果。 */
+  margin-bottom: 35px; /* 說明：重點段落下方保留 35px，與一般故事段落分隔。 */
+  border-left: 4px solid #cca43b; /* 說明：左側加金棕色線條，形成引言或重點標示。 */
+  padding-left: 15px; /* 說明：讓文字與左側線條保留 15px 距離。 */
 }
 
-.story-text p {
-  color: #e0e0e0;
-  font-size: 16px;
-  line-height: 2;
-  margin-bottom: 20px;
-  text-align: justify; /* 💡 改為左右對齊，文字邊緣會更整齊漂亮 */
-  letter-spacing: 1px;
+.story-text p { /* 說明：設定品牌故事正文段落樣式。 */
+  color: #e0e0e0; /* 說明：正文使用淺灰色，降低刺眼感並維持可讀性。 */
+  font-size: 16px; /* 說明：設定正文段落字級為 16px，適合閱讀。 */
+  line-height: 2; /* 說明：設定兩倍行高，讓段落在深色背景上更好讀。 */
+  margin-bottom: 20px; /* 說明：每段文字下方保留 20px 間距。 */
+  text-align: justify; /* 說明：桌機版段落左右對齊，讓文字邊界更整齊。 */
+  letter-spacing: 1px; /* 說明：增加正文一點字距，提升中文段落閱讀感。 */
 }
 
-/* 響應式設計：手機版維持置中比較好讀 */
-@media (max-width: 768px) {
-  .story-container {
-    text-align: center;
-    justify-content: center;
+/* ==========================================
+   手機版 RWD
+   ========================================== */
+@media (max-width: 768px) { /* 說明：當螢幕寬度小於等於 768px 時，套用品牌故事手機版排版。 */
+  .story-container { /* 說明：手機版調整品牌故事內容容器對齊方式。 */
+    text-align: center; /* 說明：手機版文字改為置中，適合窄螢幕閱讀。 */
+    justify-content: center; /* 說明：手機版讓內容區塊水平置中。 */
   }
-  .story-title::after {
-    margin: 15px auto 0 auto;
+  .story-title::after { /* 說明：手機版調整標題下方裝飾線位置。 */
+    margin: 15px auto 0 auto; /* 說明：裝飾線上方保留 15px，左右自動置中。 */
   }
-  .story-highlight {
-    border-left: none;
-    padding-left: 0;
+  .story-highlight { /* 說明：手機版調整重點文字樣式。 */
+    border-left: none; /* 說明：手機版移除左側線條，避免窄螢幕看起來擁擠。 */
+    padding-left: 0; /* 說明：移除左側內距，讓重點文字回到置中排版。 */
   }
-  .story-text p {
-    text-align: center;
+  .story-text p { /* 說明：手機版調整正文段落對齊方式。 */
+    text-align: center; /* 說明：手機版段落置中顯示，與整體手機版排版一致。 */
   }
 }

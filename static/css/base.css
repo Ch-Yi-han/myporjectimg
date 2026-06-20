@@ -1,289 +1,279 @@
 /* ==========================================
-   1. 全局基礎重設 & 變數定義
+   1. 全站共用變數與基礎設定
    ========================================== */
-:root {
-    --primary-red: #b32017;      /* 聚福樓招牌紅 */
-    --gold-color: #ffc107;       /* 皇家宮廷黃 */
-    --dark-bg: #1a1a1a;          /* 導覽列與頁尾的深黑色 */
-    --text-white: #ffffff;
-    --text-muted: #888888;
+:root { /* 說明：定義全站可以重複使用的 CSS 變數，方便統一管理主色、文字色與背景色。 */
+    --primary-red: #b32017;      /* 說明：網站主要紅色，常用於重點邊框、品牌色或強調元素。 */
+    --gold-color: #ffc107;       /* 說明：網站金黃色，常用於 Logo、導覽 hover、標題或重要提示。 */
+    --dark-bg: #1a1a1a;          /* 說明：深色背景，主要用在頁首、頁尾等深色區塊。 */
+    --text-white: #ffffff;       /* 說明：白色文字，主要用於深色背景上的文字。 */
+    --text-muted: #888888;       /* 說明：較淡的灰色文字，主要用於次要資訊或版權文字。 */
 }
 
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
+html, body { /* 說明：同時設定 html 與 body，建立整頁版面的基本高度與預設間距。 */
+    height: 100%;                /* 說明：讓 html 和 body 高度撐滿瀏覽器視窗，方便後續 sticky footer 排版。 */
+    margin: 0;                   /* 說明：移除瀏覽器預設外距，避免頁面四周出現空白。 */
+    padding: 0;                  /* 說明：移除瀏覽器預設內距，讓版面可以精準控制。 */
 }
 
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    display: flex;
-    flex-direction: column;      /* 讓網頁垂直由上往下排 */
-    min-height: 100vh;           /* 確保滿版高度 */
-    background-color: #fcfcfc;
+body { /* 說明：設定全站 body 的字型、排版方向與背景色。 */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* 說明：使用系統預設無襯線字型，讓不同裝置都有自然的字體顯示。 */
+    display: flex;               /* 說明：把 body 設為 flex 容器，讓主要內容與頁尾可以上下排列。 */
+    flex-direction: column;      /* 說明：讓 body 裡的子元素以垂直方向排列。 */
+    min-height: 100vh;           /* 說明：讓 body 最小高度等於整個視窗高度，避免頁尾浮在中間。 */
+    background-color: #fcfcfc;   /* 說明：設定全站預設背景為接近白色的淺灰白。 */
 }
 
-/* 移除所有預設超連結底線與清單點點 */
-a {
-    text-decoration: none;
-    color: inherit;
-    transition: color 0.3s ease;
+a { /* 說明：設定全站連結的預設樣式。 */
+    text-decoration: none;       /* 說明：移除連結預設底線，讓導覽與按鈕樣式更乾淨。 */
+    color: inherit;              /* 說明：讓連結繼承父層文字顏色，避免出現瀏覽器預設藍色。 */
+    transition: color 0.3s ease; /* 說明：當連結顏色改變時加入 0.3 秒平滑過渡效果。 */
 }
 
-ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+ul { /* 說明：重設無序列表的預設樣式，常用於導覽選單。 */
+    list-style: none;            /* 說明：移除列表項目前方的圓點符號。 */
+    margin: 0;                   /* 說明：移除列表預設外距。 */
+    padding: 0;                  /* 說明：移除列表預設內距。 */
 }
 
-/* 限制內容最大寬度，在大螢幕上看才會置中靠攏 */
-.nav-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
+.nav-container { /* 說明：共用導覽內容容器，用來限制寬度並讓左右內容對齊。 */
+    max-width: 1200px;           /* 說明：限制最大寬度，避免內容在大螢幕上拉得太寬。 */
+    margin: 0 auto;              /* 說明：上下外距為 0，左右自動置中。 */
+    padding: 0 20px;             /* 說明：左右保留 20px 內距，避免內容貼齊螢幕邊緣。 */
+    display: flex;               /* 說明：使用 flex 排版，方便水平排列導覽內容。 */
+    justify-content: space-between; /* 說明：讓容器內的左右兩組內容分散到兩側。 */
+    align-items: center;         /* 說明：讓容器內項目在垂直方向置中對齊。 */
+    width: 100%;                 /* 說明：讓容器寬度填滿父層可用空間。 */
 }
 
 /* ==========================================
-   2. 最頂端小導覽列 (Top Navbar)
+   2. 頂部導覽列 Top Navbar
    ========================================== */
-.top-navbar {
-    background-color: #111111;
-    color: var(--text-white);
-    font-size: 13px;
-    padding: 8px 0;
-    border-bottom: 1px solid #222;
+.top-navbar { /* 說明：設定頁面最上方的小型資訊導覽列。 */
+    background-color: #111111;   /* 說明：使用接近黑色的背景，與主頁首保持深色視覺。 */
+    color: var(--text-white);    /* 說明：文字使用白色，確保在深色背景上清楚可讀。 */
+    font-size: 13px;             /* 說明：使用較小字級，符合頂部資訊列的輔助角色。 */
+    padding: 8px 0;              /* 說明：上下保留 8px 內距，左右由內層容器控制。 */
+    border-bottom: 1px solid #222; /* 說明：在底部加一條深灰分隔線，區分上下導覽區塊。 */
 }
 
-.info-item a{
-    margin-right: 20px;
+.info-item a{ /* 說明：設定頂部資訊列中的連結間距。 */
+    margin-right: 20px;          /* 說明：每個資訊連結右側保留 20px，避免彼此太靠近。 */
     
 }
 
-.icon-gold {
-    color: var(--gold-color);
-    margin-right: 5px;
+.icon-gold { /* 說明：設定需要金色顯示的 icon 樣式。 */
+    color: var(--gold-color);    /* 說明：icon 使用全站金黃色，形成品牌強調。 */
+    margin-right: 5px;           /* 說明：icon 與後方文字保留 5px 間距。 */
 }
 
-.nav-link-item {
-    margin-left: 20px;
-    opacity: 0.8;
+.nav-link-item { /* 說明：設定頂部導覽連結項目的基本樣式。 */
+    margin-left: 20px;           /* 說明：每個導覽項目左側保留 20px 間距。 */
+    opacity: 0.8;                /* 說明：預設透明度稍低，讓 hover 狀態更明顯。 */
 }
 
-.nav-link-item:hover {
-    opacity: 1;
-    color: var(--gold-color);
+.nav-link-item:hover { /* 說明：設定頂部導覽連結滑鼠移入時的樣式。 */
+    opacity: 1;                  /* 說明：滑鼠移入時恢復完全不透明，增加互動回饋。 */
+    color: var(--gold-color);    /* 說明：滑鼠移入時文字改為金黃色，提示可點擊。 */
 }
 
-/* 在手機版隱藏左側的電話和店址 */
-@media (max-width: 768px) {
-    .contact-info {
-        display: none;
+@media (max-width: 768px) { /* 說明：當螢幕寬度小於等於 768px 時，套用手機版頂部導覽調整。 */
+    .contact-info { /* 說明：手機版隱藏聯絡資訊區塊，節省上方空間。 */
+        display: none;           /* 說明：讓聯絡資訊不顯示也不佔版面。 */
     }
-    .top-navbar .nav-container {
-        justify-content: flex-end;
-    }
-}
-
-/* ==========================================
-   3. 主導覽列 (Main Navbar)
-   ========================================== */
-.main-header {
-    background-color: var(--dark-bg);
-    position: sticky;            /* 💡 效果同 sticky-top：往下捲動時會固定在最上方 */
-    top: 0;
-    z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    padding: 10px 0;
-    border-bottom: 3px solid var(--gold-color);
-}
-
-.main-nav-flex {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* Logo 與店名 */
-.logo-area {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.logo-img {
-    height: 45px;                /* 控制 Logo 大小 */
-    width: auto;
-}
-
-.brand-name {
-    color: var(--gold-color);
-    font-size: 26px;
-    font-weight: bold;
-    letter-spacing: 2px;
-}
-
-/* 導覽列選單 */
-.menu-list {
-    display: flex;
-    gap: 25px;
-}
-
-.menu-list a {
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 16px;
-    font-weight: 500;
-    padding: 8px 4px;
-}
-
-.menu-list a i {
-    margin-right: 4px;
-}
-
-/* 滑鼠移過去的金色底線與發光效果 */
-.menu-list a:hover {
-    color: var(--gold-color);
-}
-
-/* RWD：手機版時選單自動橫向捲動，避免破版 */
-@media (max-width: 992px) {
-    .main-nav-flex {
-        flex-direction: column;
-        gap: 15px;
-    }
-    .menu-list {
-        gap: 15px;
-        overflow-x: auto;
-        width: 100%;
-        padding-bottom: 5px;
-        justify-content: center;
-    }
-    .menu-list a {
-        font-size: 15px;
-        white-space: nowrap; /* 避免手機版字體折行 */
+    .top-navbar .nav-container { /* 說明：手機版調整頂部導覽容器的內容對齊方式。 */
+        justify-content: flex-end; /* 說明：讓剩餘的導覽連結靠右排列。 */
     }
 }
 
 /* ==========================================
-   4. 中間內容與神奇頁尾 (Sticky Footer)
+   3. 主導覽列 Main Navbar
    ========================================== */
-.content-wrapper {
-    flex: 1 0 auto;              /* 💡 核心：把內容區撐到最大，將頁尾強行推到底部 */
+.main-header { /* 說明：設定主要頁首導覽列，包含 Logo 與主選單。 */
+    background-color: var(--dark-bg); /* 說明：使用全站深色背景變數作為主導覽底色。 */
+    position: sticky;            /* 說明：讓主導覽列在滾動時固定黏在視窗上方。 */
+    top: 0;                      /* 說明：sticky 狀態時貼齊視窗頂端。 */
+    z-index: 1000;               /* 說明：提高層級，避免導覽列被其他內容蓋住。 */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* 說明：加入下方陰影，讓頁首與內容有層次。 */
+    padding: 10px 0;             /* 說明：上下保留 10px 內距，左右由內層容器控制。 */
+    border-bottom: 3px solid var(--gold-color); /* 說明：在主導覽底部加金色線條，強化品牌視覺。 */
 }
 
-.site-footer {
-    flex-shrink: 0;              /* 確保頁尾不會被壓縮 */
-    background-color: var(--dark-bg);
-    color: var(--text-white);
-    text-align: center;
-    padding: 45px 20px;          /* 取代原本的 py-5 */
-    border-top: 3px solid var(--primary-red); /* 頂部加一條紅線更有設計感 */
+.main-nav-flex { /* 說明：設定主導覽內部 Logo 與選單的水平排列。 */
+    display: flex;               /* 說明：使用 flex 讓 Logo 區與選單區水平排列。 */
+    justify-content: space-between; /* 說明：讓 Logo 與選單分別靠左右兩側。 */
+    align-items: center;         /* 說明：讓 Logo 與選單在垂直方向置中。 */
 }
 
-.footer-logo {
-    color: var(--gold-color);
-    font-size: 24px;
-    margin: 0 0 12px 0;
-    letter-spacing: 4px;
+.logo-area { /* 說明：設定 Logo 圖片與品牌名稱的排列區塊。 */
+    display: flex;               /* 說明：讓 Logo 圖片與文字水平排列。 */
+    align-items: center;         /* 說明：讓 Logo 圖片與品牌文字垂直置中。 */
+    gap: 12px;                   /* 說明：Logo 圖片與品牌文字之間保留 12px 間距。 */
 }
 
-.footer-slogan {
-    margin: 0 0 12px 0;
-    font-size: 15px;
-    opacity: 0.9;
+.logo-img { /* 說明：設定 Logo 圖片大小。 */
+    height: 45px;                /* 說明：固定 Logo 高度為 45px。 */
+    width: auto;                 /* 說明：寬度自動依圖片比例縮放，避免變形。 */
 }
 
-.footer-copy {
-    margin: 0;
-    font-size: 13px;
-    color: var(--text-muted);
-}
-.hero-section {
-    position: relative;
-    width: 100%;
-    min-height: 500px;              /* 設定一個適合的大橫幅基本高度 */
-    height: 60vh;                   /* 讓它佔據螢幕視窗高度的 60% */
-    background-image: url('您的圖片路徑.jpg'); /* 請確認圖片路徑 */
-    background-size: cover;          /* 💡 關鍵：讓圖片縮放並完整覆蓋，不變形 */
-    background-position: center;     /* 💡 關鍵：圖片置中對齊 */
-    background-repeat: no-repeat;
-    display: flex;
-    align-items: center;            /* 讓文字垂直置中 */
-    justify-content: flex-start;    /* 讓文字靠左對齊 (可依需求改 center) */
+.brand-name { /* 說明：設定品牌名稱文字樣式。 */
+    color: var(--gold-color);    /* 說明：品牌名稱使用金黃色，凸顯品牌識別。 */
+    font-size: 26px;             /* 說明：設定品牌名稱字級為 26px。 */
+    font-weight: bold;           /* 說明：讓品牌名稱加粗，提高辨識度。 */
+    letter-spacing: 2px;         /* 說明：增加字距，營造招牌感與穩重感。 */
 }
 
-/* 為背景圖加上一層深色遮罩，避免文字與背景太接近看不清楚 */
-.hero-section::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4); /* 40% 的黑色半透明遮罩 */
-    z-index: 1;
+.menu-list { /* 說明：設定主選單列表的水平排列。 */
+    display: flex;               /* 說明：讓選單項目以水平方式排列。 */
+    gap: 25px;                   /* 說明：每個選單項目之間保留 25px 間距。 */
 }
 
-/* 文字內容容器 */
-.hero-content {
-    position: relative;
-    z-index: 2;                     /* 確保文字在遮罩之上 */
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 40px;
-    width: 100%;
-    color: var(--text-white);
+.menu-list a { /* 說明：設定主選單連結的文字樣式與可點擊範圍。 */
+    color: rgba(255, 255, 255, 0.85); /* 說明：選單文字使用半透明白色，與深色背景搭配。 */
+    font-size: 16px;             /* 說明：設定主選單文字大小。 */
+    font-weight: 500;            /* 說明：使用中等字重，讓選單清楚但不過重。 */
+    padding: 8px 4px;            /* 說明：增加上下左右可點擊範圍，提升操作性。 */
 }
 
-/* 標題與內文調整 */
-.hero-content h1 {
-    font-size: 3rem;
-    color: var(--gold-color);      /* 使用您定義的皇家宮廷黃 */
-    margin-bottom: 15px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+.menu-list a i { /* 說明：設定主選單連結內 icon 與文字的間距。 */
+    margin-right: 4px;           /* 說明：icon 右側保留 4px，避免貼住文字。 */
 }
 
-.hero-content p {
-    font-size: 1.5rem;
-    letter-spacing: 2px;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+.menu-list a:hover { /* 說明：設定主選單連結滑鼠移入時的樣式。 */
+    color: var(--gold-color);    /* 說明：滑鼠移入時改為金黃色，提示目前指向的連結。 */
 }
 
-/* 響應式手機版調整 */
-@media (max-width: 768px) {
-    .hero-section {
-        height: 40vh;               /* 手機版高度縮小 */
-        min-height: 300px;
+@media (max-width: 992px) { /* 說明：當螢幕寬度小於等於 992px 時，調整主導覽為較適合平板與手機的排列。 */
+    .main-nav-flex { /* 說明：小螢幕下調整 Logo 與選單的排列方向。 */
+        flex-direction: column;  /* 說明：讓 Logo 與選單改成上下排列。 */
+        gap: 15px;               /* 說明：Logo 區與選單區之間保留 15px 間距。 */
     }
-    .hero-content h1 {
-        font-size: 2rem;
+    .menu-list { /* 說明：小螢幕下調整選單列表，避免項目擠在一起。 */
+        gap: 15px;               /* 說明：縮小選單項目間距以節省空間。 */
+        overflow-x: auto;        /* 說明：當選單太寬時允許水平捲動。 */
+        width: 100%;             /* 說明：讓選單列表填滿可用寬度。 */
+        padding-bottom: 5px;     /* 說明：底部保留空間，避免水平捲動條貼住文字。 */
+        justify-content: center; /* 說明：選單項目在可用寬度內置中排列。 */
     }
-    .hero-content p {
-        font-size: 1.1rem;
+    .menu-list a { /* 說明：小螢幕下調整主選單連結文字。 */
+        font-size: 15px;         /* 說明：稍微縮小文字，讓更多選單項目可顯示。 */
+        white-space: nowrap;     /* 說明：避免選單文字換行，保持每個項目完整顯示。 */
     }
 }
-.member-name-nav {
-    color: #ffbe2e; /* 聚福樓質感金 */
-    font-weight: bold;
-    cursor: default; /* 讓滑鼠移上去時不要顯示手指形狀，因為它不是超連結 */
+
+/* ==========================================
+   4. 內容區與固定頁尾 Sticky Footer
+   ========================================== */
+.content-wrapper { /* 說明：設定主要內容外層，配合 body flex 讓頁尾固定在頁面底部。 */
+    flex: 1 0 auto;              /* 說明：讓內容區自動撐開剩餘高度，頁尾會被推到下方。 */
 }
 
-.member-links {
-    display: flex;
-    align-items: center;
-    gap: 15px; /* 控制每個項目（包含修改資料、登出、線上點餐）之間的左右間距 */
+.site-footer { /* 說明：設定全站頁尾區塊。 */
+    flex-shrink: 0;              /* 說明：避免頁尾在 flex 排版中被壓縮。 */
+    background-color: var(--dark-bg); /* 說明：頁尾使用深色背景，與頁首風格一致。 */
+    color: var(--text-white);    /* 說明：頁尾文字使用白色，確保對比清楚。 */
+    text-align: center;          /* 說明：頁尾文字全部置中。 */
+    padding: 45px 20px;          /* 說明：頁尾上下 45px、左右 20px 內距，形成足夠留白。 */
+    border-top: 3px solid var(--primary-red); /* 說明：頁尾上方加紅色線條，呼應品牌主色。 */
 }
 
-.member-links .nav-link-item {
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 0.9rem;
+.footer-logo { /* 說明：設定頁尾品牌名稱或 Logo 文字樣式。 */
+    color: var(--gold-color);    /* 說明：頁尾品牌文字使用金黃色強調。 */
+    font-size: 24px;             /* 說明：設定頁尾品牌文字大小。 */
+    margin: 0 0 12px 0;          /* 說明：移除上左右外距，底部保留 12px。 */
+    letter-spacing: 4px;         /* 說明：增加字距，讓頁尾品牌文字更有識別感。 */
 }
 
-/* 滑鼠懸停效果，可自由搭配聚福樓的金色調 */
-.member-links .nav-link-item:hover {
-    color: #ffc107; 
+.footer-slogan { /* 說明：設定頁尾標語文字。 */
+    margin: 0 0 12px 0;          /* 說明：移除上左右外距，底部保留 12px。 */
+    font-size: 15px;             /* 說明：設定標語字級為 15px。 */
+    opacity: 0.9;                /* 說明：讓標語稍微淡一點，區分主要品牌文字。 */
+}
+
+.footer-copy { /* 說明：設定頁尾版權文字。 */
+    margin: 0;                   /* 說明：移除預設外距，避免版權文字位置偏移。 */
+    font-size: 13px;             /* 說明：版權文字使用較小字級。 */
+    color: var(--text-muted);    /* 說明：版權文字使用灰色，呈現次要資訊。 */
+}
+
+.hero-section { /* 說明：設定共用首頁或頁面橫幅區塊。 */
+    position: relative;          /* 說明：建立定位基準，讓遮罩與內容可以相對此區塊定位。 */
+    width: 100%;                 /* 說明：橫幅寬度填滿整個父層。 */
+    min-height: 500px;           /* 說明：設定最小高度，確保橫幅在桌機上有足夠視覺空間。 */
+    height: 60vh;                /* 說明：橫幅高度為視窗高度的 60%。 */
+    background-image: url('您的圖片路徑.jpg'); /* 說明：設定橫幅背景圖片來源。 */
+    background-size: cover;      /* 說明：背景圖等比例放大或裁切，完整覆蓋橫幅區域。 */
+    background-position: center; /* 說明：背景圖以中央為對齊位置。 */
+    background-repeat: no-repeat; /* 說明：背景圖不重複平鋪。 */
+    display: flex;               /* 說明：使用 flex 排版，方便控制橫幅內文字位置。 */
+    align-items: center;         /* 說明：讓橫幅內容在垂直方向置中。 */
+    justify-content: flex-start; /* 說明：讓橫幅內容從左側開始排列。 */
+}
+
+.hero-section::before { /* 說明：建立橫幅的黑色半透明遮罩，讓文字更清楚。 */
+    content: "";                 /* 說明：產生偽元素內容，沒有文字只用來做遮罩。 */
+    position: absolute;          /* 說明：讓遮罩絕對定位在橫幅區塊內。 */
+    top: 0;                      /* 說明：遮罩從橫幅頂端開始。 */
+    left: 0;                     /* 說明：遮罩從橫幅左側開始。 */
+    width: 100%;                 /* 說明：遮罩寬度覆蓋整個橫幅。 */
+    height: 100%;                /* 說明：遮罩高度覆蓋整個橫幅。 */
+    background: rgba(0, 0, 0, 0.4); /* 說明：設定 40% 透明度的黑色遮罩。 */
+    z-index: 1;                  /* 說明：遮罩放在背景圖上方、文字內容下方。 */
+}
+
+.hero-content { /* 說明：設定橫幅文字內容容器。 */
+    position: relative;          /* 說明：讓內容可以設定 z-index 並疊在遮罩上方。 */
+    z-index: 2;                  /* 說明：內容層級高於遮罩，確保文字可見。 */
+    max-width: 1200px;           /* 說明：限制文字內容最大寬度，與導覽容器寬度一致。 */
+    margin: 0 auto;              /* 說明：讓內容容器在橫幅內水平置中。 */
+    padding: 0 40px;             /* 說明：左右保留 40px 內距，避免文字貼邊。 */
+    width: 100%;                 /* 說明：內容容器寬度填滿可用空間。 */
+    color: var(--text-white);    /* 說明：橫幅文字預設使用白色。 */
+}
+
+.hero-content h1 { /* 說明：設定橫幅主標題樣式。 */
+    font-size: 3rem;             /* 說明：主標題使用 3rem 大字級，形成第一視覺重點。 */
+    color: var(--gold-color);    /* 說明：主標題使用金黃色，凸顯品牌與重點。 */
+    margin-bottom: 15px;         /* 說明：主標題下方保留 15px 與副標題分隔。 */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); /* 說明：加入文字陰影，提高在圖片背景上的可讀性。 */
+}
+
+.hero-content p { /* 說明：設定橫幅副標題或介紹文字。 */
+    font-size: 1.5rem;           /* 說明：副標題字級比主標題小，但仍保持醒目。 */
+    letter-spacing: 2px;         /* 說明：增加字距，讓副標題更有設計感。 */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6); /* 說明：加入較細的文字陰影，提升背景圖上的可讀性。 */
+}
+
+@media (max-width: 768px) { /* 說明：當螢幕寬度小於等於 768px 時，調整橫幅為手機版尺寸。 */
+    .hero-section { /* 說明：手機版降低橫幅高度，避免佔滿太多畫面。 */
+        height: 40vh;            /* 說明：手機版橫幅高度改為視窗高度的 40%。 */
+        min-height: 300px;       /* 說明：手機版仍保留 300px 最小高度，避免內容太擠。 */
+    }
+    .hero-content h1 { /* 說明：手機版調整橫幅主標題大小。 */
+        font-size: 2rem;         /* 說明：縮小主標題，避免在手機畫面換行過多。 */
+    }
+    .hero-content p { /* 說明：手機版調整橫幅副標題大小。 */
+        font-size: 1.1rem;       /* 說明：縮小副標題，讓文字更適合手機寬度。 */
+    }
+}
+
+.member-name-nav { /* 說明：設定登入後顯示在導覽列上的會員名稱樣式。 */
+    color: #ffbe2e;              /* 說明：會員名稱使用亮金色，讓使用者身份資訊更醒目。 */
+    font-weight: bold;           /* 說明：會員名稱加粗，提高辨識度。 */
+    cursor: default;             /* 說明：滑鼠移上會員名稱時顯示一般游標，表示不是可點擊連結。 */
+}
+
+.member-links { /* 說明：設定會員相關連結的排列區塊。 */
+    display: flex;               /* 說明：讓會員連結水平排列。 */
+    align-items: center;         /* 說明：讓會員連結在垂直方向置中。 */
+    gap: 15px;                   /* 說明：會員連結之間保留 15px 間距。 */
+}
+
+.member-links .nav-link-item { /* 說明：設定會員區塊內導覽連結的樣式。 */
+    color: #ffffff;              /* 說明：會員連結文字使用白色。 */
+    text-decoration: none;       /* 說明：移除會員連結底線。 */
+    font-size: 0.9rem;           /* 說明：會員連結文字略小於一般選單文字。 */
+}
+
+.member-links .nav-link-item:hover { /* 說明：設定會員連結滑鼠移入時的樣式。 */
+    color: #ffc107;              /* 說明：滑鼠移入時改為金黃色，提供互動提示。 */
 }

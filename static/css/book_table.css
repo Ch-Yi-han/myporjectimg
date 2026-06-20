@@ -1,167 +1,178 @@
 /* myapp/static/css/booking.css */
 
-/* 全域尊榮黑金基調 */
-.booking-section {
-    background-color: #121212;
-    color: #f5f5f5;
-    font-family: "Microsoft JhengHei", "Heiti TC", sans-serif;
-    padding: 60px 20px;
-    min-height: 85vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* ==========================================
+   訂位頁面整體區塊
+   ========================================== */
+.booking-section { /* 說明：設定訂位頁最外層區塊，負責背景、字體與置中排版。 */
+    background-color: #121212; /* 說明：設定深黑色背景，營造餐廳訂位頁的沉穩氛圍。 */
+    color: #f5f5f5; /* 說明：設定區塊內預設文字為接近白色，讓深色背景上清楚可讀。 */
+    font-family: "Microsoft JhengHei", "Heiti TC", sans-serif; /* 說明：使用適合繁體中文顯示的無襯線字型。 */
+    padding: 60px 20px; /* 說明：上下保留 60px、左右保留 20px 的內距，避免內容貼邊。 */
+    min-height: 85vh; /* 說明：讓訂位頁至少佔視窗高度 85%，使內容有足夠垂直空間。 */
+    display: flex; /* 說明：使用 flex 排版，方便將訂位卡片置中。 */
+    justify-content: center; /* 說明：讓訂位卡片在水平方向置中。 */
+    align-items: center; /* 說明：讓訂位卡片在垂直方向置中。 */
 }
 
-/* 居中卡片主體 */
-.booking-card {
-    background-color: #1a1a1a;
-    border: 1px solid #d4af37; /* 聚福樓皇家金 */
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
-    max-width: 700px;
-    width: 100%;
-    padding: 40px;
-    box-sizing: border-box;
-    position: relative;
+/* ==========================================
+   訂位表單卡片
+   ========================================== */
+.booking-card { /* 說明：設定訂位表單主要卡片外觀。 */
+    background-color: #1a1a1a; /* 說明：設定卡片背景為深灰黑色，與頁面背景略有層次差異。 */
+    border: 1px solid #d4af37; /* 說明：使用金色細邊框，凸顯卡片與品牌質感。 */
+    border-radius: 12px; /* 說明：設定卡片圓角，使表單外觀較柔和。 */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8); /* 說明：加入深色陰影，讓卡片從背景中浮出。 */
+    max-width: 700px; /* 說明：限制卡片最大寬度，避免表單在大螢幕上過寬。 */
+    width: 100%; /* 說明：讓卡片在可用範圍內填滿寬度，適應不同螢幕。 */
+    padding: 40px; /* 說明：設定卡片內距，讓表單內容不會貼住邊框。 */
+    box-sizing: border-box; /* 說明：讓 padding 與 border 被算入寬度內，避免卡片超出容器。 */
+    position: relative; /* 說明：建立定位基準，讓上方裝飾線可以用偽元素定位。 */
 }
 
-/* 頂部中式祥瑞紅金飾條 */
-.booking-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 5px;
-    background: linear-gradient(90deg, #b22222, #d4af37, #b22222);
-    border-radius: 12px 12px 0 0;
+.booking-card::before { /* 說明：在訂位卡片上方建立一條漸層裝飾線。 */
+    content: ''; /* 說明：產生空的偽元素，用來顯示裝飾線。 */
+    position: absolute; /* 說明：讓裝飾線以卡片為基準絕對定位。 */
+    top: 0; /* 說明：將裝飾線貼齊卡片頂部。 */
+    left: 0; /* 說明：將裝飾線從卡片左側開始。 */
+    right: 0; /* 說明：將裝飾線延伸到卡片右側。 */
+    height: 5px; /* 說明：設定裝飾線高度為 5px。 */
+    background: linear-gradient(90deg, #b22222, #d4af37, #b22222); /* 說明：設定紅金紅的水平漸層，增加視覺重點。 */
+    border-radius: 12px 12px 0 0; /* 說明：讓裝飾線上方兩角跟卡片圓角一致。 */
 }
 
-/* 標題與副標題 */
-.booking-header {
-    text-align: center;
-    margin-bottom: 35px;
+/* ==========================================
+   標題區
+   ========================================== */
+.booking-header { /* 說明：設定訂位表單標題區塊。 */
+    text-align: center; /* 說明：讓標題與副標題置中。 */
+    margin-bottom: 35px; /* 說明：標題區下方保留 35px，與表單欄位分隔。 */
 }
 
-.booking-title {
-    color: #d4af37;
-    font-size: 1.8rem;
-    font-weight: bold;
-    margin: 0 0 10px 0;
-    letter-spacing: 2px;
+.booking-title { /* 說明：設定訂位主標題文字樣式。 */
+    color: #d4af37; /* 說明：主標題使用金色，與卡片邊框呼應。 */
+    font-size: 1.8rem; /* 說明：設定主標題字級，使其成為表單的視覺重點。 */
+    font-weight: bold; /* 說明：主標題加粗，提升辨識度。 */
+    margin: 0 0 10px 0; /* 說明：移除上左右外距，底部保留 10px 與副標題分隔。 */
+    letter-spacing: 2px; /* 說明：增加字距，讓標題更有儀式感。 */
 }
 
-.booking-subtitle {
-    color: #888;
-    font-size: 0.95rem;
-    margin: 0;
+.booking-subtitle { /* 說明：設定訂位副標題文字樣式。 */
+    color: #888; /* 說明：副標題使用灰色，呈現次要說明資訊。 */
+    font-size: 0.95rem; /* 說明：副標題字級略小於一般文字。 */
+    margin: 0; /* 說明：移除預設外距，讓排版更穩定。 */
 }
 
-/* Django 訊息提示框 */
-.booking-alert {
-    background-color: #262626;
-    border: 1px solid #b22222;
-    color: #ffc107;
-    padding: 12px;
-    border-radius: 6px;
-    margin-bottom: 25px;
-    text-align: center;
-    font-size: 0.95rem;
+/* ==========================================
+   Django 訊息提示
+   ========================================== */
+.booking-alert { /* 說明：設定 Django 訊息或錯誤提示區塊。 */
+    background-color: #262626; /* 說明：提示框使用深灰背景，符合整體深色風格。 */
+    border: 1px solid #b22222; /* 說明：使用紅色邊框，讓提示訊息更醒目。 */
+    color: #ffc107; /* 說明：提示文字使用金黃色，讓使用者容易注意。 */
+    padding: 12px; /* 說明：提示框內保留 12px 空間，提升可讀性。 */
+    border-radius: 6px; /* 說明：提示框使用小圓角，與整體 UI 風格一致。 */
+    margin-bottom: 25px; /* 說明：提示框下方保留間距，避免貼住表單。 */
+    text-align: center; /* 說明：提示訊息置中顯示。 */
+    font-size: 0.95rem; /* 說明：設定提示文字大小。 */
 }
 
-/* 表單網格佈局 (用 Grid 完美排版) */
-.booking-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 預設一行兩格 */
-    gap: 20px;
+/* ==========================================
+   表單網格排版
+   ========================================== */
+.booking-grid { /* 說明：設定訂位表單欄位的網格排版。 */
+    display: grid; /* 說明：使用 CSS Grid 排列表單欄位。 */
+    grid-template-columns: repeat(2, 1fr); /* 說明：桌機版表單分成兩欄，每欄平均分配寬度。 */
+    gap: 20px; /* 說明：欄位之間保留 20px 間距。 */
 }
 
-/* 讓滿版欄位單獨佔滿一行 */
-.full-width {
-    grid-column: span 2;
+.full-width { /* 說明：設定需要橫跨整列的表單欄位。 */
+    grid-column: span 2; /* 說明：讓指定欄位跨越兩欄，例如備註或大欄位。 */
 }
 
-/* 表單單元 */
-.form-group {
-    display: flex;
-    flex-direction: column;
+/* ==========================================
+   表單欄位與標籤
+   ========================================== */
+.form-group { /* 說明：設定每一組表單欄位的排列方式。 */
+    display: flex; /* 說明：使用 flex 排版。 */
+    flex-direction: column; /* 說明：讓 label 與 input 垂直排列。 */
 }
 
-.form-label {
-    color: #c0c0c0;
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-    letter-spacing: 0.5px;
+.form-label { /* 說明：設定表單欄位標籤文字樣式。 */
+    color: #c0c0c0; /* 說明：標籤使用淺灰色，與深色背景保持清楚對比。 */
+    font-size: 0.9rem; /* 說明：標籤文字比一般輸入文字略小。 */
+    font-weight: 600; /* 說明：標籤加粗，方便使用者辨認欄位名稱。 */
+    margin-bottom: 8px; /* 說明：標籤與輸入框之間保留 8px 間距。 */
+    letter-spacing: 0.5px; /* 說明：微調字距，讓標籤文字更清楚。 */
 }
 
-/* 💡 精準美化 Django 表單生成的各類 input, select, textarea */
 .form-group input,
 .form-group select,
-.form-group textarea {
-    background-color: #262626 !important;
-    border: 1px solid #444 !important;
-    color: #ffffff !important;
-    border-radius: 6px !important;
-    padding: 12px !important;
-    font-size: 1rem;
-    box-sizing: border-box;
-    width: 100%;
-    transition: border-color 0.3s, box-shadow 0.3s;
+.form-group textarea { /* 說明：統一設定表單輸入框、下拉選單與文字區塊的外觀。 */
+    background-color: #262626 !important; /* 說明：強制欄位背景使用深灰色，覆蓋瀏覽器或框架預設樣式。 */
+    border: 1px solid #444 !important; /* 說明：強制欄位邊框為深灰線，維持深色主題。 */
+    color: #ffffff !important; /* 說明：強制輸入文字使用白色，確保可讀性。 */
+    border-radius: 6px !important; /* 說明：強制欄位使用 6px 圓角。 */
+    padding: 12px !important; /* 說明：強制欄位內距為 12px，讓輸入內容不貼邊。 */
+    font-size: 1rem; /* 說明：設定輸入文字大小為一般閱讀尺寸。 */
+    box-sizing: border-box; /* 說明：讓 padding 與 border 計入欄位寬度，避免超出容器。 */
+    width: 100%; /* 說明：讓表單欄位填滿所在格子的寬度。 */
+    transition: border-color 0.3s, box-shadow 0.3s; /* 說明：讓 focus 時的邊框與陰影變化更平滑。 */
 }
 
-/* 輸入框聚焦微光 */
 .form-group input:focus,
 .form-group select:focus,
-.form-group textarea:focus {
-    border-color: #d4af37 !important;
-    box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
-    outline: none;
+.form-group textarea:focus { /* 說明：設定表單欄位取得焦點時的樣式。 */
+    border-color: #d4af37 !important; /* 說明：欄位聚焦時邊框改為金色，提示目前正在輸入。 */
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.4); /* 說明：加入淡金色外發光效果，強化焦點狀態。 */
+    outline: none; /* 說明：移除瀏覽器預設外框，改用自訂焦點樣式。 */
 }
 
-/* 唯讀唯獨欄位（自動帶入的會員資料）虛線化 */
-.form-group input[readonly] {
-    background-color: #1e1e1e !important;
-    color: #888888 !important;
-    border: 1px dashed #555 !important;
-    cursor: not-allowed;
+.form-group input[readonly] { /* 說明：設定唯讀輸入欄位的外觀。 */
+    background-color: #1e1e1e !important; /* 說明：唯讀欄位使用更暗的背景，與可編輯欄位區分。 */
+    color: #888888 !important; /* 說明：唯讀欄位文字使用灰色，表示不能修改。 */
+    border: 1px dashed #555 !important; /* 說明：唯讀欄位使用虛線邊框，提示狀態不同。 */
+    cursor: not-allowed; /* 說明：滑鼠移到唯讀欄位時顯示禁止游標。 */
 }
 
-/* 純手寫完美提交按鈕 */
-.btn-submit {
-    grid-column: span 2; /* 佔滿整行 */
-    background: linear-gradient(135deg, #d4af37 0%, #aa8416 100%);
-    border: none;
-    color: #111;
-    font-weight: bold;
-    font-size: 1.1rem;
-    padding: 14px;
-    border-radius: 6px;
-    cursor: pointer;
-    letter-spacing: 1px;
-    transition: transform 0.2s, box-shadow 0.3s, background 0.3s;
-    margin-top: 15px;
+/* ==========================================
+   送出按鈕
+   ========================================== */
+.btn-submit { /* 說明：設定訂位表單送出按鈕。 */
+    grid-column: span 2; /* 說明：讓送出按鈕在桌機版橫跨兩欄，形成完整寬度。 */
+    background: linear-gradient(135deg, #d4af37 0%, #aa8416 100%); /* 說明：使用金色斜向漸層作為主要按鈕背景。 */
+    border: none; /* 說明：移除按鈕預設邊框。 */
+    color: #111; /* 說明：按鈕文字使用深色，與金色背景形成對比。 */
+    font-weight: bold; /* 說明：按鈕文字加粗，提升可點擊感。 */
+    font-size: 1.1rem; /* 說明：按鈕文字略大，讓主要操作更明顯。 */
+    padding: 14px; /* 說明：設定按鈕內距，增加可點擊區域。 */
+    border-radius: 6px; /* 說明：按鈕使用 6px 圓角，與表單欄位一致。 */
+    cursor: pointer; /* 說明：滑鼠移到按鈕時顯示可點擊游標。 */
+    letter-spacing: 1px; /* 說明：增加按鈕文字字距，提升視覺質感。 */
+    transition: transform 0.2s, box-shadow 0.3s, background 0.3s; /* 說明：讓按鈕位移、陰影與背景變化更平滑。 */
+    margin-top: 15px; /* 說明：按鈕上方保留 15px，與表單欄位分隔。 */
 }
 
-.btn-submit:hover {
-    background: linear-gradient(135deg, #f1cc5b 0%, #d4af37 100%);
-    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
-    transform: translateY(-2px);
+.btn-submit:hover { /* 說明：設定送出按鈕滑鼠移入時的樣式。 */
+    background: linear-gradient(135deg, #f1cc5b 0%, #d4af37 100%); /* 說明：hover 時使用較亮金色漸層，提示可以點擊。 */
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4); /* 說明：hover 時加入金色陰影，增加浮起感。 */
+    transform: translateY(-2px); /* 說明：hover 時按鈕向上移動 2px，形成互動回饋。 */
 }
 
-.btn-submit:active {
-    transform: translateY(0);
+.btn-submit:active { /* 說明：設定送出按鈕被按下時的樣式。 */
+    transform: translateY(0); /* 說明：按下時回到原位，模擬按鈕被壓下的感覺。 */
 }
 
-/* RWD 響應式：手機畫面改為單欄排版 */
-@media (max-width: 600px) {
-    .booking-grid {
-        grid-template-columns: 1fr;
+/* ==========================================
+   手機版 RWD
+   ========================================== */
+@media (max-width: 600px) { /* 說明：當螢幕寬度小於等於 600px 時，套用手機版訂位表單排版。 */
+    .booking-grid { /* 說明：手機版調整表單網格。 */
+        grid-template-columns: 1fr; /* 說明：手機版改為單欄顯示，避免欄位過窄。 */
     }
-    .full-width, .btn-submit {
-        grid-column: span 1;
+    .full-width, .btn-submit { /* 說明：手機版調整橫跨欄位與送出按鈕。 */
+        grid-column: span 1; /* 說明：手機版只需要跨一欄，符合單欄排版。 */
     }
-    .booking-card {
-        padding: 25px 15px;
+    .booking-card { /* 說明：手機版調整訂位卡片內距。 */
+        padding: 25px 15px; /* 說明：縮小左右內距，讓手機畫面有更多可用寬度。 */
     }
 }

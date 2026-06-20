@@ -1,294 +1,316 @@
 /* ==========================================================================
-   聚福樓 購物車與預約系統 核心樣式檔（排版流暢修正版）
+   購物車頁面整體樣式
    ========================================================================== */
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 0;
+body { /* 說明：設定購物車頁面的全域字型、背景與預設間距。 */
+    font-family: Arial, sans-serif; /* 說明：使用 Arial 作為主要字型，若不可用則使用無襯線字型。 */
+    background-color: #f8f9fa; /* 說明：設定頁面背景為淺灰色，讓白色購物車容器更突出。 */
+    margin: 0; /* 說明：移除瀏覽器預設外距，避免頁面邊緣出現空白。 */
+    padding: 0; /* 說明：移除瀏覽器預設內距，讓版面由自訂容器控制。 */
 }
 
-/* 購物車整體外殼容器 */
-.cart-container {
-    position: relative; /* 🎯 建立定位基地，讓右側按鈕可以精準對齊邊界 */
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+/* ==========================================================================
+   購物車主容器
+   ========================================================================== */
+.cart-container { /* 說明：設定購物車內容的主要卡片容器。 */
+    position: relative; /* 說明：建立定位基準，方便內部絕對定位元素對齊。 */
+    max-width: 800px; /* 說明：限制購物車最大寬度，避免表格在大螢幕上過寬。 */
+    margin: 40px auto; /* 說明：上下保留 40px，左右自動置中。 */
+    padding: 30px; /* 說明：容器內保留 30px 空間，避免內容貼邊。 */
+    background-color: #fff; /* 說明：設定容器背景為白色，與頁面淺灰背景區隔。 */
+    border-radius: 8px; /* 說明：設定容器圓角，讓卡片外觀更柔和。 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* 說明：加入淡陰影，讓容器有輕微浮起效果。 */
 }
 
-/* 返回按鈕與標題導覽列（改用標準塊級定位，防止 Flex 被 Bootstrap 吃掉） */
-.cart-top-nav {
-    position: relative;
-    display: block;
-    width: 100%;
-    margin-bottom: 20px;
-    border-bottom: 1px dashed #eee;
-    padding-bottom: 15px;
-    min-height: 40px; /* 給予導覽列固定高度，防止文字重疊 */
+/* ==========================================================================
+   購物車上方導覽列
+   ========================================================================== */
+.cart-top-nav { /* 說明：設定購物車上方的返回與操作導覽區。 */
+    position: relative; /* 說明：建立定位基準，讓右側按鈕可以絕對定位。 */
+    display: block; /* 說明：讓導覽區以區塊元素呈現並占滿一整行。 */
+    width: 100%; /* 說明：導覽區寬度填滿購物車容器。 */
+    margin-bottom: 20px; /* 說明：導覽區下方保留 20px 與標題或內容分隔。 */
+    border-bottom: 1px dashed #eee; /* 說明：底部加入淡色虛線，作為導覽與內容的分隔線。 */
+    padding-bottom: 15px; /* 說明：底部保留 15px 內距，避免文字貼近分隔線。 */
+    min-height: 40px; /* 說明：設定最小高度，確保左側連結與右側按鈕有足夠空間。 */
 }
 
-/* 左側返回點餐連結 */
-.nav-link-left {
-    display: inline-block;
-    color: #6c757d;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 40px; /* 垂直置中 */
+.nav-link-left { /* 說明：設定左側返回或導覽連結樣式。 */
+    display: inline-block; /* 說明：讓連結可設定高度與 line-height，同時維持行內排列。 */
+    color: #6c757d; /* 說明：文字使用灰色，呈現次要操作。 */
+    text-decoration: none; /* 說明：移除連結預設底線。 */
+    font-size: 14px; /* 說明：設定導覽連結文字大小。 */
+    font-weight: 500; /* 說明：使用中等字重，讓文字清楚但不過度強調。 */
+    line-height: 40px; /* 說明：讓文字高度與導覽區接近，達到垂直置中效果。 */
 }
 
-.nav-link-left:hover {
-    color: #e67e22;
+.nav-link-left:hover { /* 說明：設定左側導覽連結滑鼠移入時的樣式。 */
+    color: #e67e22; /* 說明：滑鼠移入時改為橘色，提示此連結可點擊。 */
 }
 
-/* 右側歷史訂單紀錄標籤 */
-.nav-link-right {
-    position: absolute;   /* 🎯 大絕招：絕對定位 */
-    right: 0;             /* 🔥 強制把按鈕死死釘在購物車的最右上角 */
-    top: 4px;             /* 微調頂部距離 */
-    color: #3e2723;
-    background-color: #f1ebd9;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 8px 18px;    /* 稍微加大按鈕，更好點擊 */
-    border-radius: 20px;
-    transition: all 0.2s ease;
+.nav-link-right { /* 說明：設定右側主要導覽或操作按鈕樣式。 */
+    position: absolute; /* 說明：讓右側按鈕相對於上方導覽列定位。 */
+    right: 0; /* 說明：將按鈕貼齊導覽區右側。 */
+    top: 4px; /* 說明：從導覽區頂部往下 4px，微調垂直位置。 */
+    color: #3e2723; /* 說明：按鈕文字使用深咖啡色，與米色背景搭配。 */
+    background-color: #f1ebd9; /* 說明：按鈕背景使用米色，形成柔和的輔助按鈕。 */
+    text-decoration: none; /* 說明：移除連結底線，讓它看起來像按鈕。 */
+    font-size: 14px; /* 說明：設定按鈕文字大小。 */
+    font-weight: bold; /* 說明：按鈕文字加粗，增加可操作感。 */
+    padding: 8px 18px; /* 說明：上下保留 8px、左右保留 18px，增加可點擊範圍。 */
+    border-radius: 20px; /* 說明：使用大圓角，讓按鈕呈現膠囊外觀。 */
+    transition: all 0.2s ease; /* 說明：讓按鈕顏色與陰影變化有平滑過渡。 */
 }
 
-.nav-link-right:hover {
-    background-color: #e67e22;
-    color: white;
-    box-shadow: 0 2px 4px rgba(230, 126, 34, 0.2);
+.nav-link-right:hover { /* 說明：設定右側操作按鈕滑鼠移入時的樣式。 */
+    background-color: #e67e22; /* 說明：hover 時背景改為橘色，強化互動回饋。 */
+    color: white; /* 說明：hover 時文字改為白色，提高對比。 */
+    box-shadow: 0 2px 4px rgba(230, 126, 34, 0.2); /* 說明：加入淡橘色陰影，讓按鈕有浮起感。 */
 }
 
-.cart-title {
-    font-size: 24px;
-    color: #333;
-    margin-bottom: 20px;
-    font-weight: bold;
+.cart-title { /* 說明：設定購物車頁面標題樣式。 */
+    font-size: 24px; /* 說明：標題字級設定為 24px，作為頁面主標。 */
+    color: #333; /* 說明：標題使用深灰色，保持清楚可讀。 */
+    margin-bottom: 20px; /* 說明：標題下方保留 20px 與表格分隔。 */
+    font-weight: bold; /* 說明：標題加粗，提升視覺層級。 */
 }
 
-/* 購物車明細表格 */
-.cart-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 25px;
+/* ==========================================================================
+   購物車商品表格
+   ========================================================================== */
+.cart-table { /* 說明：設定購物車商品列表表格。 */
+    width: 100%; /* 說明：表格寬度填滿購物車容器。 */
+    border-collapse: collapse; /* 說明：合併表格邊框，避免儲存格之間出現縫隙。 */
+    margin-bottom: 25px; /* 說明：表格下方保留 25px，與結算區分隔。 */
 }
 
 .cart-table th, 
-.cart-table td {
-    padding: 15px;
-    text-align: left;
-    border-bottom: 1px solid #eee;
+.cart-table td { /* 說明：統一設定表格標題格與內容格的基本樣式。 */
+    padding: 15px; /* 說明：每個儲存格內保留 15px，讓內容不擁擠。 */
+    text-align: left; /* 說明：表格文字靠左對齊，方便閱讀商品資訊。 */
+    border-bottom: 1px solid #eee; /* 說明：每列下方加淡灰分隔線，提升表格可讀性。 */
 }
 
-.cart-table th {
-    color: #666;
-    font-weight: 600;
-    background-color: #fbfbfb;
+.cart-table th { /* 說明：設定表格標題列樣式。 */
+    color: #666; /* 說明：表頭文字使用灰色，與內容文字區分。 */
+    font-weight: 600; /* 說明：表頭文字使用半粗體，增加欄位辨識度。 */
+    background-color: #fbfbfb; /* 說明：表頭背景使用極淺灰色，形成表頭區塊感。 */
 }
 
-.dish-name {
-    font-weight: bold;
-    color: #2c3e50;
+.dish-name { /* 說明：設定商品名稱文字樣式。 */
+    font-weight: bold; /* 說明：商品名稱加粗，讓使用者快速辨認餐點。 */
+    color: #2c3e50; /* 說明：商品名稱使用深藍灰色，與一般文字區分。 */
 }
 
-/* 數量加減控制組合區 */
-.quantity-controller {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+/* ==========================================================================
+   商品數量控制
+   ========================================================================== */
+.quantity-controller { /* 說明：設定數量減少、數字、增加按鈕的排列方式。 */
+    display: flex; /* 說明：使用 flex 讓數量控制元件水平排列。 */
+    align-items: center; /* 說明：讓按鈕與數字在垂直方向置中。 */
+    justify-content: center; /* 說明：讓數量控制元件在欄位中水平置中。 */
+    gap: 10px; /* 說明：減號、數字與加號之間保留 10px 間距。 */
 }
 
-.btn-qty-minus {
-    text-decoration: none;
-    background: #f1ebd9;
-    color: #3e2723;
-    padding: 2px 10px;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 16px;
-    transition: background 0.2s;
+.btn-qty-minus { /* 說明：設定減少商品數量按鈕。 */
+    text-decoration: none; /* 說明：移除連結底線，讓它呈現按鈕外觀。 */
+    background: #f1ebd9; /* 說明：減號按鈕使用米色背景，呈現較柔和的操作。 */
+    color: #3e2723; /* 說明：按鈕文字使用深咖啡色。 */
+    padding: 2px 10px; /* 說明：設定按鈕內距，增加可點擊範圍。 */
+    border-radius: 4px; /* 說明：設定小圓角，讓按鈕外觀一致。 */
+    font-weight: bold; /* 說明：按鈕符號加粗，提升可視性。 */
+    font-size: 16px; /* 說明：設定按鈕符號大小。 */
+    transition: background 0.2s; /* 說明：讓背景色變化有 0.2 秒過渡。 */
 }
 
-.btn-qty-minus:hover {
-    background: #e4dac2;
+.btn-qty-minus:hover { /* 說明：設定減少按鈕滑鼠移入時的樣式。 */
+    background: #e4dac2; /* 說明：hover 時背景略微加深，提示可操作。 */
 }
 
-.btn-qty-plus {
-    text-decoration: none;
-    background: #e67e22;
-    color: white;
-    padding: 2px 10px;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 16px;
-    transition: background 0.2s;
+.btn-qty-plus { /* 說明：設定增加商品數量按鈕。 */
+    text-decoration: none; /* 說明：移除連結底線，讓它呈現按鈕外觀。 */
+    background: #e67e22; /* 說明：增加按鈕使用橘色背景，作為較明顯的操作。 */
+    color: white; /* 說明：按鈕文字使用白色，與橘色背景形成對比。 */
+    padding: 2px 10px; /* 說明：設定按鈕內距，增加可點擊範圍。 */
+    border-radius: 4px; /* 說明：設定小圓角，讓按鈕外觀一致。 */
+    font-weight: bold; /* 說明：按鈕符號加粗，提升可視性。 */
+    font-size: 16px; /* 說明：設定按鈕符號大小。 */
+    transition: background 0.2s; /* 說明：讓背景色變化有 0.2 秒過渡。 */
 }
 
-.btn-qty-plus:hover {
-    background: #d35400;
+.btn-qty-plus:hover { /* 說明：設定增加按鈕滑鼠移入時的樣式。 */
+    background: #d35400; /* 說明：hover 時橘色加深，增加互動回饋。 */
 }
 
-.qty-number {
-    font-weight: bold;
-    min-width: 30px;
-    display: inline-block;
+.qty-number { /* 說明：設定目前商品數量數字樣式。 */
+    font-weight: bold; /* 說明：數量文字加粗，方便辨認目前數量。 */
+    min-width: 30px; /* 說明：保留至少 30px 寬度，避免數字變化造成排版跳動。 */
+    display: inline-block; /* 說明：讓數量文字可以套用固定寬度。 */
 }
 
-/* 結帳與總計區塊 */
-.cart-summary-area {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 2px dashed #eee;
+/* ==========================================================================
+   購物車總計區
+   ========================================================================== */
+.cart-summary-area { /* 說明：設定表格下方的總計與結帳區塊。 */
+    margin-top: 30px; /* 說明：總計區上方保留 30px，與商品表格分隔。 */
+    padding-top: 20px; /* 說明：總計區上方保留內距，讓分隔線與內容有距離。 */
+    border-top: 2px dashed #eee; /* 說明：上方加入淡灰虛線，區分商品列表與結算資訊。 */
 }
 
-.cart-total {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 25px;
+.cart-total { /* 說明：設定總金額列的排列與文字樣式。 */
+    display: flex; /* 說明：使用 flex 讓標籤與金額水平排列。 */
+    justify-content: flex-end; /* 說明：讓總金額靠右對齊，符合結算資訊習慣。 */
+    align-items: center; /* 說明：讓總金額文字垂直置中。 */
+    font-size: 18px; /* 說明：設定總計標籤文字大小。 */
+    font-weight: bold; /* 說明：總計文字加粗，提升重要性。 */
+    color: #333; /* 說明：總計標籤使用深灰色。 */
+    margin-bottom: 25px; /* 說明：總計列下方保留 25px，與後續表單或按鈕分隔。 */
 }
 
-.total-price-text {
-    font-size: 28px;
-    color: #dc3545;
-    font-weight: bold;
-    margin-left: 15px;
+.total-price-text { /* 說明：設定總金額數字的醒目樣式。 */
+    font-size: 28px; /* 說明：金額使用較大字級，讓使用者快速看到總價。 */
+    color: #dc3545; /* 說明：金額使用紅色，強調付款相關資訊。 */
+    font-weight: bold; /* 說明：金額加粗，提升視覺重點。 */
+    margin-left: 15px; /* 說明：金額與前方文字保留 15px 間距。 */
 }
 
-/* 🕒 預約取餐時間外殼與網格排版 */
-.booking-box {
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #eef0f2;
-    margin: 20px 0;
+/* ==========================================================================
+   訂位資訊區
+   ========================================================================== */
+.booking-box { /* 說明：設定購物車頁面中的訂位資訊表單區塊。 */
+    background-color: #f9f9f9; /* 說明：使用淺灰背景，與白色購物車容器做出層次。 */
+    padding: 20px; /* 說明：區塊內保留 20px 空間。 */
+    border-radius: 8px; /* 說明：設定區塊圓角，與主容器風格一致。 */
+    border: 1px solid #eef0f2; /* 說明：加入淡灰邊框，界定訂位區範圍。 */
+    margin: 20px 0; /* 說明：上下保留 20px，左右不額外增加外距。 */
 }
 
-.booking-title {
-    color: #3e2723;
-    font-weight: bold;
-    margin-bottom: 15px;
-    font-size: 16px;
+.booking-title { /* 說明：設定訂位資訊區標題。 */
+    color: #3e2723; /* 說明：標題使用深咖啡色，呼應餐飲風格。 */
+    font-weight: bold; /* 說明：標題加粗，提高辨識度。 */
+    margin-bottom: 15px; /* 說明：標題下方保留 15px，與欄位分隔。 */
+    font-size: 16px; /* 說明：設定訂位標題文字大小。 */
 }
 
-.booking-row {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
+.booking-row { /* 說明：設定訂位欄位的水平排列列。 */
+    display: flex; /* 說明：使用 flex 讓欄位可並排顯示。 */
+    gap: 20px; /* 說明：欄位之間保留 20px 間距。 */
+    flex-wrap: wrap; /* 說明：螢幕寬度不足時允許欄位換行。 */
 }
 
-.booking-field {
-    flex: 1;
-    min-width: 250px;
-    margin: 0;
+.booking-field { /* 說明：設定單個訂位欄位容器。 */
+    flex: 1; /* 說明：讓欄位平均分配同列可用空間。 */
+    min-width: 250px; /* 說明：欄位最小寬度為 250px，避免內容太窄。 */
+    margin: 0; /* 說明：移除額外外距，讓間距由父層 gap 控制。 */
 }
 
-@media (max-width: 768px) {
-    .cart-top-nav {
-        position: static;
-        text-align: center;
+/* ==========================================================================
+   手機版導覽與訂位欄位調整
+   ========================================================================== */
+@media (max-width: 768px) { /* 說明：當螢幕寬度小於等於 768px 時，套用購物車手機版排版。 */
+    .cart-top-nav { /* 說明：手機版調整購物車上方導覽區。 */
+        position: static; /* 說明：取消相對定位，讓內容自然排列。 */
+        text-align: center; /* 說明：手機版導覽文字置中。 */
     }
-    .nav-link-right {
-        position: static;
-        display: inline-block;
-        margin-top: 10px;
+    .nav-link-right { /* 說明：手機版調整右側操作按鈕位置。 */
+        position: static; /* 說明：取消絕對定位，讓按鈕回到正常文件流。 */
+        display: inline-block; /* 說明：讓按鈕保持可設定尺寸，又能置中排列。 */
+        margin-top: 10px; /* 說明：按鈕上方保留 10px，與左側連結換行後分隔。 */
     }
-    .booking-field {
-        margin-right: 0;
-        margin-bottom: 15px; /* 手機版時改成向下推開 */
+    .booking-field { /* 說明：手機版調整訂位欄位間距。 */
+        margin-right: 0; /* 說明：移除右側外距，避免手機版產生多餘空白。 */
+        margin-bottom: 15px; /* 說明：欄位下方保留 15px，讓換行後欄位不貼在一起。 */
     }
 }
 
-.form-label {
-    display: block;
-    margin-bottom: 8px;
-    color: #555;
-    font-weight: bold;
-    font-size: 14px;
+/* ==========================================================================
+   表單欄位樣式
+   ========================================================================== */
+.form-label { /* 說明：設定表單欄位標籤樣式。 */
+    display: block; /* 說明：讓標籤獨占一行，出現在輸入框上方。 */
+    margin-bottom: 8px; /* 說明：標籤與輸入框之間保留 8px。 */
+    color: #555; /* 說明：標籤文字使用中灰色。 */
+    font-weight: bold; /* 說明：標籤文字加粗，方便辨認欄位名稱。 */
+    font-size: 14px; /* 說明：設定標籤文字大小。 */
 }
 
 .form-control, 
-.form-select {
-    width: 100%;
-    padding: 10px 12px;
-    font-size: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-    background-color: #fff;
+.form-select { /* 說明：統一設定文字輸入框與下拉選單樣式。 */
+    width: 100%; /* 說明：欄位寬度填滿父層容器。 */
+    padding: 10px 12px; /* 說明：欄位內保留上下 10px、左右 12px，提升輸入舒適度。 */
+    font-size: 15px; /* 說明：設定欄位文字大小。 */
+    border: 1px solid #ccc; /* 說明：欄位使用淺灰色邊框。 */
+    border-radius: 4px; /* 說明：欄位使用 4px 小圓角。 */
+    box-sizing: border-box; /* 說明：讓 padding 與 border 計入欄位寬度，避免超出父層。 */
+    background-color: #fff; /* 說明：欄位背景使用白色，方便輸入與辨識。 */
 }
 
-.form-select {
-    cursor: pointer;
+.form-select { /* 說明：設定下拉選單的游標樣式。 */
+    cursor: pointer; /* 說明：滑鼠移到下拉選單時顯示可點擊游標。 */
 }
 
-/* 結帳送出按鈕 */
-.btn-checkout {
-    display: block;
-    width: 100%;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 14px 30px;
-    font-size: 18px;
-    font-weight: bold;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s;
-    box-shadow: 0 4px 6px rgba(40, 167, 69, 0.2);
+/* ==========================================================================
+   結帳按鈕
+   ========================================================================== */
+.btn-checkout { /* 說明：設定送出結帳的主要按鈕。 */
+    display: block; /* 說明：讓按鈕以區塊方式呈現。 */
+    width: 100%; /* 說明：按鈕寬度填滿容器，形成主要操作。 */
+    background-color: #28a745; /* 說明：按鈕背景使用綠色，通常代表確認或送出。 */
+    color: white; /* 說明：按鈕文字使用白色，提高對比。 */
+    border: none; /* 說明：移除按鈕預設邊框。 */
+    padding: 14px 30px; /* 說明：按鈕上下保留 14px、左右保留 30px，增加可點擊範圍。 */
+    font-size: 18px; /* 說明：按鈕文字較大，凸顯主要行動。 */
+    font-weight: bold; /* 說明：按鈕文字加粗，提高可見性。 */
+    border-radius: 6px; /* 說明：按鈕使用 6px 圓角。 */
+    cursor: pointer; /* 說明：滑鼠移到按鈕時顯示可點擊游標。 */
+    transition: background 0.2s; /* 說明：讓背景顏色變化有 0.2 秒過渡。 */
+    box-shadow: 0 4px 6px rgba(40, 167, 69, 0.2); /* 說明：加入淡綠色陰影，讓按鈕更突出。 */
 }
 
-.btn-checkout:hover {
-    background-color: #218838;
+.btn-checkout:hover { /* 說明：設定結帳按鈕滑鼠移入時的樣式。 */
+    background-color: #218838; /* 說明：hover 時綠色加深，提供互動回饋。 */
 }
 
-/* 空購物車狀態 */
-.cart-empty-box {
-    text-align: center;
-    padding: 50px 20px;
+/* ==========================================================================
+   空購物車狀態
+   ========================================================================== */
+.cart-empty-box { /* 說明：設定購物車沒有商品時的提示區塊。 */
+    text-align: center; /* 說明：空狀態內容置中顯示。 */
+    padding: 50px 20px; /* 說明：上下保留 50px、左右保留 20px，讓空狀態有足夠留白。 */
 }
 
-.empty-icon {
-    font-size: 60px;
-    margin-bottom: 15px;
+.empty-icon { /* 說明：設定空購物車圖示或符號樣式。 */
+    font-size: 60px; /* 說明：圖示使用大字級，作為空狀態視覺焦點。 */
+    margin-bottom: 15px; /* 說明：圖示下方保留 15px，與文字分隔。 */
 }
 
-.cart-empty-box h3 {
-    color: #555;
-    margin-bottom: 10px;
+.cart-empty-box h3 { /* 說明：設定空購物車標題文字。 */
+    color: #555; /* 說明：標題使用中灰色。 */
+    margin-bottom: 10px; /* 說明：標題下方保留 10px，與說明文字分隔。 */
 }
 
-.cart-empty-box p {
-    color: #888;
-    margin-bottom: 25px;
+.cart-empty-box p { /* 說明：設定空購物車說明文字。 */
+    color: #888; /* 說明：說明文字使用較淡灰色，呈現次要資訊。 */
+    margin-bottom: 25px; /* 說明：說明文字下方保留 25px，與前往點餐按鈕分隔。 */
 }
 
-.btn-go-order {
-    display: inline-block;
-    background: #343a40;
-    color: white;
-    text-decoration: none;
-    padding: 12px 25px;
-    border-radius: 4px;
-    font-weight: bold;
-    transition: background 0.2s;
+.btn-go-order { /* 說明：設定空購物車狀態中的前往點餐按鈕。 */
+    display: inline-block; /* 說明：讓連結可以套用 padding 並維持按鈕寬度依內容決定。 */
+    background: #343a40; /* 說明：按鈕背景使用深灰色，保持穩重外觀。 */
+    color: white; /* 說明：按鈕文字使用白色，提高對比。 */
+    text-decoration: none; /* 說明：移除連結底線，呈現按鈕外觀。 */
+    padding: 12px 25px; /* 說明：設定按鈕內距，增加可點擊範圍。 */
+    border-radius: 4px; /* 說明：按鈕使用 4px 小圓角。 */
+    font-weight: bold; /* 說明：按鈕文字加粗，提升可操作感。 */
+    transition: background 0.2s; /* 說明：讓背景色變化有 0.2 秒過渡。 */
 }
 
-.btn-go-order:hover {
-    background: #23272b;
+.btn-go-order:hover { /* 說明：設定前往點餐按鈕滑鼠移入時的樣式。 */
+    background: #23272b; /* 說明：hover 時背景加深，提示按鈕可點擊。 */
 }
 
-/* 通用對齊工具 */
-.text-center { text-align: center; }
-.text-right { text-align: right; }
+/* ==========================================================================
+   通用文字對齊工具 class
+   ========================================================================== */
+.text-center { text-align: center; } /* 說明：讓套用此 class 的文字置中對齊。 */
+.text-right { text-align: right; } /* 說明：讓套用此 class 的文字靠右對齊。 */
