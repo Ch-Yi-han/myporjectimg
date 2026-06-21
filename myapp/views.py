@@ -19,14 +19,12 @@ from ecpay_payment_sdk import ECPayPaymentSdk  # 說明：匯入綠界付款 SDK
 # 首頁與靜態頁面
 # ==========================================
 def index(request):
-    """首頁：讀取 session 中的會員名稱，並把登入狀態傳給首頁模板。"""
-    member_name = request.session.get('member_name')  # 說明：從 session 取出舊版登入流程保存的會員名稱，沒有則回傳 None。
-
-    context = {  # 說明：準備傳給 index.html 的資料。
-        'is_login': member_name is not None,  # 說明：只要 session 裡有會員名稱，就視為已登入。
-        'member_name': member_name  # 說明：把會員名稱傳給前端顯示。
-    }
-    return render(request, 'index.html', context)  # 說明：渲染首頁模板並帶入登入資訊。
+    """首頁：使用 Django 官方認證機制"""
+    # 💡 說明：因為 Django 內建會自動把 user 物件傳給所有 HTML 範本，
+    # 除非你的首頁有其他額外的資料要撈（例如最新消息、推薦菜色），
+    # 否則這裡可以保持超級乾淨，連 context 都不用帶！
+    
+    return render(request, 'index.html')
 
 
 def menu(request):
@@ -198,30 +196,58 @@ def verify_code(request):
 
 
 def reset_password(request):
-    """忘記密碼第三步：驗證通過後更新會員密碼。"""
-    if not request.session.get('code_verified'):  # 說明：若尚未通過驗證碼，不允許直接重設密碼。
-        messages.error(request, "請先完成驗證")  # 說明：提示使用者先完成前一步驗證。
-        return redirect('forgot_password_request')  # 說明：導回忘記密碼流程起點。
+    """忘記密碼第三步：驗證通過後更新會員密碼（最高防禦安全結合版）"""
+    
+    # 🛡️ 1. 第一關安全防禦：檢查他有沒有乖乖走完驗證碼步驟
+    if not request.session.get('code_verified'):
+        messages.error(request, "請先完成驗證")
+        return redirect('forgot_password_request')
 
-    if request.method == "POST":  # 說明：使用者送出新密碼時才處理更新。
-        password = request.POST.get('password')  # 說明：取得第一次輸入的新密碼。
-        password_confirm = request.POST.get('password_confirm')  # 說明：取得確認密碼欄位。
+    # 🛡️ 2. 第二關安全防禦：取得要重設密碼的會員 id，沒有就代表 session 過期了
+    user_id = request.session.get('reset_user_id')
+    if not user_id:
+        messages.error(request, "重設密碼流程已失效，請重新申請")
+        return redirect('forgot_password_request')
 
-        if password != password_confirm:  # 說明：兩次輸入不同時不能更新密碼。
-            messages.error(request, "兩次輸入的密碼不相同")  # 說明：顯示密碼不一致錯誤。
-            return render(request, 'reset_password.html')  # 說明：留在重設密碼頁讓使用者重新輸入。
+    if request.method == "POST":
+        password = request.POST.get('password')
+        password_confirm = request.POST.get('password_confirm')
 
-        user_id = request.session.get('reset_user_id')  # 說明：取得要重設密碼的會員 id。
-        user = CustomMember.objects.get(id=user_id)  # 說明：從資料庫取得該會員。
-        user.set_password(password)  # 說明：把新密碼轉成 Django 安全雜湊。
-        user.save()  # 說明：儲存新密碼。
+        # 🛡️ 3. 第三關安全防禦：避免繞過前端檢查送出空密碼
+        if not password or not password_confirm:
+            messages.error(request, "請輸入新密碼與確認密碼")
+            return render(request, 'reset_password.html')
 
-        request.session.flush()  # 說明：清空 session，移除驗證碼與重設流程資料。
-        messages.success(request, "密碼修改成功")  # 說明：提示使用者密碼已更新。
-        return redirect('user_login')  # 說明：重設完成後導向登入頁。
+        # 🛡️ 4. 第四關安全防禦：比對兩次輸入密碼是否相同
+        if password != password_confirm:
+            messages.error(request, "兩次輸入的密碼不相同")
+            return render(request, 'reset_password.html')
 
-    return render(request, 'reset_password.html')  # 說明：GET 請求時顯示重設密碼表單。
+        # 🛡️ 5. 第五關安全防禦：去資料庫撈出會員，並加上 try-except 防止帳號中途被刪除導致網頁噴 500
+        try:
+            user = CustomMember.objects.get(id=user_id)
+        except CustomMember.DoesNotExist:
+            messages.error(request, "此帳號不存在，重設密碼流程已失效")
+            return redirect('forgot_password_request')
 
+        # 🟢 6. 核心密碼變更與加密
+        user.set_password(password)  # 轉成 Django 安全雜湊
+        user.save()                  # 🌟 記得一定要 save() 才會寫進資料庫！
+
+        # 🟢 7. 官方認證大絕：密碼改成功，免重新登入，直接核發官方護照！
+        login(request, user)
+
+        # 🟢 8. 清除忘記密碼專用的過期 Session 鑰匙，保障資安
+        session_keys = ['reset_code', 'reset_user_id', 'code_verified']
+        for key in session_keys:
+            if key in request.session:
+                del request.session[key]
+
+        # 🟢 9. 完美絲滑導向聚福樓首頁
+        messages.success(request, "密碼修改成功！已自動為您登入聚福樓會員。")
+        return redirect('index') 
+
+    return render(request, 'reset_password.html')  # 用於 GET 請求時顯示表單
 
 # ==========================================
 # 線上點餐與購物車
