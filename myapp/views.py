@@ -466,7 +466,7 @@ def go_to_pay(request, order_id):
         HashIV='EkRm7iFT261dpevs'
     )
 
-    YOUR_DOMAIN = "http://192.168.59.2:8080"  # 說明：綠界回呼與返回網址使用的網站網域。
+    YOUR_DOMAIN = "http://192.168.1.112:8080"  # 說明：綠界回呼與返回網址使用的網站網域。
 
     current_time = datetime.now()  # 說明：取得目前時間，產生交易編號與交易日期。
     trade_no = current_time.strftime("JFL%Y%m%d%H%M%S")  # 說明：產生綠界訂單編號。
