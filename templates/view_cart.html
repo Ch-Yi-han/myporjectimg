@@ -55,7 +55,7 @@
 
         <div class="cart-summary-area">
             <div class="cart-total">
-                本次點餐總計：<span class="total-price-text">${{ total_amount }}</span>
+                本次點餐總計：<span id="total-amount" class="total-price-text">${{ total_amount }}</span>
             </div>
             
             <form action="{% url 'checkout' %}" method="POST" class="checkout-form">
@@ -101,19 +101,15 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // 監聽網頁上所有的點擊事件
     document.body.addEventListener('click', function(e) {
-        // 1. 判斷點擊的是不是你的加減按鈕
         const targetLink = e.target.closest('a[data-url*="update_cart_quantity"]');
         if (!targetLink) return;
         
-        e.preventDefault(); // 🛑 徹底阻止網頁跳轉，不留下上一頁歷史紀錄
+        e.preventDefault(); 
         
         const url = targetLink.getAttribute('data-url');
-        // 找到目前的加減控制器
         const controller = targetLink.closest('.quantity-controller');
         
-        // 使用 AJAX (Fetch) 呼叫後台
         fetch(url, {
             method: 'GET',
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
@@ -121,31 +117,22 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                // 🟢 【精準更新數字】：直接在目前的控制器裡面尋找帶有數字的那個標籤
-                // 你的 HTML 是 <span class="qty-number">{{ item.quantity }}</span>
+                // 1. 更新數量
                 const qtyEl = controller.querySelector('.qty-number');
-                if (qtyEl) {
-                    qtyEl.innerText = data.quantity; // 數字立刻跳動！
-                }
+                if (qtyEl) { qtyEl.innerText = data.quantity; }
                 
-                // 🟢 【精準更新小計】：直接往上找到這一道菜的整行表格 (tr)
+                // 2. 更新小計
                 const row = targetLink.closest('tr');
                 if (row) {
-                    // 在這行裡面尋找帶有 dish-subtotal 的那一格，並把新金額塞進去
                     const subtotalEl = row.querySelector('.dish-subtotal');
-                    if (subtotalEl) {
-                        subtotalEl.innerText = `$${data.subtotal}`; // 小計立刻跳動！
-                    }
+                    if (subtotalEl) { subtotalEl.innerText = `$${data.subtotal}`; }
                 }
                 
-                // 🟢 【精準更新總金額】：更新最下方的結帳總計
-                const totalAmountEl = document.getElementById('cart-total-amount');
-                if (totalAmountEl) {
-                    totalAmountEl.innerText = `$${data.total_amount}`;
-                }
+                // 3. 更新總金額
+                const totalAmountEl = document.getElementById('total-amount');
+                if (totalAmountEl) { totalAmountEl.innerText = `$${data.total_amount}`; }
             } 
             else if (data.status === 'deleted') {
-                // 🔴 如果數量變成 0 被刪除了，直接整頁重新整理，秀出最正確的購物車狀態
                 window.location.reload();
             }
         })

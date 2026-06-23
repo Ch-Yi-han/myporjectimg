@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout as django_logout  # 
 from django.contrib import messages  # 說明：匯入訊息框架，用來在 redirect 後顯示成功或錯誤提示。
 import random  # 說明：產生忘記密碼用的六位數隨機驗證碼。
 from django.core.mail import send_mail  # 說明：用來寄送忘記密碼、付款成功、訂位成功等通知信。
-from .models import CustomMember, Dish, CartItem, Order, OrderItem, Reservation  # 說明：匯入本專案會用到的會員、餐點、購物車、訂單、訂單明細與訂位模型。
+from .models import CustomMember, Dish, CartItem, Order, OrderItem, Reservation,FinancialCategory,FinancialRecord  # 說明：匯入本專案會用到的會員、餐點、購物車、訂單、訂單明細與訂位模型。
 from django.utils import timezone  # 說明：處理具時區資訊的時間，避免 naive datetime 問題。
 from datetime import datetime  # 說明：用來解析取餐日期與時間字串，也用於產生綠界交易時間。
 from django.views.decorators.csrf import csrf_exempt  # 說明：讓綠界付款回呼可以略過 CSRF 檢查，因為它是外部系統 POST 回來。
@@ -557,7 +557,21 @@ def ecpay_return(request):
                         [user_email],
                         fail_silently=True  # 說明：寄信失敗不讓付款返回頁中斷。
                     )
+                    income_category, created = FinancialCategory.objects.get_or_create(
+                        record_type='INCOME',
+                        name='線上點餐收入'
+                    )
 
+                    # 2. 自動在流水帳裡塞入一筆對應這筆訂單的金額，完全免手動
+                    FinancialRecord.objects.get_or_create(
+                        order=order,
+                        defaults={
+                            'category': income_category,
+                            'amount': order.total_amount,
+                            'date': timezone.now().date(),
+                            'note': f"顧客線上點餐自動入帳（訂單編號：{order.id}）"
+                        }
+                    )
             except Order.DoesNotExist:
                 pass  # 說明：找不到訂單時略過，最後仍導回訂單紀錄頁。
 

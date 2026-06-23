@@ -1,10 +1,9 @@
 from django.contrib import admin
-from .models import CustomMember, Reservation 
+from .models import CustomMember, Reservation ,FinancialCategory, FinancialRecord
 from itertools import groupby
 from operator import attrgetter
-# Register your models here.
 from .models import Dish  # 匯入你的菜單模型
-
+from django.db.models import Sum
 # 💡 告訴 Django：我要在後台管理這個模型！
 admin.site.register(Dish)
 
@@ -49,3 +48,50 @@ class ReservationAdmin(admin.ModelAdmin):
         extra_context['grouped_bookings'] = grouped_bookings
         
         return super().changelist_view(request, extra_context=extra_context)
+    
+@admin.register(FinancialCategory)
+class FinancialCategoryAdmin(admin.ModelAdmin):
+    list_display = ['record_type', 'name']
+    list_filter = ['record_type']
+
+@admin.register(FinancialRecord)
+class FinancialRecordAdmin(admin.ModelAdmin):
+    list_display = ['date', 'get_type_display', 'category', 'amount', 'note']
+    list_display_links = ['date', 'category']
+    list_filter = ['date', 'category__record_type', 'category']
+    date_hierarchy = 'date'
+    search_fields = ['note', 'category__name', 'amount']
+
+    # 讓流水帳列表能一眼看出是收入還是支出
+    def get_type_display(self, obj):
+        return obj.category.get_record_type_display()
+    get_type_display.short_description = "收支大類"
+
+    # 🚀 核心魔改：讓 Django 後台根據你篩選的時間，自動計算總金額
+    def changelist_view(self, request, extra_context=None):
+        # A. 拿到目前畫面上「被篩選後」的所有財務資料
+        response = super().changelist_view(request, extra_context=extra_context)
+        
+        try:
+            cl = response.context_data['cl']
+            queryset = cl.get_queryset(request)
+            
+            # B. 自動加總「收入」與「支出」
+            total_income = queryset.filter(category__record_type='INCOME').aggregate(Sum('amount'))['amount__sum'] or 0
+            total_expense = queryset.filter(category__record_type='EXPENSE').aggregate(Sum('amount'))['amount__sum'] or 0
+            
+            # C. 自動計算淨利
+            net_profit = total_income - total_expense
+            
+            # D. 把算好的數字塞進網頁變數裡
+            extra_context = extra_context or {}
+            extra_context['calculated_data'] = {
+                'total_income': total_income,
+                'total_expense': total_expense,
+                'net_profit': net_profit,
+            }
+            response.context_data.update(extra_context)
+        except (AttributeError, KeyError):
+            pass
+            
+        return response

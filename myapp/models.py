@@ -181,3 +181,37 @@ class OrderItem(models.Model):
     price = models.IntegerField(verbose_name="購買時價格")
     quantity = models.PositiveIntegerField(verbose_name="數量")
 
+class FinancialCategory(models.Model):
+    TYPE_CHOICES = [
+        ('INCOME', '總收入'),
+        ('EXPENSE', '總支出'),
+    ]
+    record_type = models.CharField(max_length=10, choices=TYPE_CHOICES, verbose_name="收支大類")
+    name = models.CharField(max_length=50, verbose_name="科目名稱（如：海鮮類/肉品類/員工獎金/水電瓦斯）")
+
+    class Meta:
+        verbose_name = "財務科目分類"
+        verbose_name_plural = "1. 財務科目分類管理"
+
+    def __str__(self):
+        return f"[{self.get_record_type_display()}] {self.name}"
+
+
+# ⭕ 表格二：實際的「財務收支流水帳明細表」
+class FinancialRecord(models.Model):
+    # 透過 ForeignKey 動態連結科目，餐廳就能在後台自由下拉選單
+    category = models.ForeignKey(FinancialCategory, on_delete=models.PROTECT, verbose_name="款項科目")
+    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="金額")
+    date = models.DateField(default=timezone.now, verbose_name="記帳日期")
+    note = models.TextField(blank=True, null=True, verbose_name="詳細備註（可寫食材細項、員工姓名）")
+    
+    # 如果是點餐收入，自動關聯訂單；手動記帳（水電、薪資）則留空
+    order = models.OneToOneField(Order, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="關聯點餐訂單")
+
+    class Meta:
+        verbose_name = "財務收支紀錄"
+        verbose_name_plural = "2. 財務收支流水帳"
+        ordering = ['-date', '-id']
+
+    def __str__(self):
+        return f"{self.date} | {self.category.name} | ${self.amount}"

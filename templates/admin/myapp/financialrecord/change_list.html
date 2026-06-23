@@ -1,0 +1,23 @@
+{% extends "admin/change_list.html" %}
+{% block content_title %}
+    {{ block.super }}
+    
+    {% if calculated_data %}
+    <div style="background: #f8f9fa; border: 1px solid #ccd1d9; border-radius: 6px; padding: 15px; margin-bottom: 20px; display: flex; gap: 30px;">
+        <div>
+            <span style="font-size: 14px; color: #666;"> 當前篩選總收入</span>
+            <div style="font-size: 24px; font-weight: bold; color: #28a745;">NT$ {{ calculated_data.total_income|floatformat:0 }}</div>
+        </div>
+        <div style="border-left: 1px solid #ccd1d9; padding-left: 30px;">
+            <span style="font-size: 14px; color: #666;"> 當前篩選總支出</span>
+            <div style="font-size: 24px; font-weight: bold; color: #dc3545;">NT$ {{ calculated_data.total_expense|floatformat:0 }}</div>
+        </div>
+        <div style="border-left: 1px solid #ccd1d9; padding-left: 30px;">
+            <span style="font-size: 14px; color: #666;">當前營運淨利潤</span>
+            <div style="font-size: 24px; font-weight: bold; color: {% if calculated_data.net_profit >= 0 %}#007bff{% else %}#dc3545{% endif %};">
+                NT$ {{ calculated_data.net_profit|floatformat:0 }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}
