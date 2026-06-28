@@ -140,7 +140,6 @@ LOGIN_URL='user_login'
 LOGIN_REDIRECT_URL='index'
 
 SITE_ID = 1
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(os.path.join(BASE_DIR, '.env'))
 
@@ -161,3 +160,4 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
 DEFAULT_FROM_EMAIL = '聚福樓中式餐廳 <h9150435@gmail.com>'
 
 AUTH_USER_MODEL = 'myapp.CustomMember'
+

@@ -97,6 +97,8 @@ class CustomMember(AbstractBaseUser,PermissionsMixin):
         app_label = 'myapp'
     
 class Reservation(models.Model):
+    MAX_SEATS_PER_SLOT = 50
+
     # 關聯會員（做法 B）
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -136,12 +138,11 @@ class Reservation(models.Model):
     # 檢查剩餘座位邏輯（維持不變，依然可用）
     @staticmethod
     def get_available_seats(date, time_slot):
-        MAX_SEATS = 50  # 餐廳每時段上限人數
         booked_guests = Reservation.objects.filter(
             date=date, 
             time_slot=time_slot
         ).aggregate(total=models.Sum('guests'))['total'] or 0
-        return MAX_SEATS - booked_guests
+        return max(Reservation.MAX_SEATS_PER_SLOT - booked_guests, 0)
 
 class MenuItem(models.Model):
     name= models.CharField(max_length=100,verbose_name="餐點名稱")

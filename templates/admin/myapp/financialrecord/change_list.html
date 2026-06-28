@@ -1,4 +1,5 @@
 {% extends "admin/change_list.html" %}
+
 {% block content_title %}
     {{ block.super }}
     
@@ -20,4 +21,70 @@
         </div>
     </div>
     {% endif %}
+
+    <style>
+        /* 1. 把 Django 原本右側欄的「第一個篩選器 (收支分類)」拔出來移到上方 */
+        #changelist-filter {
+            position: relative;
+        }
+        
+        /* 抓出第一個 filter (收支分類) */
+        #changelist-filter h3:nth-of-type(1),
+        #changelist-filter h3:nth-of-type(1) + ul {
+            position: absolute;
+            top: -190px; /* 根據你的面板高度微調，讓它浮動到數據面板與搜尋欄之間 */
+            left: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        /* 隱藏第一個篩選器的標題「收支分類」，只留按鈕 */
+        #changelist-filter h3:nth-of-type(1) {
+            display: none;
+        }
+
+        /* 2. 把直向列表改成橫向頁籤按鈕 */
+        #changelist-filter h3:nth-of-type(1) + ul {
+            display: flex;
+            gap: 10px;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        #changelist-filter h3:nth-of-type(1) + ul li {
+            padding: 0;
+            margin: 0;
+        }
+
+        /* 頁籤預設按鈕樣式 */
+        #changelist-filter h3:nth-of-type(1) + ul li a {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #f8f9fa;
+            color: #333;
+            border: 1px solid #ccd1d9;
+            border-radius: 20px; /* 圓角膠囊造型 */
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        #changelist-filter h3:nth-of-type(1) + ul li a:hover {
+            background: #e9ecef;
+        }
+
+        /* 當前選中的頁籤樣式 (全部 / 只看收入 / 只看支出) */
+        #changelist-filter h3:nth-of-type(1) + ul li.selected a {
+            background: #417690; /* Django 經典藍綠色，也可改成 #007bff */
+            color: white;
+            border-color: #417690;
+            font-weight: bold;
+        }
+        
+        /* 修正表格上方區塊的間距，避免頁籤蓋到內容 */
+        #changelist-form {
+            margin-top: 50px;
+        }
+    </style>
 {% endblock %}

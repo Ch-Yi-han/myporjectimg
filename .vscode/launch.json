@@ -15,6 +15,7 @@
             "django": true,
             "autoStartBrowser": false,
             "program": "${workspaceFolder}\\manage.py"
-        }
+        },
+
     ]
 }

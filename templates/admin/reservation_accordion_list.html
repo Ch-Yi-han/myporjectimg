@@ -25,6 +25,7 @@
                                 <th style="padding: 10px;">聯絡電話</th>
                                 <th style="padding: 10px;">用餐時段</th>
                                 <th style="padding: 10px;">用餐人數</th>
+                                <th style="padding: 10px; text-align: center;">該時段剩餘座位</th>
                                 <th style="padding: 10px;">備註需求</th>
                                 <th style="padding: 10px; text-align: center;">客人是否已到店</th>
                             </tr>
@@ -36,6 +37,11 @@
                                     <td style="padding: 12px; color: #666;">{{ booking.phone }}</td>
                                     <td style="padding: 12px;"><span style="background: #e9ecef; padding: 3px 8px; border-radius: 4px; font-weight: bold;">{{ booking.time_slot }}</span></td>
                                     <td style="padding: 12px; font-weight: bold; color: #d67c13;">{{ booking.guests }} 人</td>
+                                    <td style="padding: 12px; text-align: center;">
+                                        <span style="display: inline-block; min-width: 76px; padding: 4px 9px; border-radius: 50px; font-weight: bold; color: white; background: {% if booking.available_seats == 0 %}#c62828{% elif booking.available_seats <= 10 %}#d67c13{% else %}#2e7d32{% endif %};">
+                                            剩 {{ booking.available_seats }} / {{ max_seats_per_slot }} 位
+                                        </span>
+                                    </td>
                                     <td style="padding: 12px; color: #888; font-style: italic;">{{ booking.notes|default:"-" }}</td>
                                     <td style="padding: 12px; text-align: center;">
                                         <input type="checkbox" name="form-{{ forloop.parentloop.counter0 }}-is_arrived" {% if booking.is_arrived %}checked{% endif %} style="transform: scale(1.2); cursor: pointer;">

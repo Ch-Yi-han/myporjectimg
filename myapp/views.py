@@ -32,8 +32,6 @@ def menu(request):
     member_name = request.session.get('member_name')  # 說明：從 session 取得會員名稱，用於頁首顯示。
     dishes_data = Dish.objects.all()  # 說明：從資料庫查詢全部餐點資料。
     context = {  # 說明：整理菜單頁需要的模板資料。
-        'is_login': member_name is not None,  # 說明：判斷目前是否有登入資訊。
-        'member_name': member_name,  # 說明：傳給前端顯示會員名稱。
         'dishes': dishes_data  # 說明：傳給前端迴圈顯示餐點卡片。
     }
     return render(request, 'menu.html', context)  # 說明：渲染菜單頁。
